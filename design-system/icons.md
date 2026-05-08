@@ -5,6 +5,36 @@
 
 ---
 
+## 🔄 아이콘 사용 워크플로우 (필독)
+
+**아이콘이 필요할 때마다 이 절차를 따른다.** 임의 추측·기억으로 아이콘 결정 금지.
+
+### 1단계 — Figma에서 정확한 아이콘 이름 확인
+- 디자인 노드의 InstanceNode 이름 확인 (`lucide/align-left`, `lucide/file-text` 등)
+- 또는 인스턴스의 `mainComponent.name` 인스펙트
+- **추측 금지** (예: "리스트 아이콘이니까 `List`겠지" → 실제로는 `AlignLeft` 같은 케이스 빈번)
+
+### 2단계 — lucide-react에서 해당 아이콘 import
+- Figma `lucide/kebab-case` → `PascalCase` 변환 (예: `lucide/align-left` → `AlignLeft`)
+- Suffix 컨벤션:
+  - 직접 작성 파일 (`src/app`, `src/components/api-portal`): suffix 없이 (`AlignLeft`)
+  - shadcn 자동 생성 (`src/components/ui/*`): `Icon` suffix 유지 (`AlignLeftIcon`)
+- 사이즈도 Figma 값 따르기 (보통 16/20/24)
+
+### 3단계 — lucide-react에 없으면 사용자에게 질문
+- Figma 노드 prefix가 `hugeicons/`, `icon/` (custom) 등이거나, 검색해도 lucide에 없는 경우
+- **임의 대체 금지** — 다음 정보를 사용자에게 물어보기:
+  - Figma 노드명 + 출처 라이브러리(예: HugeIcons, Phosphor, custom SVG)
+  - 가장 비슷한 lucide 아이콘 후보 1~2개
+  - 옵션: (a) 라이브러리 추가 도입, (b) custom SVG 직접 추가, (c) 비슷한 lucide로 대체
+- 사용자 결정 후 진행
+
+### 4단계 — 아래 매핑 테이블에 등록
+- 새 아이콘 사용 시 "사용 중인 아이콘" 표에 추가
+- 미해결(라이브러리 미도입 등)은 "별도 처리 필요" 섹션에 기록
+
+---
+
 ## 사용 중인 아이콘
 
 | Figma 노드명 | lucide-react | 코드 사용처 | 비고 |
@@ -26,6 +56,18 @@
 | `lucide/search` | `Search` | users/page.tsx, api-keys/page.tsx | |
 | `lucide/user` | `User` | users/page.tsx (TeamCard), AccountDropdown.tsx | 멤버 수 아이콘 / Profile 메뉴 항목 |
 | `lucide/x` | `X` | dialog.tsx, sheet.tsx | shadcn 내부에서 `XIcon`으로 import |
+| `lucide/align-left` | `AlignLeft` | TocSidebar.tsx | "On This Page" 헤더 (20×20) |
+| `lucide/file-text` | `FileText` | DocsSidebar.tsx | Docs 사이드바 헤더 아이콘 (16 in 32 box) |
+| `lucide/chevron-right` (single rotate) | `ChevronRight` | accordion.tsx, DocsPageShell.tsx | accordion: 단일 chevron 90° 회전 (collapsed → expanded) / DocsPageShell: Next 버튼 |
+| `lucide/chevron-left` | `ChevronLeft` | DocsPageShell.tsx | Prev 버튼 |
+| `lucide/copy` | `Copy` | ViewApiKeyDialog.tsx, CodeBlock.tsx | API key 복사 / 코드 블록 복사 |
+| `lucide/eye` | `Eye` | ViewApiKeyDialog.tsx | 마스킹된 토큰 표시 토글 |
+| `lucide/eye-off` | `EyeOff` | ViewApiKeyDialog.tsx | Eye 토글 짝 (revealed 상태) |
+| — | `Check` | CodeBlock.tsx | **코드 전용** — Figma 디자인엔 없음. 복사 후 2초간 success 피드백용 (`lucide/check`은 shadcn 자동 import에서 별도 사용) |
+| `lucide/phone` | `Phone` | documentation/page.tsx | Quick Start "What You'll Find Here" — Calls 항목 |
+| `lucide/network` | `Network` | documentation/page.tsx | Quick Start — Queues 항목 |
+| `lucide/headset` | `Headset` | documentation/page.tsx | Quick Start — Agents 항목 |
+| `lucide/message-square-more` | `MessageSquareMore` | documentation/page.tsx | Quick Start — Chat 항목 |
 | — | `ArrowDown` | sortable-head.tsx | Figma는 `arrow-up-down` 하나로 표현; 정렬 활성 상태용 |
 | — | `ArrowUp` | sortable-head.tsx | 위 동일 |
 | — | `BarChart2` | (미사용) | layout.tsx에서 제거됨 (사이드바 아이콘 → Figma 디자인에 없음) |

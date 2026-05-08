@@ -30,7 +30,7 @@
   --warning-foreground: 0 0% 100%;
   --warning-subtle: 55 91.7% 95.3%;
   --warning-border: 53 98.3% 76.9%;
-  --info: 217 91.2% 59.8%;
+  --info: 221 83.2% 53.3%;
   --info-foreground: 0 0% 100%;
   --info-subtle: 214 100% 96.9%;
   --info-border: 213 96.9% 87.3%;
@@ -51,6 +51,7 @@
   --chart-4: 224 76.3% 48%;
   --chart-5: 224 64.3% 32.9%;
   --overlay: 0 0% 0% / 0.3;
+  --background-color: 0 0% 0% / 0.05;
 
   --radius: 0.5rem;
 }
@@ -105,6 +106,7 @@
   --chart-4: 224 76.3% 48%;
   --chart-5: 224 64.3% 32.9%;
   --overlay: 0 0% 0% / 0.3;
+  --background-color: 0 0% 0% / 0.05;
 }
 
 @theme inline {
@@ -158,6 +160,7 @@
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
   --color-overlay: hsl(var(--overlay));
+  --color-background-color: hsl(var(--background-color));
 
   /* Palette (raw hex) */
   --color-slate-50: #f8fafc;
@@ -405,4 +408,16 @@
   --color-white: #ffffff;
   --color-black: #000000;
   --color-ujet-blue: #4abcff;
+
+  /* Radius scale — synced from design-system/tokens/misc.json (Figma 라이브러리 truth) */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+  --radius-3xl: 22px;
+  --radius-4xl: 26px;
+  --radius-full: 9999px;
 }

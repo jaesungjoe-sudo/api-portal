@@ -404,7 +404,7 @@
       "dark": "palette/yellow/800"
     },
     "info": {
-      "light": "palette/blue/500",
+      "light": "palette/blue/600",
       "dark": "palette/blue/400"
     },
     "info-foreground": {
@@ -486,6 +486,10 @@
     "overlay": {
       "light": "palette/black@0.3",
       "dark": "palette/black@0.3"
+    },
+    "background-color": {
+      "light": "palette/black@0.05",
+      "dark": "palette/black@0.05"
     }
   }
 }

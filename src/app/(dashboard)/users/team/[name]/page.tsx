@@ -12,7 +12,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -162,7 +161,6 @@ export default function TeamDetailPage({
           <Input className="pl-8 h-8 text-sm" placeholder="Search User" />
         </div>
         <Button
-          size="sm"
           onClick={() =>
             toast.info(`Invite User to ${team.name} — Phase1 design pending`)
           }
@@ -176,8 +174,7 @@ export default function TeamDetailPage({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-10 pl-3"><Checkbox /></TableHead>
-              <TableHead className="min-w-[160px]">
+              <TableHead className="min-w-[160px] pl-5">
                 <SortableHead col="name" {...sp}>Name</SortableHead>
               </TableHead>
               <TableHead className="min-w-[220px]">
@@ -205,8 +202,7 @@ export default function TeamDetailPage({
             ) : (
               paged.map((user, i) => (
                 <TableRow key={i}>
-                  <TableCell className="pl-3"><Checkbox /></TableCell>
-                  <TableCell className="text-sm font-medium text-foreground">{user.name}</TableCell>
+                  <TableCell className="pl-5 text-sm font-medium text-foreground">{user.name}</TableCell>
                   <TableCell className="text-sm text-foreground">{user.email}</TableCell>
                   <TableCell><StatusBadge status={user.status} /></TableCell>
                   <TableCell className="text-sm text-foreground">{user.role}</TableCell>

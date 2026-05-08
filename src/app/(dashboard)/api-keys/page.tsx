@@ -186,7 +186,7 @@ export default function ApiKeysPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="min-w-[160px] pl-4">
+              <TableHead className="min-w-[160px] pl-5">
                 <SortableHead col="name" {...sp}>Name</SortableHead>
               </TableHead>
               <TableHead className="min-w-[160px]">Owner</TableHead>
@@ -207,7 +207,7 @@ export default function ApiKeysPage() {
           <TableBody>
             {paged.map((k) => (
               <TableRow key={k.id}>
-                <TableCell className="pl-4 text-sm font-medium text-foreground">{k.name}</TableCell>
+                <TableCell className="pl-5 text-sm font-medium text-foreground">{k.name}</TableCell>
                 <TableCell className="text-sm text-foreground">{k.owner}</TableCell>
                 <TableCell className="text-sm text-foreground font-mono">{k.token}</TableCell>
                 <TableCell>

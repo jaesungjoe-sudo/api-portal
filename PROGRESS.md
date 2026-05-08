@@ -113,12 +113,9 @@ Phase1 디자인 구현 — **User & Team, API Keys** 페이지의 주요 플로
   - 현재: `Active=bg-green-100/text-green-700`, `Verified=bg-orange-100/text-orange-700`, `Invited=bg-blue-100/text-blue-700` (팔레트 직접 사용 — dark mode 미대응)
   - 목표: `Invited` → `bg-info-subtle text-info border-info-border` (`info` 토큰 추가 후), `Active`/`Verified`도 시맨틱 또는 status-카테고리 토큰으로 마이그레이션
   - 의존: 위 `info` 토큰 추가 선행
-- [ ] 🚧 **사이드바 active 색상 정책 결정** — **ON HOLD** (사이드바 디자인 정리 미완)
-  - 위치: `src/components/api-portal/AppSidebar.tsx:55`
-  - 현재 임시값: `text-blue-700` (팔레트 직접 사용 — dark mode 미대응)
-  - 후보: (a) `text-brand` 재사용 / (b) 별도 `sidebar-active` 시맨틱 토큰 신설 / (c) `text-primary` 사용
-  - **재개 트리거**: 사용자가 Figma에서 사이드바 디자인 정리 완료 후 알려주기로 함 (2026-04-28 시점). 그 전까지 작업 보류.
-  - 참고: 디자인 정리 후 Figma 라이브러리에 `sidebar/*` 변수가 추가되면 (b) 채택, 아니면 (a)/(c) 재검토.
+- [x] ✅ **사이드바 active 색상 정책 결정 — 완료 (2026-05-08)**
+  - 결정: 텍스트 색상 변경 없이 **`bg-sidebar-accent`만** (Figma 1518:13771 정합)
+  - `AppSidebar.tsx`/`DocsSidebar.tsx` 모두 동일 패턴 적용 — `bg-sidebar-accent` (active) / `hover:bg-sidebar-accent` (hover), 텍스트는 `text-sidebar-foreground`
 
 ---
 
@@ -130,7 +127,6 @@ Phase1 디자인 구현 — **User & Team, API Keys** 페이지의 주요 플로
 - [ ] **Invite User to Team** Figma 노드 ID — 또는 "기존 Invite User 다이얼로그 재사용 OK" 확인
 - [ ] **Webhooks 페이지** Figma 노드 위치
 - [ ] **Analytics 페이지** Figma 노드 위치
-- [ ] 🚧 **사이드바 active 색상 토큰 결정** — 사이드바 디자인 정리 완료 알림 대기 중 (2026-04-28~). 정리 후 Figma `sidebar/*` 변수 유무 확인 → 백로그 §5 항목 진행. (`AppSidebar.tsx:55` 임시 `text-blue-700`)
 
 ### 기술 결정 미확정
 

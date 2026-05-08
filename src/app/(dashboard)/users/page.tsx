@@ -13,7 +13,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -403,12 +402,12 @@ function UsersPageContent() {
           />
         </div>
         {activeTab === "user" && (
-          <Button size="sm" onClick={() => setOpen(true)}>
+          <Button onClick={() => setOpen(true)}>
             Invite User
           </Button>
         )}
         {activeTab === "team" && (
-          <Button size="sm" onClick={() => setCreateTeamOpen(true)}>
+          <Button onClick={() => setCreateTeamOpen(true)}>
             Create Team
           </Button>
         )}
@@ -421,8 +420,7 @@ function UsersPageContent() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-10 pl-3"><Checkbox /></TableHead>
-                  <TableHead className="min-w-[160px]">
+                  <TableHead className="min-w-[160px] pl-5">
                     <SortableHead col="name" {...sp}>Name</SortableHead>
                   </TableHead>
                   <TableHead className="min-w-[220px]">
@@ -456,8 +454,7 @@ function UsersPageContent() {
               <TableBody>
                 {paged.map((user, i) => (
                   <TableRow key={i}>
-                    <TableCell className="pl-3"><Checkbox /></TableCell>
-                    <TableCell className="text-sm font-medium text-foreground">{user.name}</TableCell>
+                    <TableCell className="pl-5 text-sm font-medium text-foreground">{user.name}</TableCell>
                     <TableCell className="text-sm text-foreground">{user.email}</TableCell>
                     <TableCell className="text-sm text-foreground">{user.team}</TableCell>
                     <TableCell className="text-sm text-foreground">{user.role}</TableCell>
@@ -491,8 +488,7 @@ function UsersPageContent() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-10 pl-3"><Checkbox /></TableHead>
-                  <TableHead className="min-w-[160px]">Name</TableHead>
+                  <TableHead className="min-w-[160px] pl-5">Name</TableHead>
                   <TableHead className="min-w-[220px]">Email</TableHead>
                   <TableHead className="min-w-[130px]">Team</TableHead>
                   <TableHead className="min-w-[100px]">Role</TableHead>
@@ -511,8 +507,7 @@ function UsersPageContent() {
                 ) : (
                   pendingPaged.map((user, i) => (
                     <TableRow key={i}>
-                      <TableCell className="pl-3"><Checkbox /></TableCell>
-                      <TableCell className="text-sm font-medium text-foreground">{user.name}</TableCell>
+                      <TableCell className="pl-5 text-sm font-medium text-foreground">{user.name}</TableCell>
                       <TableCell className="text-sm text-foreground">{user.email}</TableCell>
                       <TableCell className="text-sm text-foreground">{user.team}</TableCell>
                       <TableCell className="text-sm text-foreground">{user.role}</TableCell>

@@ -3,25 +3,20 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GalleryVerticalEnd } from "lucide-react";
+import { FileText } from "lucide-react";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import {
-  DASHBOARD_NAV,
-  isSidebarNavGroup,
-  type SidebarNavGroup,
-} from "@/lib/dashboard-nav";
+import { DOCS_NAV, isDocsNavGroup, type DocsNavGroup } from "@/lib/docs-nav";
 
-/* ── Dashboard 사이드바 ───────────────────────────────────────
- * Figma 1456:16099 sidebar 정합:
- *   Header: gallery-vertical-end icon + "Dashboard" (Bottom=false, no version)
- *   Menu: Level 1 leaf 4개 — Analytics, User & Team management, API Keys, Webhooks
- *   구조는 DocsSidebar와 동일 (leaf / group with chevron + Level 2)
- *   향후 그룹 추가 시 dashboard-nav.ts에 group 항목 추가만 하면 됨.
+/* ── Item rendering ───────────────────────────────────────────
+ * Figma 1518:13771 sidebar 정합:
+ *   Sidebar_menu_item (Level 1): outer 8/8/4/4 padding, inner Label radius 6 (rounded-sm)
+ *   Sidebar_menu_item (Level 2): outer 8/8/0/0 padding (no vertical), inner Label radius 6
+ *   Color tokens: sidebar-foreground / sidebar-accent / sidebar-primary
  */
 
 function LeafLink({ href, label, active }: { href: string; label: string; active: boolean }) {
@@ -39,7 +34,7 @@ function LeafLink({ href, label, active }: { href: string; label: string; active
   );
 }
 
-function GroupItem({ group, pathname }: { group: SidebarNavGroup; pathname: string }) {
+function GroupItem({ group, pathname }: { group: DocsNavGroup; pathname: string }) {
   const containsActive = group.items.some((sub) => sub.href === pathname);
   const [open, setOpen] = useState<string[]>(containsActive ? [group.label] : []);
 
@@ -52,11 +47,13 @@ function GroupItem({ group, pathname }: { group: SidebarNavGroup; pathname: stri
   return (
     <Accordion value={open} onValueChange={(v) => setOpen(v as string[])}>
       <AccordionItem value={group.label} className="border-none">
+        {/* Trigger — outer wrapper로 4px vertical padding 부여 (Figma Level 1 spec) */}
         <div className="px-2 py-1">
           <AccordionTrigger className="flex h-9 items-center rounded-sm border-0 px-2 py-0 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent">
             {group.label}
           </AccordionTrigger>
         </div>
+        {/* Content — Level 2 items have no outer vertical padding (Figma spec) */}
         <AccordionContent className="px-2 pb-1">
           <div className="flex flex-col">
             {group.items.map((sub) => {
@@ -80,32 +77,29 @@ function GroupItem({ group, pathname }: { group: SidebarNavGroup; pathname: stri
   );
 }
 
-export function AppSidebar() {
+export function DocsSidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="sticky top-[69px] hidden h-[calc(100vh-69px)] w-[255px] shrink-0 overflow-y-auto border-r border-sidebar-border bg-background md:block">
-      {/* Header — Figma: gallery-vertical-end + "Dashboard", Bottom=false (no version) */}
+      {/* Header — Figma 스펙엔 border-b 없음 */}
       <div className="p-2">
         <div className="flex items-center gap-2 p-2">
           <div className="flex size-8 items-center justify-center rounded-md bg-sidebar-primary">
-            <GalleryVerticalEnd className="h-4 w-4 text-sidebar-primary-foreground" />
+            <FileText className="h-4 w-4 text-sidebar-primary-foreground" />
           </div>
-          {/* Wrapper 높이 36px 고정 — Figma는 Bottom=false에도 wrapper 36h 유지하여
-              두 사이드바(Dashboard/Docs) 아이콘 정렬 통일. flex justify-center로 단일 줄 수직 중앙. */}
-          <div className="flex h-9 min-w-0 flex-1 flex-col justify-center">
-            <p className="truncate text-sm font-semibold text-sidebar-foreground">Dashboard</p>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-sidebar-foreground">Documentation</p>
+            <p className="truncate text-xs text-sidebar-foreground">v1.0.0</p>
           </div>
         </div>
       </div>
 
-      {/* Menu — DASHBOARD_NAV 순서 그대로 */}
+      {/* Menu — DOCS_NAV 순서 그대로 */}
       <nav className="flex flex-col">
-        {DASHBOARD_NAV.map((item) => {
-          if (!isSidebarNavGroup(item)) {
-            // active: 현재 경로가 정확 일치 또는 하위 경로 (e.g., /users/team/...)
-            const active =
-              pathname === item.href || pathname.startsWith(item.href + "/");
+        {DOCS_NAV.map((item) => {
+          if (!isDocsNavGroup(item)) {
+            const active = pathname === item.href;
             return <LeafLink key={item.label} href={item.href} label={item.label} active={active} />;
           }
           return <GroupItem key={item.label} group={item} pathname={pathname} />;

@@ -58,6 +58,14 @@ Figma 파일:
 - **Alert Dialog**: 확인용 다이얼로그는 `showCloseButton={false}` + outline + destructive 버튼.
 - **폼 필드 disabled**: Figma `componentProperties.State === "disabled"` 일 때만 `disabled` prop 적용. 높이 차이로 추정 금지.
 
+### Button 규칙 (variant + size)
+
+- **`variant`/`size`는 Figma `componentProperties.Type` / `Size`와 1:1 동일** — 임의 override 금지.
+- 예) Figma 인스턴스가 `Type=primary, Size=default` → 코드 `<Button>` (props 미지정 = default). `Size=sm`이 아닌데 `size="sm"` 쓰지 말 것.
+- 페이지 toolbar의 주요 CTA(Invite User / Create Team / Create API Key)는 모두 **default 사이즈(h-9)** — Figma 정합 확인 후 작성.
+- 의도적으로 다른 사이즈가 필요해 보이면 (예: 테이블 row 내 inline action) **사용자에게 먼저 질문**.
+- 상세 매핑: `design-system/components/button.md`
+
 ---
 
 ## 디자인 토큰
@@ -101,14 +109,16 @@ Figma 파일:
 | 클래스 | 값 | 용도 |
 |---|---|---|
 | `rounded-xs` | 2 | 배지 |
-| `rounded-sm` | 4 | 버튼, 인풋 |
-| `rounded-md` | 8 | 카드, 패널 |
+| `rounded-sm` | 6 | 사이드바 메뉴, 인풋 |
+| `rounded-md` | 8 | 카드, 패널, 버튼 |
 | `rounded-lg` | 10 | 모달, 드롭다운 |
-| `rounded-xl` | 12 | 큰 카드 (TeamCard) |
-| `rounded-2xl` | 16 | 섹션 |
+| `rounded-xl` | 14 | 큰 카드 (TeamCard) |
+| `rounded-2xl` | 18 | 섹션 |
+| `rounded-3xl` | 22 | — |
+| `rounded-4xl` | 26 | — |
 | `rounded-full` | 9999 | 아바타, 칩 |
 
-비표준 값(예: Figma 14)은 가장 가까운 표준값 사용. 강제 정밀 일치는 `rounded-[14px]`.
+> **Truth는 Figma 라이브러리 `radius-*` 변수**. 위 값은 `design-system/tokens/misc.json` → `npm run sync-tokens`로 `src/styles/tokens.generated.css`에 자동 생성됨. 임의값(`rounded-[Npx]`) 사용 전 표준 토큰 먼저 확인.
 
 ### Shadow
 
@@ -170,6 +180,12 @@ Figma 파일:
 - 예외 매핑: `lucide/ellipsis` → `MoreHorizontal` (코드 통일)
 - 직접 작성 파일에서는 **suffix 없이** import (`Search`, `MoreHorizontal`). 단 lucide `User`와 의미 타입 `User`가 충돌하면 `User as UserIcon`으로 alias.
 - shadcn 자동 생성 파일은 `*Icon` suffix 유지.
+- **워크플로우 (필수)**:
+  1. Figma 인스턴스의 정확한 이름 인스펙트 (`lucide/align-left` 등) — **추측 금지**
+  2. lucide-react에서 PascalCase로 import (`AlignLeft`)
+  3. Figma 노드 prefix가 `hugeicons/` / `icon/` 등 lucide 외 라이브러리거나 lucide에 없는 경우 → **사용자에게 질문** (라이브러리 도입 / custom SVG / 비슷한 lucide 대체 결정)
+  4. 새 아이콘 사용 시 `design-system/icons.md` 매핑 표 갱신
+- 상세: `design-system/icons.md` ("아이콘 사용 워크플로우" 섹션)
 
 ### 클릭 가능한 카드 + 내부 메뉴 (TeamCard 패턴)
 

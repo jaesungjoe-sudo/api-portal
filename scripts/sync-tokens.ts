@@ -19,7 +19,13 @@ const OUTPUT_PATH = path.join(ROOT, "src/styles/tokens.generated.css");
 type Palette = Record<string, string | Record<string, string>>;
 type SemanticEntry = { light: string; dark: string };
 type ColorsJson = { palette: Palette; semantic: Record<string, SemanticEntry> };
-type MiscJson = { radius?: { base?: string } };
+type MiscJson = {
+  radius?: {
+    base?: string;
+    /** Tailwind radius scale — Figma 라이브러리 truth와 동기화 */
+    scale?: Record<string, number | string>;
+  };
+};
 
 // ── HSL conversion ───────────────────────────────────────────────────────────
 
@@ -153,6 +159,15 @@ function generateCss(colors: ColorsJson, misc: MiscJson): string {
       for (const [shade, hex] of Object.entries(value)) {
         lines.push(`  --color-${paletteName}-${shade}: ${hex};`);
       }
+    }
+  }
+  // Radius scale — Figma 라이브러리 동기화
+  if (misc.radius?.scale) {
+    lines.push("");
+    lines.push("  /* Radius scale — synced from design-system/tokens/misc.json (Figma 라이브러리 truth) */");
+    for (const [name, value] of Object.entries(misc.radius.scale)) {
+      const px = typeof value === "number" ? `${value}px` : value;
+      lines.push(`  --radius-${name}: ${px};`);
     }
   }
   lines.push("}");

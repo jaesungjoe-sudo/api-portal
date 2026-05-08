@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProfileDialog } from "./ProfileDialog";
+import { useAuth } from "@/lib/auth-context";
 
 // Mock: 실제로는 세션/유저 컨텍스트에서 가져옴
 const CURRENT_USER = {
@@ -21,6 +22,7 @@ const CURRENT_USER = {
 
 export function AccountDropdown() {
   const [profileOpen, setProfileOpen] = useState(false);
+  const { logout } = useAuth();
 
   return (
     <>
@@ -52,7 +54,7 @@ export function AccountDropdown() {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem className="gap-2 px-2 py-1.5">
+          <DropdownMenuItem className="gap-2 px-2 py-1.5" onClick={logout}>
             <LogOut />
             <span>Log out</span>
           </DropdownMenuItem>
