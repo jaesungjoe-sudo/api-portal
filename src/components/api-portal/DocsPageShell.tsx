@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { TocSidebar, type TocItem } from "@/components/api-portal/TocSidebar";
+import { TocSidebar, MobileToc, type TocItem } from "@/components/api-portal/TocSidebar";
 
 export type DocsNavLink = { label: string; href: string };
 
@@ -30,7 +30,7 @@ export function DocsPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex justify-center px-10 pb-20 pt-10">
+    <div className="flex justify-center px-6 pb-20 pt-10 md:px-10">
       <div className="flex w-full max-w-[1160px] gap-10">
         {/* Center content */}
         <div className="min-w-0 flex-1">
@@ -60,6 +60,9 @@ export function DocsPageShell({
           {description && (
             <p className="mb-10 text-base text-muted-foreground">{description}</p>
           )}
+
+          {/* Mobile TOC — xl 미만 표시 */}
+          {toc && toc.length > 0 && <MobileToc items={toc} />}
 
           {/* Sections */}
           <div className="flex flex-col gap-10">{children}</div>

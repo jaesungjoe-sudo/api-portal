@@ -1,8 +1,8 @@
-import { AppSidebar } from "@/components/api-portal/AppSidebar";
+import { ApiReferenceSidebar } from "@/components/api-portal/ApiReferenceSidebar";
 import { TopNav } from "@/components/api-portal/TopNav";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-export default function DashboardLayout({
+export default function ApiReferenceLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ export default function DashboardLayout({
       <div className="flex min-h-screen w-full flex-col">
         <TopNav />
         <div className="flex flex-1">
-          <AppSidebar />
-          <main className="min-w-0 flex-1 px-6 pb-20 pt-10 md:px-10">{children}</main>
+          <ApiReferenceSidebar />
+          <main className="min-w-0 flex-1">{children}</main>
         </div>
       </div>
     </SidebarProvider>

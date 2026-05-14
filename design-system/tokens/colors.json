@@ -356,7 +356,7 @@
       "dark": "palette/white"
     },
     "destructive-subtle": {
-      "light": "palette/red/50",
+      "light": "palette/red/100",
       "dark": "palette/red/950"
     },
     "destructive-border": {
@@ -376,7 +376,7 @@
       "dark": "palette/green/400"
     },
     "success-subtle": {
-      "light": "palette/green/50",
+      "light": "palette/green/100",
       "dark": "palette/green/950"
     },
     "success-border": {
@@ -396,7 +396,7 @@
       "dark": "palette/white"
     },
     "warning-subtle": {
-      "light": "palette/yellow/50",
+      "light": "palette/yellow/100",
       "dark": "palette/yellow/950"
     },
     "warning-border": {
@@ -412,12 +412,28 @@
       "dark": "palette/white"
     },
     "info-subtle": {
-      "light": "palette/blue/50",
+      "light": "palette/blue/100",
       "dark": "palette/blue/950"
     },
     "info-border": {
       "light": "palette/blue/200",
       "dark": "palette/blue/800"
+    },
+    "highlight": {
+      "light": "palette/violet/700",
+      "dark": "palette/violet/400"
+    },
+    "highlight-foreground": {
+      "light": "palette/white",
+      "dark": "palette/white"
+    },
+    "highlight-subtle": {
+      "light": "palette/violet/100",
+      "dark": "palette/violet/950"
+    },
+    "highlight-border": {
+      "light": "palette/violet/200",
+      "dark": "palette/violet/800"
     },
     "border": {
       "light": "palette/neutral/200",
@@ -482,6 +498,26 @@
     "chart-5": {
       "light": "palette/blue/900",
       "dark": "palette/blue/900"
+    },
+    "success-chart": {
+      "light": "palette/green/500",
+      "dark": "palette/green/400"
+    },
+    "info-chart": {
+      "light": "palette/blue/500",
+      "dark": "palette/blue/400"
+    },
+    "highlight-chart": {
+      "light": "palette/violet/500",
+      "dark": "palette/violet/400"
+    },
+    "warning-chart": {
+      "light": "palette/yellow/500",
+      "dark": "palette/yellow/400"
+    },
+    "destructive-chart": {
+      "light": "palette/red/500",
+      "dark": "palette/red/400"
     },
     "overlay": {
       "light": "palette/black@0.3",

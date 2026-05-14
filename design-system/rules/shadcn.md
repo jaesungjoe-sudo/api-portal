@@ -24,14 +24,17 @@ Figma tw/border-radius 기준:
 | 클래스 | 값 | 용도 |
 |--------|-----|------|
 | `rounded-none` | 0px | 날카로운 모서리 |
-| `rounded-xs` | 2px | 배지, 태그 |
-| `rounded-sm` | 4px | 버튼, 인풋 |
-| `rounded-md` | 8px | 카드, 패널 |
-| `rounded-lg` | 10px | 모달, 드롭다운 |
-| `rounded-xl` | 12px | 큰 카드 |
-| `rounded-2xl` | 16px | 섹션 |
-| `rounded-3xl` | 24px | 특수 요소 |
-| `rounded-full` | 9999px | 아바타, 칩 |
+| `rounded-xs` | 2px | — |
+| `rounded-sm` | 6px | 사이드바 메뉴, 인풋 |
+| `rounded-md` | 8px | 카드, 패널, 버튼 |
+| `rounded-lg` | 10px | 모달, 드롭다운, **배지** |
+| `rounded-xl` | 14px | 큰 카드 (TeamCard) |
+| `rounded-2xl` | 18px | 섹션 |
+| `rounded-3xl` | 22px | — |
+| `rounded-4xl` | 26px | — |
+| `rounded-full` | 9999px | 아바타, 칩 (number badge / StatusBadge pill 오버라이드) |
+
+> Truth 는 Figma 라이브러리 `radius-*` Variables. `misc.json` → `npm run sync-tokens` 로 자동 반영. 임의값(`rounded-[Npx]`) 사용 전 표준 토큰 먼저 확인.
 
 ---
 

@@ -108,10 +108,10 @@ Figma 파일:
 
 | 클래스 | 값 | 용도 |
 |---|---|---|
-| `rounded-xs` | 2 | 배지 |
+| `rounded-xs` | 2 | — |
 | `rounded-sm` | 6 | 사이드바 메뉴, 인풋 |
 | `rounded-md` | 8 | 카드, 패널, 버튼 |
-| `rounded-lg` | 10 | 모달, 드롭다운 |
+| `rounded-lg` | 10 | 모달, 드롭다운, **배지** |
 | `rounded-xl` | 14 | 큰 카드 (TeamCard) |
 | `rounded-2xl` | 18 | 섹션 |
 | `rounded-3xl` | 22 | — |

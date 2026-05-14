@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText } from "lucide-react";
+import { Code2 } from "lucide-react";
 import {
   Accordion,
   AccordionItem,
@@ -12,30 +12,18 @@ import {
 } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
-import { DOCS_NAV, isDocsNavGroup, type DocsNavGroup } from "@/lib/docs-nav";
+import { API_REFERENCE_NAV, type ApiRefGroup } from "@/lib/api-reference-nav";
+import { MethodBadge } from "@/components/api-portal/MethodBadge";
 
-/* ── Documentation 사이드바 ──────────────────────────────────
- * Figma 1518:13771 sidebar 정합 (custom <aside>)
- * + 모바일: shadcn Sheet drawer로 자동 전환
- */
-
-function LeafLink({ href, label, active, onNavigate }: { href: string; label: string; active: boolean; onNavigate?: () => void }) {
-  return (
-    <div className="px-2 py-1">
-      <Link
-        href={href}
-        onClick={onNavigate}
-        className={`flex h-9 items-center rounded-sm px-2 text-sm font-medium text-sidebar-foreground transition-colors ${
-          active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
-        }`}
-      >
-        {label}
-      </Link>
-    </div>
-  );
-}
-
-function GroupItem({ group, pathname, onNavigate }: { group: DocsNavGroup; pathname: string; onNavigate?: () => void }) {
+function GroupItem({
+  group,
+  pathname,
+  onNavigate,
+}: {
+  group: ApiRefGroup;
+  pathname: string;
+  onNavigate?: () => void;
+}) {
   const containsActive = group.items.some((sub) => sub.href === pathname);
   const [open, setOpen] = useState<string[]>(containsActive ? [group.label] : []);
 
@@ -62,11 +50,14 @@ function GroupItem({ group, pathname, onNavigate }: { group: DocsNavGroup; pathn
                   key={sub.href}
                   href={sub.href}
                   onClick={onNavigate}
-                  className={`flex h-9 items-center rounded-sm px-2 text-sm text-sidebar-foreground transition-colors ${
+                  className={`flex h-9 items-center gap-2 rounded-sm px-2 text-sm text-sidebar-foreground transition-colors ${
                     active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
                   }`}
                 >
-                  {sub.label}
+                  <span className="flex w-14 shrink-0 justify-start">
+                    <MethodBadge method={sub.method} />
+                  </span>
+                  <span>{sub.label}</span>
                 </Link>
               );
             })}
@@ -82,34 +73,35 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      {/* Header */}
       <div className="p-2">
         <div className="flex items-center gap-2 p-2">
           <div className="flex size-8 items-center justify-center rounded-md bg-sidebar-primary">
-            <FileText className="h-4 w-4 text-sidebar-primary-foreground" />
+            <Code2 className="h-4 w-4 text-sidebar-primary-foreground" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-sidebar-foreground">Documentation</p>
+            <p className="truncate text-sm font-semibold text-sidebar-foreground">
+              API Reference
+            </p>
             <p className="truncate text-xs text-sidebar-foreground">v1.0.0</p>
           </div>
         </div>
       </div>
 
-      {/* Menu */}
       <nav className="flex flex-col">
-        {DOCS_NAV.map((item) => {
-          if (!isDocsNavGroup(item)) {
-            const active = pathname === item.href;
-            return <LeafLink key={item.label} href={item.href} label={item.label} active={active} onNavigate={onNavigate} />;
-          }
-          return <GroupItem key={item.label} group={item} pathname={pathname} onNavigate={onNavigate} />;
-        })}
+        {API_REFERENCE_NAV.map((group) => (
+          <GroupItem
+            key={group.label}
+            group={group}
+            pathname={pathname}
+            onNavigate={onNavigate}
+          />
+        ))}
       </nav>
     </>
   );
 }
 
-export function DocsSidebar() {
+export function ApiReferenceSidebar() {
   const { isMobile, openMobile, setOpenMobile } = useSidebar();
 
   if (isMobile) {
@@ -120,7 +112,7 @@ export function DocsSidebar() {
           className="w-[255px] border-r border-sidebar-border bg-background p-0"
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>Documentation navigation</SheetTitle>
+            <SheetTitle>API Reference navigation</SheetTitle>
           </SheetHeader>
           <SidebarBody onNavigate={() => setOpenMobile(false)} />
         </SheetContent>

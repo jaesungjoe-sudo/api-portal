@@ -1,12 +1,16 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-04-28 (brand·destructive 토큰 정리 + Figma 동기화)
+최종 업데이트: 2026-05-14 (Analytics 30d/7d 탭별 데이터 + API Reference Create Call 페이지 + Badge 시스템 라이브러리 정합 + 헤더 gap 통일)
 
 ## 현재 마일스톤
 
-Phase1 디자인 구현 — **User & Team, API Keys** 페이지의 주요 플로우(목록 / Create / View / Edit / Delete / 상세 / Toast)까지 완료.
+Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start + Inbound Calls), Analytics, API Reference(Create Call)** 주요 플로우 완료.
 
-다음: 미완 페이지(**Webhooks, Analytics**) + 보조 기능(검색 필터, 팀 Edit/Delete 다이얼로그, Invite User to Team).
+다음 우선순위:
+- 미완 페이지: **Webhooks** (디자인 대기)
+- API Reference 나머지: Get Call / Update Call 본문 (현재 placeholder)
+- Documentation 추가 콘텐츠 (Tutorials, Outbound Calls, Call Recording 등 — 현재 blank)
+- 보조 기능: 검색 필터 동작, 팀 Delete 다이얼로그, Invite User to Team
 
 ---
 
@@ -14,108 +18,186 @@ Phase1 디자인 구현 — **User & Team, API Keys** 페이지의 주요 플로
 
 ### 디자인 시스템 / 인프라
 
-- [x] Token sync workflow — `scripts/sync-tokens.ts`, `src/styles/tokens.generated.css`
-- [x] 디자인 시스템 규칙 문서 — `design-system/rules/{figma-reading,shadcn,instance-variant,color,layout}.md`
-- [x] 컴포넌트 스펙 문서 — `design-system/components/{alert,badge,button,dialog,input,select,popover,...}.md`
-- [x] 아이콘 매핑 문서 — `design-system/icons.md`
-- [x] **Sonner toast** 시맨틱 토큰 적용 — `src/components/ui/sonner.tsx` (success/info/warning/error/loading 아이콘 + text-success/info/warning/destructive)
-- [x] **StatusBadge** 공용 컴포넌트 추출 — `src/components/api-portal/StatusBadge.tsx`
-- [x] **Mock data + runtime store** — `src/lib/mock-team-data.ts` (`getTeams/addTeam/deleteTeam/findTeam` — 라우트 간 동일 세션 동안 상태 공유)
-- [x] **Brand 토큰 추가** — `palette/ujet-blue (#4ABCFF)` + `semantic.brand` / `brand-foreground` (light/dark 동일, foreground는 `neutral/950`). subtle/border 변형 없음 — 브랜드 한정 사용 정책.
-- [x] **Destructive 4종 세트 완성** — `destructive` / `-foreground` / `-subtle` / `-border` 모두 Figma `mode` 컬렉션과 일치. `destructive-foreground` 별칭 `neutral/50` → `palette/white`로 정정 (SSOT).
-- [x] **color.md Brand 사용 가이드 매트릭스** — ✅ 로고·랜딩·마케팅 / ❌ 일반 CTA(→primary), 정보 알림(→info), 사이드바 active(→sidebar-active)
+- [x] **Token sync workflow** — `scripts/sync-tokens.ts`, `src/styles/tokens.generated.css`
+- [x] **Radius scale Figma 정합** (2026-05-08) — misc.json에 radius scale 추가, sync-tokens.ts 확장. 모든 radius 값 Figma 라이브러리와 일치 (sm 4→6, xl 12→14, 2xl 16→18, 3xl 24→22, 4xl 32→26)
+- [x] 디자인 시스템 규칙 문서 — `design-system/rules/{figma-reading,shadcn,instance-variant,color,layout,figma-token-sync}.md`
+- [x] 컴포넌트 스펙 문서 — `design-system/components/{alert,badge,button,dialog,input,select,popover,table,pagination}.md`
+- [x] **아이콘 매핑 + 워크플로우 문서** — `design-system/icons.md` (4단계 절차: Figma 인스펙트 → lucide import → 없으면 질문 → 표 갱신)
+- [x] **Sonner toast** 시맨틱 토큰 적용 — `src/components/ui/sonner.tsx`
+- [x] **StatusBadge** (User용) + **ApiKeyStatusBadge** (Active/Expired/Revoked) 분리
+- [x] **Mock data + runtime store**:
+  - `src/lib/mock-team-data.ts` (Teams)
+  - `src/lib/mock-api-keys.ts` (ApiKey + status/owner/expires 필드 + 포맷터)
+- [x] **Brand 토큰** — `palette/ujet-blue (#4ABCFF)` + `brand` / `brand-foreground` (subtle/border 없음, 한정 사용 정책)
+- [x] **Destructive 4종 세트** — destructive / -foreground (white) / -subtle / -border
+- [x] **Info 토큰 정정** (2026-05-11) — `info` light 값 `blue/500` → `blue/600`로 Figma 정합 + `background-color` (5% black overlay) 신규 추가
+- [x] **HTTP Basic Auth middleware** — `src/middleware.ts` (BASIC_AUTH_USER/BASIC_AUTH_PASSWORD env vars)
+- [x] **Auth Context** (UI 로그인 상태) — `src/lib/auth-context.tsx`, in-memory useState (refresh 시 리셋)
+- [x] **글로벌 cursor pointer** — `button:not(:disabled)`, `[role="button"]` 호버 시 손가락 커서 (globals.css)
+- [x] **dev 서버 NODE_OPTIONS 영구 적용** (2026-05-14) — `package.json` `dev` 스크립트에 `NODE_OPTIONS='--max-old-space-size=8192'` 박음. Next.js 16 Turbopack 의 dev 메모리 누수 대응.
+- [x] **Badge 시스템 라이브러리 정합** (2026-05-14) — rounded-lg + subtle 토큰 4종 /100 정합 + highlight 4-token set + Badge primitive cva 확장(success/warning/info/highlight/muted) + 4 wrapper 통일 (상세는 "토큰 / 색상 후속 검토" 섹션 참조)
+- [x] **헤더 영역 gap 통일** (2026-05-14) — Breadcrumb ↔ Header 간격 4페이지 (analytics / api-keys / users / team-detail) 모두 `gap-10` (40px) 으로 정합. 기존 api-keys / users / team-detail 은 `gap-6` 으로 불일치 였음.
 
-### TopNav / Sidebar / Account
+### TopNav
 
-- [x] **TopNav**: ujet 로고(SVG, 161×43) + Documentation/API Reference + 세로 divider(`bg-sidebar-border`) + Dashboard 활성 + Search + Ask AI + Avatar — `src/app/(dashboard)/layout.tsx`
-- [x] **AppSidebar** — `src/components/api-portal/AppSidebar.tsx`
-- [x] **AccountDropdown**: 로그인 이메일 + Profile + Logout (Figma hidden인 Setting/Calculator 제거) — `src/components/api-portal/AccountDropdown.tsx`
-- [x] **ProfileDialog**: Email/Name/Role/Team — Email/Role/Team `disabled` (Figma `State=disabled`) — `src/components/api-portal/ProfileDialog.tsx`
+- [x] **UjetLogo 인라인 컴포넌트** — `src/components/api-portal/UjetLogo.tsx` (SVG → React, currentColor + text-foreground/text-brand 토큰)
+- [x] **TopNav 단일 컴포넌트** — `src/components/api-portal/TopNav.tsx` (활성 메뉴 자동 감지 via `usePathname()`, auth 상태 자동 분기 via `useAuth()`)
+- [x] **로그인 상태 메뉴 분기**:
+  - 로그아웃: Documentation / API Reference + "Log in" 버튼
+  - 로그인: + Dashboard 메뉴 + AccountDropdown (Avatar)
+  - Log out → AccountDropdown 메뉴 → `useAuth().logout()`
 
-### Users 페이지 (`/users`)
+### Sidebar (재설계 — 2026-05-08)
 
-- [x] User 탭: 멤버 테이블 + 정렬 + 페이지네이션 + Status badge — `src/app/(dashboard)/users/page.tsx`
+- [x] **사이드바 active 색상 정책** — `bg-sidebar-accent`만 적용 (텍스트 색 변경 없음, Figma 1518:13771 정합)
+- [x] **AppSidebar + DocsSidebar 통일 구조** — 둘 다 커스텀 `<aside>` 패턴 + sidebar-* 토큰
+- [x] **Level 1 leaf + Level 1 group with chevron + Level 2** 구조 — 두 사이드바 공통
+- [x] **헤더 높이 통일 (68px)** — Dashboard Bottom=false에서도 wrapper 36px 고정으로 아이콘 Y 위치 정렬
+- [x] **shadcn Accordion 커스텀** — `ChevronDown/Up` → 단일 `ChevronRight` 90° 회전 (Figma sidebar 스펙), AccordionContent의 `[&_a]:underline` 제거, AccordionTrigger의 `hover:underline` 제거
+
+### Dashboard 영역 (`(dashboard)` 라우트 그룹)
+
+#### Users 페이지 (`/users`)
+- [x] User 탭: 멤버 테이블 + 정렬 + 페이지네이션 + Status badge
 - [x] Pending Approvals 탭
-- [x] Team 탭: TeamCard 그리드 (3 cols) + Edit/Delete 메뉴 (Default 팀은 `protected:true`로 삭제 불가)
-- [x] Invite User 다이얼로그 + Edit User 다이얼로그 (기존)
-- [x] **CreateTeamDialog** (Team Name + Description + 120자 카운터, 토스트 "Team created") — `src/components/api-portal/CreateTeamDialog.tsx`
-- [x] **EditTeamDialog** (Figma `1437:11972`, 423px, "Edit Team", Cancel/Save, 120자 카운터, rename 시 detail URL `router.replace`) — `src/components/api-portal/EditTeamDialog.tsx` + `updateTeam()` in `mock-team-data.ts`
-- [x] Row action menu — Popover→DropdownMenu 통일, 단축키 hidden (Figma)
+- [x] Team 탭: TeamCard 그리드 + Edit/Delete (Default 팀 protected)
+- [x] Invite User / Edit User 다이얼로그
+- [x] CreateTeamDialog / EditTeamDialog
+- [x] **테이블 Checkbox 컬럼 제거** (2026-05-08) — 향후 phase에서 다중 선택 다른 방식
+- [x] **첫 컬럼 좌측 padding `pl-5` (20px)** 통일
 
-### Team 상세 페이지 (`/users/team/[name]`)
+#### Team 상세 페이지 (`/users/team/[name]`)
+- [x] Breadcrumb + 헤더(Edit/Delete) + Search/Invite toolbar + 멤버 테이블
+- [x] Checkbox 제거
 
-- [x] Breadcrumb (Home > Dashboard > User & Team management > {team.name}) — `src/app/(dashboard)/users/team/[name]/page.tsx`
-- [x] Header: 제목(좌) + 3-dot 메뉴(우) `justify-between` + Description
-- [x] 헤더 메뉴 — Edit + Delete (Default는 Delete 숨김)
-- [x] Search User + Invite User toolbar
-- [x] 멤버 테이블 (Name/Email/Status/Role/Updated) + "No list" 빈 상태
-- [x] Breadcrumb "User & Team management" 클릭 시 `/users?tab=team`으로 복귀
+#### API Keys 페이지 (`/api-keys`)
+- [x] **테이블 7컬럼** (Name/Owner/Key/Status/Expires/Last used/Created) — Figma 갱신 정합
+- [x] **부제 "Production expires in 5 days"** 헤더 아래
+- [x] CRUD + **Revoke 플로우** (Active 상태만 Revoke 가능, status → `Revoked`)
+- [x] CreateApiKeyDialog: Name + **Expiry select** (No expiration / 30 days / 90 days / 365 days), 버튼 `Create`
+- [x] ViewApiKeyDialog ("API Key Created"): 성공 alert + Name(disabled) + Expiry(disabled select) + Token(masked + copy + eye toggle)
+- [x] EditApiKeyDialog: Name + Expiry + Created date (readonly muted)
+- [x] DeleteApiKeyDialog (Alert pattern, 512×156)
+- [x] RevokeApiKeyDialog (Alert pattern + "Revoked" 빨강 배지 적용)
+- [x] **`ApiKeyStatusBadge`** — Active(green) / Expired(gray) / Revoked(destructive-subtle)
+- [x] **데이터 모델 `id` 필드 추가** — Deployment 중복 5건 React key 충돌 방지
 
-### API Keys 페이지 (`/api-keys`)
+#### Analytics 페이지 (`/analytics`) — 2026-05-13
+- [x] **5개 chart 토큰 추가** — `success-chart` / `info-chart` / `accent-chart` / `warning-chart` / `destructive-chart` (light: palette/*/500, dark: */400). Figma 라이브러리 `mode` collection에서 `figma_get_variables` + `useConsoleFallback`로 토큰명 직접 추출
+- [x] **shadcn `chart` primitive** 설치 (recharts 의존)
+- [x] **Mock data** — `src/lib/mock-analytics-data.ts` (6m 데이터셋, **30d/7d 별도 mock 데이터셋 추가 2026-05-14**: 30d=Week 1-4, 7d=Mon-Sun. 카드 4개 / Call Volume / Top APIs / Method Distribution 모두 period 별 다른 값. 캡션 `Total for the last N` 도 period-aware)
+- [x] **메소드 색 매핑 단일 소스** — `src/lib/method-colors.ts` (HTTP method → chart 토큰)
+- [x] **컴포넌트 5종**:
+  - `AnalyticsTabs` — 3개 segmented period 탭 (Last 6 months / 30 days / 7 days)
+  - `AnalyticsSummaryCard` — chip 있는/없는 2 variant (1·3 chip, 2·4 chip 없음)
+  - `AnalyticsCallVolumeChart` — Read(GET)/Write(POST·PUT·PATCH·DELETE) stacked area + 범례
+  - `AnalyticsTopApisChart` — 3-column Y축 (endpoint/count/method) + horizontal bar
+  - `AnalyticsMethodDistribution` — pie 192×192 + 5 method legend (420px 고정)
+- [x] **PETCH/FATCH 오타 코드에서 PATCH로 정정** (Figma 파일 수정 요청 中)
 
-- [x] API Keys 테이블 + 정렬/페이지네이션 — `src/app/(dashboard)/api-keys/page.tsx`
-- [x] **CreateApiKeyDialog** — `src/components/api-portal/CreateApiKeyDialog.tsx`
-- [x] **ViewApiKeyDialog** (성공 alert + 마스킹/copy/eye toggle) — `src/components/api-portal/ViewApiKeyDialog.tsx`
-- [x] **EditApiKeyDialog** — `src/components/api-portal/EditApiKeyDialog.tsx`
-- [x] **DeleteApiKeyDialog** (Alert Dialog 패턴, outline+destructive, X close 없음) — `src/components/api-portal/DeleteApiKeyDialog.tsx`
-- [x] Row action menu (DropdownMenu, Edit/Delete) — Figma 기준 일반 텍스트 색(`popover-foreground`), destructive 색 추가 안 함
-- [x] Create → 성공 시 ViewApiKeyDialog 자동 오픈 → Done으로 닫기 플로우
+### 사이드바 hybrid 반응형 (2026-05-12)
+
+- [x] **하이브리드 패턴**: shadcn `SidebarProvider` + `Sheet` (모바일) + 커스텀 `<aside>` (데스크탑)
+- [x] **AppSidebar + DocsSidebar** 동일 패턴 적용
+- [x] **TopNav 반응형** — md 미만 햄버거(`SidebarTrigger`), lg 미만 검색 아이콘만, sm 미만 Ask AI 아이콘만
+- [x] **TocSidebar 모바일** — xl 미만에서 본문 상단 `<details>` collapsible로 변환
+- [x] **DocsPageShell px-6 md:px-10** — 모바일 패딩 축소
+
+### Figma MCP 워크플로우 개선 (2026-05-12)
+
+- [x] **`design-system/rules/figma-reading.md`에 "라이브러리 Variables 읽기" 섹션 추가** — `figma_get_variables` + `useConsoleFallback=true` + Desktop Bridge 우회 표준 명령. hex 추측은 최후 fallback.
+- [x] **`design-system/pages/analytics.md`** — Analytics 페이지 완전 스펙 (노드 ID, 카드 콘텐츠, 차트 종류, 색 매핑, hidden 노드 목록)
+- [x] 메모리 저장 — Figma MCP는 summary 먼저, deep는 최후 (토큰 절약)
+
+### Documentation 영역 (`(docs)` 라우트 그룹 — 2026-05-08)
+
+- [x] **(docs) 라우트 그룹** + DocsLayout (3-column: DocsSidebar + Main + TocSidebar)
+- [x] **DocsPageShell** + **DocsSection** 공통 컴포넌트 (Breadcrumb / Title / Description / sections / Prev·Next 풋터)
+- [x] **TocSidebar** — "On This Page" + 자동 스크롤 spy (`useScrollSpy` 훅)
+- [x] **CodeBlock** — 제목 + 언어 select(disabled) + 복사 버튼 (Phase1: plain text monospace)
+- [x] **DocsSidebar** — DOCS_NAV 데이터 기반, Calls/Queues/Agents 그룹 expandable, sidebar-* 토큰
+- [x] **`/documentation` (Quick Start)** 완전 구현 — 5개 섹션 (About / What You'll Find Here with 4 features / How to Use / Quick Links / Need Help), TOC 자동
+- [x] **`/documentation/inbound-calls`** 완전 구현 — 5개 섹션 (When to use / How it works / Call flow with code / Call statuses table / Related API endpoints)
+- [x] Documentation 외 8개 메뉴는 **blank 페이지** (사이드바 클릭 시 빈 화면, 콘텐츠 대기 중)
+
+### API Reference 영역 (`(api-reference)` 라우트 그룹 — 2026-05-14)
+
+- [x] **(api-reference) 라우트 그룹** + 전용 layout (TopNav + ApiReferenceSidebar + main)
+- [x] **`ApiReferenceSidebar`** — `API_REFERENCE_NAV` 데이터 기반, 헤더 "API Reference v1.0.0" + Code2 아이콘. 메뉴 항목마다 method 배지 + 라벨이 고정 폭 (w-14) 컨테이너로 정렬돼 한 줄로 떨어짐.
+- [x] **`api-reference-nav.ts`** — Calls / Queues / Agents 그룹. Calls 하위 mock 3개 (POST Create Call / GET Get Call / PATCH Update Call).
+- [x] **`MethodBadge` / `CodeBadge`** — shadcn `Badge` primitive thin wrapper. MethodBadge variant 매핑 `{GET:success, POST:info, PATCH:highlight, PUT:warning, DELETE:destructive}`.
+- [x] **`/api-reference/create-call`** 완전 구현 — 10 섹션 (Header / Endpoint card / Authentication / Headers table / Body Parameters table / Response code block / Response Fields table / Call Lifecycle 인라인 chip 흐름 + Status Definitions table / Monitoring Polling Example code / Notes / Related API endpoints / Related Documentation). TOC: 7 항목 (Figma 스펙 정합).
+- [x] **`/api-reference/get-call`** / **`/api-reference/update-call`** — placeholder ("Coming soon").
+- [x] **TopNav 정합** — `API Reference` 메뉴 href = `/api-reference/create-call`, `/api-reference/*` pathname active 감지.
 
 ### 라우팅 / Tab 상태
 
-- [x] Team 카드 클릭 → `/users/team/{encodeURIComponent(name)}`로 이동 (Link absolute overlay + `pointer-events-none/auto`로 메뉴 영역 분리)
-- [x] Team 상세 → Breadcrumb 클릭 시 `/users?tab=team` (URL 쿼리)
-- [x] Users 페이지 `useSearchParams`로 초기 탭 결정 → Next.js 16 CSR bailout 위해 `<Suspense>` 경계 적용
+- [x] Team 카드 클릭 → `/users/team/{encodeURIComponent(name)}` (Link absolute overlay)
+- [x] Team 상세 → Breadcrumb 클릭 시 `/users?tab=team`
+- [x] Users 페이지 `useSearchParams` + `<Suspense>` (Next.js 16 CSR bailout)
 
 ### Phase1 마무리된 규칙 추가
 
-- `shadcn.md`: "shadcn 기본값 수정 원칙(Figma truth)" + "스타일 추가 금지 원칙(파괴적 액션 빨강 추가 금지)"
-- `figma-reading.md`: "컨테이너 children 전체 enumerate" + "`getVisibleTexts()`만 호출 금지" + Rectangle/divider 판별 기준
-- `instance-variant.md`: STEP 4 — 폼 필드 `State` variant는 `componentProperties` 직접 확인
-- `popover.md`: 메뉴 리스트는 `DropdownMenu` 우선 (Popover는 일반 컨테이너용)
+- `shadcn.md`: shadcn 기본값 수정 원칙 (Figma truth)
+- `figma-reading.md`: 컨테이너 children 전체 enumerate, Rectangle/divider 판별
+- `instance-variant.md`: 폼 필드 State variant는 componentProperties 확인
+- `popover.md`: 메뉴 리스트는 DropdownMenu 우선
 - `components/input.md`, `components/select.md`: Disabled state 스펙
+- `figma-token-sync.md`: 토큰 sync workflow (colors + radius)
+- `icons.md`: 4단계 아이콘 워크플로우 (Figma 인스펙트 → lucide → 없으면 질문 → 표 갱신)
+- `CLAUDE.md` "Button 규칙": variant/size는 Figma `componentProperties`와 1:1 매칭
 
 ---
 
 ## 진행 중
 
-(현재 없음 — 마지막 task인 Team 상세 페이지 헤더 정렬 + Breadcrumb 쿼리 보존까지 완전히 마침)
+(현재 없음)
 
 ---
 
 ## 백로그 (우선순위 순)
 
-### 1. Team 운영 보조 기능 (사용자 다음 요청 가능성 큼)
-
-- [ ] **Delete Team 확인 다이얼로그** — TeamCard 메뉴와 상세 헤더 메뉴에서 현재 `toast.info("... — Phase1 design pending")`. `DeleteApiKeyDialog` 패턴(512×156 Alert Dialog, outline+destructive) 재사용 가능 여부 확인 필요.
-- [ ] **Invite User (특정 팀에)** — 팀 상세 페이지의 "Invite User" 버튼은 현재 toast placeholder. 기존 Users 페이지의 Invite User 다이얼로그 재사용 가능할지 검토.
-
-### 2. Phase1 미구현 페이지
+### 1. Phase1 미구현 페이지
 
 - [ ] **Webhooks 페이지** — `/webhooks` 파일 존재하나 디자인 미적용
-- [ ] **Analytics 페이지** — `/analytics` 파일 존재하나 디자인 미적용
+- [x] ✅ **Analytics 페이지** (2026-05-13) — 카드 4개 + Call Volume area chart + Top 5 APIs bar + Method Distribution pie. **30d/7d 탭별 mock 데이터셋 + period-aware 캡션 완료 (2026-05-14)**
+- [x] ✅ **API Reference / Create Call** (2026-05-14) — `/api-reference/create-call` 풀 구현 (10 섹션: Header / Endpoint / Headers / Body Params / Response / Response Fields / Lifecycle / Monitoring / Notes / Related). Get Call / Update Call 은 placeholder.
 
-### 3. 보조 기능 / UX 개선
+### 2. Documentation 추가 콘텐츠
+
+- [ ] **Tutorials** 페이지 콘텐츠 (`/documentation/tutorials`)
+- [ ] **Outbound Calls** 페이지 콘텐츠
+- [ ] **Call Recording / Queues / Agents / Chat / SMS** — 디자인 후 진행
+
+### 3. Team 운영 보조 기능
+
+- [ ] **Delete Team 확인 다이얼로그** — 현재 toast placeholder. DeleteApiKeyDialog 패턴 재사용 가능 여부 확인 필요.
+- [ ] **Invite User (특정 팀에)** — 팀 상세 페이지의 Invite 버튼 toast placeholder.
+
+### 4. 보조 기능 / UX 개선
 
 - [ ] **검색 입력 실제 필터** — Users/API Keys/Team 상세 모두 입력 UI만 있고 필터 동작 없음
-- [ ] **Tab 변경 시 URL 동기화** — 현재 진입 시 `?tab=`만 읽음. 사용자가 탭을 바꿀 때 URL 갱신 안 됨 (router.replace 추가 검토)
-- [ ] **ProfileDialog autoFocus 차단 검증** — `CLAUDE.md` 규칙에는 "Edit dialog 첫 input 자동 포커스 X"이지만 Base UI 기본 동작과 실제 동작 일치 여부 미검증
+- [ ] **Tab 변경 시 URL 동기화** — 진입 시 `?tab=`만 읽음. 사용자 탭 변경 시 URL 갱신 안 됨
+- [ ] **ProfileDialog autoFocus 차단 검증** — Base UI Dialog 기본 동작 vs CLAUDE.md 룰 미검증
 
-### 4. 데이터 / 인프라
+### 5. 데이터 / 인프라
 
-- [ ] Mock data → 실제 API 연동 (전부 Phase1 mock 상태)
-- [ ] 인증 / 세션 컨텍스트 (`CURRENT_USER` mock이 `ProfileDialog`/`AccountDropdown` 양쪽 inline)
+- [ ] **실제 로그인 플로우** — 현재 `Log in` 버튼 클릭 = 즉시 로그인 (Phase1). 다이얼로그/페이지 + 실제 폼 처리 필요. `useAuth().login()` 호출 지점만 바뀌면 됨.
+- [ ] **Mock data → 실제 API 연동** (전부 Phase1 mock 상태)
+- [ ] **`CURRENT_USER` mock 공유 모듈 추출** — `ProfileDialog`와 `AccountDropdown` 양쪽에 inline 중복
 
-### 5. 토큰 / 색상 정책 (이번 세션에서 도출)
+### 6. 토큰 / 색상 후속 검토
 
-- [ ] **`info` 시맨틱 토큰 추가** — Figma `mode` 컬렉션에는 있을 가능성 높음(success/warning/destructive와 짝). 코드의 `colors.json`에는 누락. `info` / `info-foreground` / `info-subtle` / `info-border` 4종 세트로 추가 검토.
-- [ ] **`StatusBadge` 마이그레이션** (`src/components/api-portal/StatusBadge.tsx`)
-  - 현재: `Active=bg-green-100/text-green-700`, `Verified=bg-orange-100/text-orange-700`, `Invited=bg-blue-100/text-blue-700` (팔레트 직접 사용 — dark mode 미대응)
-  - 목표: `Invited` → `bg-info-subtle text-info border-info-border` (`info` 토큰 추가 후), `Active`/`Verified`도 시맨틱 또는 status-카테고리 토큰으로 마이그레이션
-  - 의존: 위 `info` 토큰 추가 선행
-- [x] ✅ **사이드바 active 색상 정책 결정 — 완료 (2026-05-08)**
-  - 결정: 텍스트 색상 변경 없이 **`bg-sidebar-accent`만** (Figma 1518:13771 정합)
-  - `AppSidebar.tsx`/`DocsSidebar.tsx` 모두 동일 패턴 적용 — `bg-sidebar-accent` (active) / `hover:bg-sidebar-accent` (hover), 텍스트는 `text-sidebar-foreground`
+- [x] ✅ **`info` 시맨틱 토큰** (2026-05-11) — `info` 4종 세트 (info/info-foreground/info-subtle/info-border) 모두 colors.json에 있음. `info` light 값을 `blue/500` → `blue/600`로 Figma 정합.
+- [x] ✅ **Badge 시스템 라이브러리 정합** (2026-05-14) — 아래 묶음 작업:
+  - `rounded-4xl` (26px pill) → `rounded-lg` (10px) Figma 정합. CLAUDE.md radius 표 정정 (badge: xs → lg).
+  - `subtle` 토큰 4종 light 값 `palette/{color}/50` → `/100` (success/warning/info/destructive). 라이브러리 변수와 동일.
+  - `highlight` 4-token set 신규 (`highlight` / `-foreground` / `-subtle` / `-border` → violet 팔레트 alias). 라이브러리 `accent` → `highlight` 리네이밍 정합.
+  - `Badge` primitive cva 확장: `success` / `warning` / `info` / `highlight` / `muted` variant 추가. `destructive` variant 도 `bg-destructive/10` → `bg-destructive-subtle` 로 통일.
+  - `StatusBadge` / `ApiKeyStatusBadge` / `MethodBadge` / `CodeBadge` 4개 wrapper 모두 shadcn `Badge` primitive thin wrapper 로 통일. 색 className 직접 주입 패턴 제거. `method-colors.ts` 의 `METHOD_BADGE_CLASS` 제거 (variant 이름으로 대체).
+  - `MethodBadge`: PATCH 가 임시 폴백 `accent-chart/10` 에서 정식 `highlight` variant 로 정합.
+  - `StatusBadge`: Invited → `info` (Figma 정합, 일전에 `success` 잘못 적용된 것 정정).
+- [x] ✅ **사이드바 active 색상 정책** (2026-05-08) — `bg-sidebar-accent`만 적용
 
 ---
 
@@ -126,16 +208,19 @@ Phase1 디자인 구현 — **User & Team, API Keys** 페이지의 주요 플로
 - [ ] **Delete Team 확인 다이얼로그** Figma 노드 ID — 또는 "DeleteApiKeyDialog 패턴 재사용 OK" 확인
 - [ ] **Invite User to Team** Figma 노드 ID — 또는 "기존 Invite User 다이얼로그 재사용 OK" 확인
 - [ ] **Webhooks 페이지** Figma 노드 위치
-- [ ] **Analytics 페이지** Figma 노드 위치
+- [x] ✅ **Analytics 30d/7d 탭 mock 데이터** (2026-05-14) — 그럴듯한 mock 추가 (Week 1-4 / Mon-Sun). 캡션도 period-aware (`Total for the last N days`).
+- [ ] **Analytics Figma "FATCH" 오타 수정** — Pie 차트 legend `FATCH` → `PATCH` (코드는 정정 완료)
+- [ ] **API Reference Get Call / Update Call** Figma 노드 ID — 현재 둘 다 placeholder.
+- [ ] **Call Lifecycle 다이어그램 이미지** — Create Call 페이지에 임시 인라인 chip 흐름. 실제 다이어그램 이미지/SVG 받으면 교체.
 
 ### 기술 결정 미확정
 
-- [ ] **mock-team-data runtime store**는 같은 클라이언트 세션 내에서만 유지 — 새로고침 시 `INITIAL_TEAMS`로 리셋. localStorage 영속화 필요 여부 미결정.
-- [ ] **`CURRENT_USER` mock** — `ProfileDialog`와 `AccountDropdown` 양쪽에 inline 중복. 공유 모듈(`src/lib/mock-current-user.ts`) 추출 여부 미결정.
+- [ ] **mock store localStorage 영속화 여부** — 새로고침 시 INITIAL_*로 리셋. 영속화 필요성 미결정.
+- [ ] **`CURRENT_USER` mock 공유 모듈 추출 여부**
 
 ### 알려진 작은 이슈
 
-- **TeamCard `rounded-xl`(12px)** — Figma 14px과 약간 다름. 가장 가까운 Tailwind 표준값(rounded-xl=12, rounded-2xl=16) 중 12 선택. 고정밀 일치 필요하면 `rounded-[14px]`로 변경 가능.
-- **ProfileDialog / EditTeamDialog autoFocus** — Base UI Dialog 기본 동작상 첫 input에 포커스가 잡힐 가능성. 현재 명시적 차단 코드 없음. CLAUDE.md 규칙은 "Edit 다이얼로그 첫 input autoFocus 금지"이지만 미검증.
-- **Team rename 후 user.team 미갱신** — `updateTeam()`은 team 레코드만 변경. 기존 멤버의 `user.team` 필드는 그대로라 멤버 리스트가 빈 상태로 보일 수 있음 (Phase1 mock 한계). 실제 API 연동 시 백엔드가 처리.
-- **EditTeamDialog Description 카피** — Figma에 "Create a team to organize members and manage access." (Create 다이얼로그와 동일)이 그대로 들어가 있어 코드도 동일하게 적용. 디자인팀 의도된 것인지 확인 필요.
+- **ProfileDialog / EditTeamDialog autoFocus** — Base UI Dialog 기본 동작상 첫 input에 포커스가 잡힐 가능성. CLAUDE.md 규칙은 차단이지만 미검증.
+- **Team rename 후 user.team 미갱신** — `updateTeam()`은 team 레코드만 변경. 멤버의 `user.team` 필드는 그대로 (Phase1 mock 한계).
+- **EditTeamDialog Description 카피** — Figma에 "Create a team..." (Create 다이얼로그와 동일) 그대로 사용. 디자인팀 의도 확인 필요.
+- **Code block syntax highlighting** — Phase1은 plain text monospace. syntax highlighter(prism/shiki) 도입 시 CodeBlock 컴포넌트만 교체.

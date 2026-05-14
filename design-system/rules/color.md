@@ -11,7 +11,7 @@ bg-white                       bg-background
 text-black                     text-foreground
 ```
 
-### 사용 가능한 색상 토큰
+### 사용 가능한 색상 토큰 (Neutral)
 | 토큰 | 용도 |
 |------|------|
 | `bg-background` | 페이지 배경 |
@@ -19,19 +19,40 @@ text-black                     text-foreground
 | `bg-primary` | 주요 액션 버튼 |
 | `bg-secondary` | 보조 버튼, 태그 |
 | `bg-muted` | 비활성, 서브 배경 |
-| `bg-accent` | 강조 배경 |
+| `bg-accent` | shadcn dropdown/popover hover 등 |
 | `text-foreground` | 주요 텍스트 |
 | `text-muted-foreground` | 보조 텍스트 |
 | `border-border` | 구분선, 테두리 |
 | `ring-ring` | 포커스 링 |
 
-### Destructive (4종 세트)
-| 토큰 | 용도 |
+### 시맨틱 컬러 (4종 세트 × 5컬러)
+
+각 시맨틱 컬러는 **4개 토큰 세트** 로 구성. `<Badge variant={...}>` / Alert / Toast 등 컴포넌트에서 사용.
+
+| 시맨틱 | solid bg / text | foreground | subtle bg | border |
+|---|---|---|---|---|
+| `destructive` (빨강) | `bg-destructive` / `text-destructive` | `text-destructive-foreground` | `bg-destructive-subtle` | `border-destructive-border` |
+| `success` (녹) | `bg-success` / `text-success` | `text-success-foreground` | `bg-success-subtle` | `border-success-border` |
+| `warning` (앰버) | `bg-warning` / `text-warning` | `text-warning-foreground` | `bg-warning-subtle` | `border-warning-border` |
+| `info` (블루) | `bg-info` / `text-info` | `text-info-foreground` | `bg-info-subtle` | `border-info-border` |
+| `highlight` (보라) | `bg-highlight` / `text-highlight` | `text-highlight-foreground` | `bg-highlight-subtle` | `border-highlight-border` |
+
+**사용 패턴**:
+- Badge: `<Badge variant="success">` 등 — variant prop 만 사용 (색 className 직접 주입 금지)
+- Alert/Callout: subtle 배경 + 시맨틱 텍스트 (예: `bg-info-subtle text-info border-info-border`)
+- 솔리드 (`bg-success` 등): 강조 점, 작은 아이콘 배지 등 한정 사용
+
+### Chart 컬러 (5종)
+
+차트 (line/bar/pie) 전용. 시맨틱과 분리된 단일 토큰:
+
+| 토큰 | 매핑 |
 |------|------|
-| `bg-destructive` / `text-destructive` | 삭제·위험 액션, Form 에러 텍스트 |
-| `text-destructive-foreground` | destructive 배경 위 텍스트 |
-| `bg-destructive-subtle` | destructive 영역 옅은 배경 (Alert, Toast) |
-| `border-destructive-border` | destructive 영역 테두리 |
+| `bg-success-chart` / `text-success-chart` | GET / 녹색 시리즈 |
+| `bg-info-chart` / `text-info-chart` | POST / 블루 시리즈 |
+| `bg-highlight-chart` / `text-highlight-chart` | PATCH / 보라 시리즈 |
+| `bg-warning-chart` / `text-warning-chart` | PUT / 노랑 시리즈 |
+| `bg-destructive-chart` / `text-destructive-chart` | DELETE / 빨강 시리즈 |
 
 ### Brand (UJET 브랜드 컬러)
 | 토큰 | 값 | 용도 |
@@ -53,8 +74,8 @@ text-black                     text-foreground
 | 잘못된 사용 | 올바른 토큰 |
 |---|---|
 | 일반 CTA 버튼 | `bg-primary` |
-| 정보성 알림 / 배지 (예: "Invited") | `bg-info-subtle` / `text-info` *(info 토큰 추가 후)* |
-| 사이드바 active 상태 | `text-sidebar-active` *(별도 토큰 정책 결정 후)* |
+| 정보성 알림 / 배지 (예: "Invited") | `<Badge variant="info">` |
+| 사이드바 active 상태 | `bg-sidebar-accent` |
 | 링크 텍스트 | `text-primary` 또는 `text-foreground underline` |
 | 폼 포커스 링 | `ring-ring` |
 

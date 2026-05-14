@@ -68,6 +68,12 @@
 | `lucide/network` | `Network` | documentation/page.tsx | Quick Start — Queues 항목 |
 | `lucide/headset` | `Headset` | documentation/page.tsx | Quick Start — Agents 항목 |
 | `lucide/message-square-more` | `MessageSquareMore` | documentation/page.tsx | Quick Start — Chat 항목 |
+| `lucide/user-plus` | `UserPlus` | tutorials/page.tsx | "What You'll Build" Step 2 — Create Agent |
+| `lucide/layers` | `Layers` | tutorials/page.tsx | "What You'll Build" Step 3 — Create Queue |
+| `lucide/link-2` | `Link2` | tutorials/page.tsx | "What You'll Build" Step 4 — Assign Agent to Queue |
+| `lucide/phone-call` | `PhoneCall` | tutorials/page.tsx | "What You'll Build" Step 5 — Make a Test Call (LIVE DEMO) |
+| `lucide/code-2` | `Code2` | ApiReferenceSidebar.tsx | 사이드바 헤더 아이콘 (API Reference) |
+| `lucide/arrow-up-down` | `ArrowUpDown` | api-reference/create-call/page.tsx | ParamTable 헤더 정렬 표시 (Phase1 시각만, 동작 없음) |
 | — | `ArrowDown` | sortable-head.tsx | Figma는 `arrow-up-down` 하나로 표현; 정렬 활성 상태용 |
 | — | `ArrowUp` | sortable-head.tsx | 위 동일 |
 | — | `BarChart2` | (미사용) | layout.tsx에서 제거됨 (사이드바 아이콘 → Figma 디자인에 없음) |

@@ -35,6 +35,37 @@
 
 **STEP 4 — 공식 MCP(get_design_context) 사용 금지**
 
+### 라이브러리 Variables 읽기 (토큰명/alias/다크모드)
+
+라이브러리 파일의 **Variables 정의**(`success-chart` 같은 토큰 이름, palette alias, light/dark 매핑)는 노드 인스펙트로 못 읽음. 디자인 파일 노드는 `boundVariables.id` (예: `VariableID:.../3299:109`)만 노출하고, 그 ID가 어떤 이름의 변수인지는 별도 API가 필요함.
+
+**REST API는 막힘** (`file_variables:read` scope 부재 → 403). 대신 Desktop Bridge 우회 사용:
+
+```
+figma_get_variables({
+  fileUrl: "<library file URL>",
+  format: "filtered",
+  namePattern: "<keyword>",      // 예: "chart"
+  useConsoleFallback: true,      // ← Desktop Bridge 활성화
+  resolveAliases: true,          // alias 체인 자동 해석
+  verbosity: "standard",
+})
+```
+
+**전제 조건**: Figma Desktop 앱에서 **해당 라이브러리 파일이 열려 있어야 함** (Bridge가 현재 활성 파일의 데이터에 접근). 안 열려 있으면 "Desktop Bridge failed" 에러.
+
+**응답 예시**:
+```
+{ id: "VariableID:3299:7368",
+  name: "success/success-chart",
+  valuesByMode: { "<light-mode-id>": { type:"VARIABLE_ALIAS", id:"VariableID:90:112" },
+                  "<dark-mode-id>":  { type:"VARIABLE_ALIAS", id:"VariableID:90:111" } }, ... }
+```
+
+→ 토큰 이름(`success-chart`), 라이트/다크 alias ID를 정확히 받음.
+
+**금지**: 디자인 파일 노드의 `boundVariables.id`로 토큰 이름을 hex로 추측하는 방식. 추측은 마지막 fallback일 뿐. 매번 위 방법 먼저 시도.
+
 ### design-system/ 폴더 구조
 ```
 design-system/
@@ -85,6 +116,42 @@ Parent 프레임 읽을 때 **반드시 수행**:
 3. **visible=false 필터링**: hidden 노드 제외
 4. **남은 visible 자식은 하나도 빠짐없이 구현 항목으로 매핑**
 5. **텍스트·아이콘·배경의 `fills` / `strokes` 토큰명 확인** — `destructive`·`warning`·`success` 같은 의미 토큰이 아닌 경우, 관습으로 해당 색상 추가 금지 (상세: `shadcn.md` "스타일 추가 금지 원칙")
+
+### 다층 톤 카드 인스펙트 의무화 (Tutorials BuildOverviewCard 사례)
+
+장식 톤이 **2 레이어 이상 중첩**되는 카드 (외곽 패널 / 행/카드 / 행 안의 아이콘 컨테이너 등) 를 구현할 때는, **각 레이어의 `fills[0].boundVariables.color` 와 `strokes[0].boundVariables.color` 를 모두 `figma_execute` 로 인스펙트하고 결과만 보고 코드 작성한다**. 스크린샷만 보고 톤이 "어디에 깔린" 건지 추정 금지.
+
+**실제 사례 (2026-05-14)**: Tutorials 페이지 `BuildOverviewCard` 구현 시 스크린샷에서 보라 톤이 전체 영역에 깔려 보여서 "외곽 패널이 보라" 라고 판단했으나, 실제 Figma 는 "흰 외곽 카드 + 보라(`highlight-subtle`) 행 + 행 안에 흰 원 + 검은 아이콘" 구조였음. 보라 위치가 안팎으로 뒤집힌 채로 머지됨.
+
+**워크플로우**:
+
+```js
+// 1. 각 레이어 fill / stroke variable 인스펙트
+async function inspectLayers(rootNodeId) {
+  const root = await figma.getNodeByIdAsync(rootNodeId);
+  async function resolveVar(id) {
+    if (!id) return null;
+    const v = await figma.variables.getVariableByIdAsync(id);
+    return v?.name || null;
+  }
+  async function walk(n, path = '') {
+    if (n.visible === false) return [];
+    const out = [];
+    const fillVar = await resolveVar(n.fills?.[0]?.boundVariables?.color?.id);
+    const strokeVar = await resolveVar(n.strokes?.[0]?.boundVariables?.color?.id);
+    if (fillVar || strokeVar) out.push({ path: path + '/' + n.name, fillVar, strokeVar, r: n.cornerRadius });
+    if ('children' in n) for (const c of n.children) out.push(...(await walk(c, path + '/' + n.name)));
+    return out;
+  }
+  return walk(root);
+}
+```
+
+2. 결과 테이블이 외곽→내부 순서로 색 변화를 보여줘야 함. 추측 금지.
+3. 아이콘 컨테이너의 `cornerRadius` 와 `width/height` 까지 같이 확인 (예: `r=16777200` 은 Figma 의 "full pill" → `rounded-full`).
+4. 구현 후 브라우저 스크린샷과 Figma 스크린샷을 1:1 비교 (특히 다층 톤 영역).
+
+→ 톤이 "어느 레이어에 깔린지" 시각만으로 헷갈리는 순간, 즉시 `figma_execute` 인스펙트. CLAUDE.md 원칙 1번 "**Figma is truth**" 의 다층 케이스 적용.
 
 ### `getVisibleTexts()`만 호출 금지
 

@@ -348,7 +348,7 @@ function UsersPageContent() {
   const sp = { sortKey, sortDir, onSort: handleSort };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-10">
       {/* Breadcrumb */}
       <Breadcrumb>
         <BreadcrumbList>

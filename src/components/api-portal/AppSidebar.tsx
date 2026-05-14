@@ -10,6 +10,8 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   DASHBOARD_NAV,
   isSidebarNavGroup,
@@ -17,18 +19,18 @@ import {
 } from "@/lib/dashboard-nav";
 
 /* ── Dashboard 사이드바 ───────────────────────────────────────
- * Figma 1456:16099 sidebar 정합:
- *   Header: gallery-vertical-end icon + "Dashboard" (Bottom=false, no version)
- *   Menu: Level 1 leaf 4개 — Analytics, User & Team management, API Keys, Webhooks
- *   구조는 DocsSidebar와 동일 (leaf / group with chevron + Level 2)
- *   향후 그룹 추가 시 dashboard-nav.ts에 group 항목 추가만 하면 됨.
+ * Figma 1456:16099 sidebar 정합 (custom <aside>)
+ * + 모바일: shadcn Sheet drawer로 자동 전환 (useSidebar context 사용)
+ *
+ * SidebarProvider가 layout에서 wrap → 이 컴포넌트는 isMobile에 따라 분기
  */
 
-function LeafLink({ href, label, active }: { href: string; label: string; active: boolean }) {
+function LeafLink({ href, label, active, onNavigate }: { href: string; label: string; active: boolean; onNavigate?: () => void }) {
   return (
     <div className="px-2 py-1">
       <Link
         href={href}
+        onClick={onNavigate}
         className={`flex h-9 items-center rounded-sm px-2 text-sm font-medium text-sidebar-foreground transition-colors ${
           active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
         }`}
@@ -39,7 +41,7 @@ function LeafLink({ href, label, active }: { href: string; label: string; active
   );
 }
 
-function GroupItem({ group, pathname }: { group: SidebarNavGroup; pathname: string }) {
+function GroupItem({ group, pathname, onNavigate }: { group: SidebarNavGroup; pathname: string; onNavigate?: () => void }) {
   const containsActive = group.items.some((sub) => sub.href === pathname);
   const [open, setOpen] = useState<string[]>(containsActive ? [group.label] : []);
 
@@ -65,6 +67,7 @@ function GroupItem({ group, pathname }: { group: SidebarNavGroup; pathname: stri
                 <Link
                   key={sub.href}
                   href={sub.href}
+                  onClick={onNavigate}
                   className={`flex h-9 items-center rounded-sm px-2 text-sm text-sidebar-foreground transition-colors ${
                     active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
                   }`}
@@ -80,19 +83,17 @@ function GroupItem({ group, pathname }: { group: SidebarNavGroup; pathname: stri
   );
 }
 
-export function AppSidebar() {
+function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-[69px] hidden h-[calc(100vh-69px)] w-[255px] shrink-0 overflow-y-auto border-r border-sidebar-border bg-background md:block">
-      {/* Header — Figma: gallery-vertical-end + "Dashboard", Bottom=false (no version) */}
+    <>
+      {/* Header — Figma: gallery-vertical-end + "Dashboard", wrapper h-9 (Bottom=false도 36px 고정) */}
       <div className="p-2">
         <div className="flex items-center gap-2 p-2">
           <div className="flex size-8 items-center justify-center rounded-md bg-sidebar-primary">
             <GalleryVerticalEnd className="h-4 w-4 text-sidebar-primary-foreground" />
           </div>
-          {/* Wrapper 높이 36px 고정 — Figma는 Bottom=false에도 wrapper 36h 유지하여
-              두 사이드바(Dashboard/Docs) 아이콘 정렬 통일. flex justify-center로 단일 줄 수직 중앙. */}
           <div className="flex h-9 min-w-0 flex-1 flex-col justify-center">
             <p className="truncate text-sm font-semibold text-sidebar-foreground">Dashboard</p>
           </div>
@@ -103,14 +104,41 @@ export function AppSidebar() {
       <nav className="flex flex-col">
         {DASHBOARD_NAV.map((item) => {
           if (!isSidebarNavGroup(item)) {
-            // active: 현재 경로가 정확 일치 또는 하위 경로 (e.g., /users/team/...)
             const active =
               pathname === item.href || pathname.startsWith(item.href + "/");
-            return <LeafLink key={item.label} href={item.href} label={item.label} active={active} />;
+            return <LeafLink key={item.label} href={item.href} label={item.label} active={active} onNavigate={onNavigate} />;
           }
-          return <GroupItem key={item.label} group={item} pathname={pathname} />;
+          return <GroupItem key={item.label} group={item} pathname={pathname} onNavigate={onNavigate} />;
         })}
       </nav>
+    </>
+  );
+}
+
+export function AppSidebar() {
+  const { isMobile, openMobile, setOpenMobile } = useSidebar();
+
+  // Mobile: shadcn Sheet drawer (자동으로 SidebarProvider context와 연동)
+  if (isMobile) {
+    return (
+      <Sheet open={openMobile} onOpenChange={setOpenMobile}>
+        <SheetContent
+          side="left"
+          className="w-[255px] border-r border-sidebar-border bg-background p-0"
+        >
+          <SheetHeader className="sr-only">
+            <SheetTitle>Dashboard navigation</SheetTitle>
+          </SheetHeader>
+          <SidebarBody onNavigate={() => setOpenMobile(false)} />
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  // Desktop: 기존 custom aside (Figma 정합 그대로)
+  return (
+    <aside className="sticky top-[69px] hidden h-[calc(100vh-69px)] w-[255px] shrink-0 overflow-y-auto border-r border-sidebar-border bg-background md:block">
+      <SidebarBody />
     </aside>
   );
 }
