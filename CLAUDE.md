@@ -24,7 +24,7 @@
 - **React 19**
 - **TypeScript**
 - **Tailwind CSS v4**
-- **shadcn/ui** — Base UI 기반 (Radix 아님 → 일부 API 차이)
+- **shadcn/ui** — Base UI 기반 (`@base-ui/react`, Radix 아님). 신규 primitive 작성·shadcn 공식 컴포넌트 참고 시 변환 규약은 `design-system/rules/shadcn.md` "Base UI 기반 변환 규약" 섹션 참조 (data attr 차이, `npx shadcn add` 직접 금지 등)
 - **lucide-react** — 아이콘
 - **sonner** — toast (커스텀 wrapper로 디자인 토큰 적용)
 - **Figma Desktop Bridge MCP** — `figma_execute`로 plugin API 호출

@@ -14,6 +14,70 @@
 - Select: `design-system/components/select.md`
 - Popover (Menulist 스펙 포함): `design-system/components/popover.md`
 - Pagination: `design-system/components/pagination.md`
+- ToggleGroup: `design-system/components/toggle-group.md`
+
+---
+
+## Base UI 기반 변환 규약
+
+이 프로젝트의 `src/components/ui/*.tsx` 는 **전부 `@base-ui/react` wrapping**. Radix 의존성 0 건. 새 primitive 도 동일 규칙을 따른다.
+
+### 원칙
+
+1. **공식 shadcn registry (`npx shadcn add <component>`) 직접 도입 금지** — Radix 의존성 (`@radix-ui/react-*`) 이 끌려와 의존성 family 가 갈라짐.
+2. **shadcn.com 의 코드는 참고용**: variant 구조 / cva 패턴 / className 매핑만 차용. import 와 primitive 호출은 무조건 `@base-ui/react/<subpath>` 로 새로 작성.
+3. **같은 컴포넌트 family 에 두 라이브러리 동시 의존 금지** — Base UI 가 단일 진실.
+
+### 변환 체크리스트
+
+| Radix (shadcn 원본) | Base UI (이 프로젝트) |
+|---|---|
+| `import * as X from "@radix-ui/react-x"` | `import { X } from "@base-ui/react/x"` |
+| `<X.Content>` | `<X.Popup>` (Dialog/Popover/Menu 등 일부 컴포넌트) |
+| `data-state="open"` | `data-open` |
+| `data-state="closed"` | (속성 부재) |
+| `data-state="checked"` | `data-checked` |
+| `data-state="on"` (Toggle) | `data-pressed` |
+| Tailwind `data-[state=open]:bg-foo` | `data-[open]:bg-foo` |
+| `forwardRef` 직접 wrapping | `React.RefAttributes<...>` (Base UI 가 자체 처리) |
+
+### 데이터 속성 패턴 차이 (가장 큰 실질 변경)
+
+- **Radix**: 한 속성에 enum 값 (`data-state="open" | "closed" | "checked" | ...`)
+- **Base UI**: **bool 속성 분리** (`data-open`, `data-pressed`, `data-checked`, `data-disabled`)
+- Tailwind variant 매핑 시 Base UI 가 훨씬 깔끔. 복수 상태 동시 잡힐 때 (open + disabled 등) selector 결합이 자연스러움.
+
+### Controlled API 차이 (컴포넌트별 상이)
+
+일부 컴포넌트는 prop 시그니처가 다르다. 단일 vs 배열 차이가 있으면 **wrapper 에서 흡수** 한다.
+
+**예: ToggleGroup** — Base UI 는 `value: string[]` / `onValueChange: (v: string[]) => void` (multi-select 친화). 단일 선택 wrapper 에서 array ↔ single 변환:
+
+```tsx
+<BaseToggleGroup
+  value={value !== undefined ? [value] : undefined}
+  onValueChange={(next) => onValueChange?.(next[0] ?? "")}
+  multiple={false}
+  ...
+/>
+```
+
+자세한 사례: `src/components/ui/toggle-group.tsx`.
+
+### 새 primitive 추가 워크플로우
+
+1. shadcn.com 에서 컴포넌트 페이지 열고 cva variant / className 패턴 캡처
+2. `node_modules/@base-ui/react/<component>` 에 해당 primitive 가 있는지 확인 (`.d.ts` 인터페이스로 prop 시그니처 파악)
+3. shadcn 식 file 구조 (`src/components/ui/<component>.tsx`) 작성. import 만 `@base-ui/react/*` 로 교체, data attr selector 는 위 표대로 변환
+4. controlled API 차이 있으면 wrapper 에서 흡수
+5. variant 별 사용 사례는 `design-system/components/<component>.md` 로 분리
+6. CLAUDE.md "shadcn primitives" 섹션 에 컴포넌트 이름 / 사용처 추가
+
+### Anti-pattern
+
+- `@radix-ui/react-*` import 추가 — 의존성 family 갈라짐
+- `data-state` selector 사용 — Base UI 에서 안 잡힘
+- Base UI 가 제공하지 않는 컴포넌트 (특히 Form 외) → 검토 후 사용자와 결정. 자체 작성이 보통 정답.
 
 ---
 

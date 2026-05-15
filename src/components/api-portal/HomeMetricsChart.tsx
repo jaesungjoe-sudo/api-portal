@@ -8,6 +8,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 type Period = "3m" | "30d" | "7d";
 
@@ -73,25 +74,20 @@ export function HomeMetricsChart() {
           <h3 className="text-base font-semibold text-foreground">Total Activity</h3>
           <p className="text-sm text-muted-foreground">{PERIOD_LABEL[period]}</p>
         </div>
-        <div className="inline-flex items-center rounded-md border border-border bg-background p-0.5">
-          {PERIOD_TABS.map((t) => {
-            const active = t.value === period;
-            return (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() => setPeriod(t.value)}
-                className={`h-8 rounded-sm px-3 text-xs font-medium transition-colors ${
-                  active
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
+        <ToggleGroup
+          variant="pill"
+          size="sm"
+          value={period}
+          onValueChange={(next) => {
+            if (next) setPeriod(next as Period);
+          }}
+        >
+          {PERIOD_TABS.map((t) => (
+            <ToggleGroupItem key={t.value} value={t.value}>
+              {t.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
       </div>
       <div className="mt-6">
         <ChartContainer config={config} className="h-[240px] w-full">

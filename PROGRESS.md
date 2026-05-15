@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-15 (Analytics 메인 차트 단일 area + method-별 tooltip + "call" → "request" 카피 정합)
+최종 업데이트: 2026-05-15 (ToggleGroup primitive 도입 + AnalyticsTabs / HomeMetricsChart segmented control 통일)
 
 ## 현재 마일스톤
 
@@ -39,6 +39,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 - [x] **헤더 영역 gap 통일** (2026-05-14) — Breadcrumb ↔ Header 간격 4페이지 (analytics / api-keys / users / team-detail) 모두 `gap-10` (40px) 으로 정합. 기존 api-keys / users / team-detail 은 `gap-6` 으로 불일치 였음.
 - [x] **브랜드 컬러 업데이트** (2026-05-15) — `palette/ujet-blue` `#4ABCFF` → `#00A2FF` (Figma `brand/brand` 변경 정합). `colors.json` → `sync-tokens` → `tokens.generated.css` 자동 반영. `CLAUDE.md` / `design-system/rules/color.md` / `UjetLogo.tsx` 주석 hex 갱신. GNB 로고는 `text-brand` currentColor 기반이라 자동 적용.
 - [x] **Next.js 16 `proxy` 마이그레이션** (2026-05-15) — `src/middleware.ts` → `src/proxy.ts` (git mv) + export 함수명 `middleware` → `proxy`. deprecation 경고 해소. `.next` 캐시 삭제 후 재시작 필요했음 (Turbopack edge 모듈 캐시).
+- [x] **ToggleGroup primitive 도입 + segmented control 통일** (2026-05-15) — `src/components/ui/toggle-group.tsx` 신규 (Base UI `@base-ui/react/toggle-group` + `toggle` wrapping, cva variant `outlined`/`pill` + size `default`/`sm`). single-value 외부 API (`value: string`, `onValueChange: (v: string) => void`) 로 Base UI 의 array API 래핑. `AnalyticsTabs.tsx` → `outlined`, `HomeMetricsChart.tsx` → `pill size="sm"` 마이그레이션. raw `<button>` 6건 제거. 자동 부수효과: 화살표 키보드 내비게이션, `aria-pressed`, focus-visible ring. 문서: `design-system/components/toggle-group.md`.
 - [x] **Analytics 메인 차트 단일 라인 변경 + tooltip method 분해** (2026-05-15) — `AnalyticsCallVolumeChart` stacked 2-series(read/write) → 단일 `total` area(info-chart blue). 호버 tooltip 커스텀 `RequestVolumeTooltip` (총 + GET/POST/PUT/PATCH/DELETE 5 row, swatch + 값). 범례 제거. `CallVolumePoint` 타입 `{month, total, get, post, put, patch, delete}` 으로 재구성. 3 period(6m/30d/7d) mock 모두 method-별 breakdown 으로 갱신. 카피 "Call volume trend" → "Request volume trend", summary card 1 "Total calls" → "Total Requests" 3 period 공통.
 - [x] **Analytics 페이지 반응형** (2026-05-15) — 헤더 stacked(`md:flex-row`), Summary 카드 `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`, 하단 row `flex-col lg:flex-row`, MethodDistribution `w-full lg:w-[420px]`, TopApis endpoint 컬럼 `w-[120px] sm:w-[200px]`, CallVolume legend `flex-wrap`, AnalyticsTabs `md` 미만 라벨 축약 (`6m`/`30d`/`7d`). `AnalyticsSummaryCard`에서 `flex-1` 제거 (grid가 폭 결정).
 
