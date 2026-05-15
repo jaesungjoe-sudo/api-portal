@@ -25,7 +25,7 @@ export function AnalyticsTopApisChart({
       <div className="flex flex-col gap-2">
         {data.map((row) => (
           <div key={row.endpoint + row.method} className="flex items-center gap-3">
-            <span className="w-[200px] shrink-0 truncate text-xs text-foreground">{row.endpoint}</span>
+            <span className="w-[120px] shrink-0 truncate text-xs text-foreground sm:w-[200px]">{row.endpoint}</span>
             <span className="w-10 shrink-0 text-xs text-muted-foreground">{row.count}</span>
             <span className="w-14 shrink-0 text-xs text-muted-foreground">{row.method}</span>
             <div className="flex h-7 flex-1 items-center">

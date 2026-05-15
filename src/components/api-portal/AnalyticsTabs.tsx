@@ -2,10 +2,10 @@
 
 import type { AnalyticsPeriod } from "@/lib/mock-analytics-data";
 
-const TABS: { value: AnalyticsPeriod; label: string }[] = [
-  { value: "6m", label: "Last 6 months" },
-  { value: "30d", label: "Last 30 days" },
-  { value: "7d", label: "Last 7 days" },
+const TABS: { value: AnalyticsPeriod; label: string; shortLabel: string }[] = [
+  { value: "6m", label: "Last 6 months", shortLabel: "6m" },
+  { value: "30d", label: "Last 30 days", shortLabel: "30d" },
+  { value: "7d", label: "Last 7 days", shortLabel: "7d" },
 ];
 
 export function AnalyticsTabs({
@@ -30,7 +30,8 @@ export function AnalyticsTabs({
               isActive ? "bg-accent" : "bg-background hover:bg-accent"
             } ${isFirst ? "rounded-l-md" : "-ml-px"} ${isLast ? "rounded-r-md" : ""}`}
           >
-            {tab.label}
+            <span className="md:hidden">{tab.shortLabel}</span>
+            <span className="hidden md:inline">{tab.label}</span>
           </button>
         );
       })}

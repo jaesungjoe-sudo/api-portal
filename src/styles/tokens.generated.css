@@ -20,7 +20,7 @@
   --destructive-foreground: 0 0% 100%;
   --destructive-subtle: 0 93.3% 94.1%;
   --destructive-border: 0 96.3% 89.4%;
-  --brand: 202 100% 64.5%;
+  --brand: 202 100% 50%;
   --brand-foreground: 0 0% 3.9%;
   --success: 143 64.2% 24.1%;
   --success-subtle: 141 84.2% 92.5%;
@@ -84,7 +84,7 @@
   --destructive-foreground: 0 0% 100%;
   --destructive-subtle: 0 74.7% 15.5%;
   --destructive-border: 0 70% 35.3%;
-  --brand: 202 100% 64.5%;
+  --brand: 202 100% 50%;
   --brand-foreground: 0 0% 3.9%;
   --success: 142 69.2% 58%;
   --success-subtle: 145 80.4% 10%;
@@ -434,7 +434,7 @@
   --color-rose-950: #4c0519;
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-ujet-blue: #4abcff;
+  --color-ujet-blue: #00a2ff;
 
   /* Radius scale — synced from design-system/tokens/misc.json (Figma 라이브러리 truth) */
   --radius-none: 0px;

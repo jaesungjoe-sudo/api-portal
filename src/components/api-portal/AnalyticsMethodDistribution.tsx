@@ -35,7 +35,7 @@ export function AnalyticsMethodDistribution({
   period: AnalyticsPeriod;
 }) {
   return (
-    <div className="flex w-[420px] shrink-0 flex-col gap-6 rounded-xl border border-border bg-card px-6 py-6 shadow-sm">
+    <div className="flex w-full shrink-0 flex-col gap-6 rounded-xl border border-border bg-card px-6 py-6 shadow-sm lg:w-[420px]">
       <div className="flex flex-col gap-1.5">
         <h3 className="text-base font-semibold text-foreground">Method distribution</h3>
         <p className="text-sm text-muted-foreground">{PERIOD_LABEL[period]}</p>

@@ -3,7 +3,7 @@ import type { SummaryCard } from "@/lib/mock-analytics-data";
 
 export function AnalyticsSummaryCard({ card }: { card: SummaryCard }) {
   return (
-    <div className="flex flex-1 flex-col gap-6 rounded-xl border border-border bg-card px-6 py-6 shadow-sm">
+    <div className="flex flex-col gap-6 rounded-xl border border-border bg-card px-6 py-6 shadow-sm">
       <div className="flex items-start justify-between gap-2">
         <p className="text-sm font-medium text-foreground">{card.label}</p>
         {card.kind === "with-trend" && (

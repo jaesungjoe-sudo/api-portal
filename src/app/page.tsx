@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Phone, UserPlus, Layers, Link2, PhoneCall, Play } from "lucide-react";
 import { TopNav } from "@/components/api-portal/TopNav";
@@ -18,7 +17,7 @@ const STEP_ITEMS = [
 export default function HomePage() {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full flex-col">
+      <div className="flex min-h-screen w-full flex-col overflow-x-clip">
         <TopNav />
         <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col gap-32 px-6 py-20">
           <Hero />
@@ -57,42 +56,55 @@ function Hero() {
 }
 
 function HeroDecoration() {
-  // Figma 1630:29682 — Untitled@1-2528x1275 (1) 1 (RECTANGLE with IMAGE fill, exported @2x).
   return (
-    <Image
-      src="/hero-isometric.png"
-      alt=""
-      width={261}
-      height={257}
-      priority
-      className="h-[257px] w-[261px] object-contain"
-    />
+    <div className="relative left-1/2 -ml-[50vw] flex h-[400px] w-screen items-center justify-center overflow-hidden">
+      <iframe
+        src="https://my.spline.design/untitled-bbvShhrc2qncvg3WcMUJ8eAL/"
+        className="block h-full w-full border-0 motion-reduce:hidden"
+        loading="lazy"
+        title="UJET API Portal hero 3D scene"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/hero-isometric.png"
+        alt=""
+        aria-hidden
+        className="hidden h-[257px] w-[261px] object-contain motion-reduce:block"
+      />
+    </div>
   );
 }
 
 function TutorialSection() {
   return (
-    <section className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-      <div className="flex flex-col gap-6">
-        <h2 className="text-4xl font-semibold leading-tight text-foreground">
+    <section className="grid grid-cols-1 items-start gap-16 md:grid-cols-2">
+      <div className="flex flex-col gap-10">
+        <h2
+          className="bg-clip-text text-[44px] font-semibold leading-tight tracking-tight text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(251,251,251,0.35) 128.87%), linear-gradient(90deg, rgb(10,10,10) 0%, rgb(10,10,10) 100%)",
+          }}
+        >
           Build your Contact Center in 5 minutes
         </h2>
         <Link href="/documentation/tutorials" className="w-fit">
           <Button>View Tutorials</Button>
         </Link>
       </div>
-      <div className="flex flex-col gap-4 rounded-lg border border-border bg-background p-6">
-        <h3 className="text-base font-semibold text-foreground">
+      <div className="flex flex-col gap-8 rounded-lg border border-border bg-background p-6">
+        <h3 className="text-[22px] font-semibold leading-[30px] text-foreground">
           Build Your First AI Contact Center in Minutes
         </h3>
-        <div className="flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-3">
           {STEP_ITEMS.map((step, i) => (
             <StepRow
               key={step.label}
               Icon={step.icon}
               label={step.label}
               sub={step.sub}
-              highlighted={i === 4}
+              highlighted={i === 0}
             />
           ))}
         </div>
@@ -114,16 +126,16 @@ function StepRow({
 }) {
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg border px-3 py-3 ${
-        highlighted ? "border-info-border" : "border-border"
+      className={`flex items-center gap-4 rounded-lg border border-info-border p-4 shadow-sm ${
+        highlighted ? "bg-info-subtle" : "bg-background"
       }`}
     >
-      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-background">
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-border bg-background">
         <Icon className="h-5 w-5 text-foreground" />
       </span>
-      <div className="flex flex-col">
-        <span className="text-sm font-medium text-foreground">{label}</span>
-        <span className="text-xs text-muted-foreground">{sub}</span>
+      <div className="flex flex-col gap-1">
+        <span className="text-base font-medium text-foreground">{label}</span>
+        <span className="text-sm text-muted-foreground">{sub}</span>
       </div>
     </div>
   );
@@ -155,13 +167,10 @@ function CodeSection() {
         </div>
         <div className="flex h-12 items-center justify-between border-t border-border px-4">
           <span className="text-xs text-muted-foreground">Line 1, Column 1</span>
-          <button
-            type="button"
-            className="flex h-7 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground"
-          >
+          <Button size="xs">
             Execute
-            <Play className="h-3 w-3" />
-          </button>
+            <Play />
+          </Button>
         </div>
       </div>
     </section>

@@ -57,7 +57,7 @@ text-black                     text-foreground
 ### Brand (UJET 브랜드 컬러)
 | 토큰 | 값 | 용도 |
 |------|-----|------|
-| `bg-brand` / `text-brand` | `#4ABCFF` (light/dark 동일) | UJET 시그니처 블루 |
+| `bg-brand` / `text-brand` | `#00A2FF` (light/dark 동일) | UJET 시그니처 블루 |
 | `text-brand-foreground` | `neutral/950` | brand 배경 위 텍스트 |
 
 > brand는 light/dark 모드에서 같은 hex를 쓴다 (브랜드 일관성 정책). subtle/border 변형은 **만들지 않음** — 브랜드 컬러는 한정된 영역에만 사용.

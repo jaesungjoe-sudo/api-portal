@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { Copy, Check } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 /**
  * Phase1 단순 CodeBlock — 직접 색 매핑 (syntax highlighter 미사용).
@@ -43,14 +44,15 @@ export function CodeBlock({
                 {language}
               </span>
             )}
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon-xs"
               onClick={handleCopy}
               aria-label="Copy code"
-              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted-foreground/10 hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground"
             >
-              {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
-            </button>
+              {copied ? <Check className="text-success" /> : <Copy />}
+            </Button>
           </div>
         </div>
       )}

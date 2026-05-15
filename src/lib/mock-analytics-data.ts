@@ -19,8 +19,12 @@ export type SummaryCard =
 
 export type CallVolumePoint = {
   month: string;
-  read: number;
-  write: number;
+  total: number;
+  get: number;
+  post: number;
+  put: number;
+  patch: number;
+  delete: number;
 };
 
 export type TopApi = {
@@ -45,7 +49,7 @@ const ANALYTICS_6M: AnalyticsData = {
   summary: [
     {
       kind: "with-trend",
-      label: "Total calls",
+      label: "Total Requests",
       value: "1,252",
       chip: "+12.5%",
       trend: "+12.4% vs last 6 months",
@@ -71,12 +75,12 @@ const ANALYTICS_6M: AnalyticsData = {
     },
   ],
   callVolume: [
-    { month: "Jan", read: 120, write: 60 },
-    { month: "Feb", read: 145, write: 75 },
-    { month: "Mar", read: 175, write: 90 },
-    { month: "Apr", read: 200, write: 110 },
-    { month: "May", read: 240, write: 130 },
-    { month: "Jun", read: 280, write: 155 },
+    { month: "Jan", total: 180, get: 63, post: 45, patch: 36, delete: 27, put: 9 },
+    { month: "Feb", total: 220, get: 77, post: 55, patch: 44, delete: 33, put: 11 },
+    { month: "Mar", total: 265, get: 93, post: 66, patch: 53, delete: 40, put: 13 },
+    { month: "Apr", total: 310, get: 109, post: 78, patch: 62, delete: 47, put: 14 },
+    { month: "May", total: 370, get: 130, post: 92, patch: 74, delete: 56, put: 18 },
+    { month: "Jun", total: 435, get: 152, post: 109, patch: 87, delete: 65, put: 22 },
   ],
   topApis: [
     { endpoint: "/users/{id}/profile", count: 142, method: "GET" },
@@ -98,7 +102,7 @@ const ANALYTICS_30D: AnalyticsData = {
   summary: [
     {
       kind: "with-trend",
-      label: "Total calls",
+      label: "Total Requests",
       value: "312",
       chip: "+5.8%",
       trend: "+5.8% vs previous 30 days",
@@ -124,10 +128,10 @@ const ANALYTICS_30D: AnalyticsData = {
     },
   ],
   callVolume: [
-    { month: "Week 1", read: 38, write: 18 },
-    { month: "Week 2", read: 46, write: 22 },
-    { month: "Week 3", read: 58, write: 30 },
-    { month: "Week 4", read: 64, write: 36 },
+    { month: "Week 1", total: 56, post: 19, get: 16, put: 10, patch: 7, delete: 4 },
+    { month: "Week 2", total: 68, post: 23, get: 19, put: 12, patch: 8, delete: 6 },
+    { month: "Week 3", total: 88, post: 30, get: 25, put: 16, patch: 11, delete: 6 },
+    { month: "Week 4", total: 100, post: 34, get: 28, put: 18, patch: 12, delete: 8 },
   ],
   topApis: [
     { endpoint: "/orders/{id}/items", count: 56, method: "POST" },
@@ -149,7 +153,7 @@ const ANALYTICS_7D: AnalyticsData = {
   summary: [
     {
       kind: "with-trend",
-      label: "Total calls",
+      label: "Total Requests",
       value: "74",
       chip: "+2.1%",
       trend: "+2.1% vs previous 7 days",
@@ -175,13 +179,13 @@ const ANALYTICS_7D: AnalyticsData = {
     },
   ],
   callVolume: [
-    { month: "Mon", read: 7, write: 3 },
-    { month: "Tue", read: 9, write: 4 },
-    { month: "Wed", read: 11, write: 5 },
-    { month: "Thu", read: 8, write: 4 },
-    { month: "Fri", read: 13, write: 6 },
-    { month: "Sat", read: 5, write: 2 },
-    { month: "Sun", read: 4, write: 2 },
+    { month: "Mon", total: 10, put: 4, get: 3, patch: 2, post: 1, delete: 0 },
+    { month: "Tue", total: 13, put: 5, get: 4, patch: 2, post: 1, delete: 1 },
+    { month: "Wed", total: 16, put: 6, get: 4, patch: 3, post: 2, delete: 1 },
+    { month: "Thu", total: 12, put: 4, get: 3, patch: 2, post: 2, delete: 1 },
+    { month: "Fri", total: 19, put: 7, get: 5, patch: 3, post: 3, delete: 1 },
+    { month: "Sat", total: 7, put: 3, get: 2, patch: 1, post: 1, delete: 0 },
+    { month: "Sun", total: 6, put: 2, get: 2, patch: 1, post: 1, delete: 0 },
   ],
   topApis: [
     { endpoint: "/auth/sessions", count: 18, method: "PUT" },

@@ -95,22 +95,24 @@ export function ViewApiKeyDialog({
               className="pr-16 font-mono"
             />
             <div className="absolute inset-y-0 right-2 flex items-center gap-1">
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon-xs"
                 onClick={handleCopy}
                 aria-label="Copy API key"
-                className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
-                <Copy className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
+                <Copy />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-xs"
                 onClick={() => setRevealed((v) => !v)}
                 aria-label={revealed ? "Hide API key" : "Reveal API key"}
-                className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
-                {revealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+                {revealed ? <EyeOff /> : <Eye />}
+              </Button>
             </div>
           </div>
         </div>

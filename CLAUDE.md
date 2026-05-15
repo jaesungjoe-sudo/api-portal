@@ -85,7 +85,7 @@ Figma 파일:
 - `border-border` / `border-input` / `ring-ring`
 - 시맨틱: `text-success` / `bg-success-subtle` / `border-success-border` (warning, destructive 동일 패턴)
 - destructive 4종: `bg-destructive` / `text-destructive-foreground` / `bg-destructive-subtle` / `border-destructive-border`
-- 브랜드 (UJET 시그니처 블루 `#4ABCFF`): `bg-brand` / `text-brand` / `text-brand-foreground` — **로고·랜딩·마케팅 한정 사용** (subtle/border 변형 없음). 일반 UI는 `primary`/`info`/`sidebar` 토큰 사용. 자세한 가이드: `design-system/rules/color.md`
+- 브랜드 (UJET 시그니처 블루 `#00A2FF`): `bg-brand` / `text-brand` / `text-brand-foreground` — **로고·랜딩·마케팅 한정 사용** (subtle/border 변형 없음). 일반 UI는 `primary`/`info`/`sidebar` 토큰 사용. 자세한 가이드: `design-system/rules/color.md`
 - 사이드바: `border-sidebar-border` 등
 
 예외 (의미 토큰 없음, 직접 팔레트 사용):

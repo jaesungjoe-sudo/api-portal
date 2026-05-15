@@ -91,22 +91,14 @@ export function TopNav() {
           <span>Search...</span>
         </div>
         {/* Search 아이콘 fallback — lg 미만 */}
-        <button
-          type="button"
-          aria-label="Search"
-          className="flex h-9 w-9 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted lg:hidden"
-        >
-          <Search className="h-4 w-4" />
-        </button>
+        <Button variant="ghost" size="icon" aria-label="Search" className="lg:hidden">
+          <Search />
+        </Button>
         {/* Ask AI — sm 이상에서만 텍스트, 그 이하 아이콘만 */}
-        <button
-          type="button"
-          aria-label="Ask AI"
-          className="flex h-9 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          <Sparkles className="h-4 w-4" />
+        <Button variant="ghost" aria-label="Ask AI">
+          <Sparkles />
           <span className="hidden sm:inline">Ask AI</span>
-        </button>
+        </Button>
         {isLoggedIn ? (
           <AccountDropdown />
         ) : (

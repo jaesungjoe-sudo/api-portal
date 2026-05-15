@@ -5,7 +5,7 @@
 - Root: `1579:79974` (Analytics frame, 1440×1436)
 - Header (title + tabs): `1579:79981`
 - Summary cards wrapper: `1579:79996`
-- Call volume trend: `1579:80065`
+- Request volume trend: `1579:80066`
 - Content Container (bottom row): `1579:80137`
   - Top 5 APIs Container: `1579:80144`
   - Method distribution Container: `1583:80916`
@@ -18,7 +18,7 @@ Header
   ├── Left: "Analytics" h1 (28/36 Semibold) + "All API traffic overview · Operator view"
   └── Right: AnalyticsTabs (3 segmented tabs)
 4 Summary cards (gap 16, equal width)
-Call volume trend card (rounded-xl, shadow-sm)
+Request volume trend card (rounded-xl, shadow-sm)
 Bottom row (gap 20)
   ├── Top 5 APIs (flex-1)
   └── Method distribution (420px fixed)
@@ -37,7 +37,7 @@ Phase 1: 6m 만 mock 데이터, 나머지는 동일 데이터 반환 (placeholde
 
 | # | Label | Value | Chip | Trend text |
 |---|---|---|---|---|
-| 1 | Total calls | `1,252` | `+12.5%` | `+12.4% vs last 6 months` |
+| 1 | Total Requests | `1,252` | `+12.5%` | `+12.4% vs last 6 months` |
 | 2 | Active APIs | `14` | — (chip 없음) | `APIs with traffic` |
 | 3 | Active API keys | `135` | `+8` | `+8 new` |
 | 4 | Unused APIs | `8` | — (chip 없음) | `Oldest: 12 days ago` |
@@ -46,16 +46,17 @@ Phase 1: 6m 만 mock 데이터, 나머지는 동일 데이터 반환 (placeholde
 - 1·3 카드: 우상단 chip (rounded-md border + TrendingUp 아이콘 + 텍스트)
 - 2·4 카드: chip 없음, trend 텍스트만
 
-## Call Volume Trend (area chart)
+## Request Volume Trend (area chart)
 
 - 컨테이너: `rounded-xl`, `bg-card`, `shadow-sm`
-- 제목: `Call volume trend` (16/24 Semibold)
+- 제목: `Request volume trend` (16/24 Semibold)
 - 부제: `Total for the last 6 months` (14/20 muted)
-- 차트: 2 시리즈 **stacked area**
-  - Read 시리즈 (GET 전용) — color `success-chart` (#22c55e)
-  - Write 시리즈 (POST·PUT·PATCH·DELETE) — color `info-chart` (#3b82f6)
-- X축: Jan~Jun (6개월)
-- 범례 2개 (Read + GET / Write + POST · PUT · PATCH · DELETE)
+- 차트: **단일 area** (`total` = 모든 메소드 합)
+  - Stroke / fill: `info-chart` (#3b82f6), fill 그라데이션 0.4 → 0
+  - type=monotone, strokeWidth=2
+- X축: Jan~Jun (6개월) — period 에 따라 `Week 1-4` (30d), `Mon-Sun` (7d)
+- 범례 없음
+- 호버 tooltip: 월 + total + 메소드별 카운트 5개 (GET / POST / PUT / PATCH / DELETE, 색 swatch 동반). `RequestVolumeTooltip` 커스텀 컴포넌트
 
 ## Top 5 APIs (horizontal bar)
 
