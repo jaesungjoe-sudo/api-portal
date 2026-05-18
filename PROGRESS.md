@@ -1,12 +1,13 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-15 (ToggleGroup primitive 도입 + AnalyticsTabs / HomeMetricsChart segmented control 통일)
+최종 업데이트: 2026-05-18 (Phase 1+2 Button/ToggleGroup 라이브러리 통일 릴리스 완료 — main `0bb2855`)
 
 ## 현재 마일스톤
 
 Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start + Inbound Calls), Analytics, API Reference(Create Call)** 주요 플로우 완료.
 
 다음 우선순위:
+- **Phase 3** (라이브러리 통일 마무리): `users/page.tsx` underline tabs (User / Team / Pending Approvals) → shadcn `Tabs` primitive 도입. URL `?tab=` sync 로직 유지. raw `<button>` 3건 제거. `sortable-head.tsx` 1건은 의도적 제외 (table th padding 충돌).
 - 미완 페이지: **Webhooks** (디자인 대기)
 - API Reference 나머지: Get Call / Update Call 본문 (현재 placeholder)
 - Documentation 추가 콘텐츠 (Tutorials, Outbound Calls, Call Recording 등 — 현재 blank)
@@ -181,9 +182,11 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 ### 4. 보조 기능 / UX 개선
 
+- [ ] **Phase 3 — users underline tabs → shadcn Tabs primitive** — `src/app/(dashboard)/users/page.tsx:370-393` 3개 raw `<button>` (User / Team / Pending Approvals). `src/components/ui/tabs.tsx` Base UI 기반 신규 작성 (Base UI `@base-ui/react/tabs`). URL `?tab=` deep-link 로직 유지. Tab 변경 시 URL 갱신 미구현 상태도 함께 정리.
 - [ ] **검색 입력 실제 필터** — Users/API Keys/Team 상세 모두 입력 UI만 있고 필터 동작 없음
-- [ ] **Tab 변경 시 URL 동기화** — 진입 시 `?tab=`만 읽음. 사용자 탭 변경 시 URL 갱신 안 됨
+- [ ] **Tab 변경 시 URL 동기화** — 진입 시 `?tab=`만 읽음. 사용자 탭 변경 시 URL 갱신 안 됨 (Phase 3 와 함께 처리 가능)
 - [ ] **ProfileDialog autoFocus 차단 검증** — Base UI Dialog 기본 동작 vs CLAUDE.md 룰 미검증
+- [ ] **`sortable-head.tsx` 라이브러리 통합 여부 재검토** — Phase 1 에서 table th padding 충돌로 의도적 제외. ghost-text-only Button variant 추가 시 통합 가능성 재고.
 
 ### 5. 데이터 / 인프라
 
