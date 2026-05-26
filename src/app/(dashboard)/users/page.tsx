@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useMemo } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import {
   Breadcrumb,
@@ -49,6 +49,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SortableHead, type SortDir } from "@/components/api-portal/sortable-head";
 import { TablePagination } from "@/components/api-portal/table-pagination";
 import { CreateTeamDialog } from "@/components/api-portal/CreateTeamDialog";
@@ -203,10 +204,18 @@ function UsersPageContent() {
   const [page, setPage] = useState(1);
   // 초기 탭은 URL 쿼리(?tab=team|pending)에서 가져옴 → 팀 상세에서 breadcrumb로 돌아왔을 때 Team 탭 유지
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeTab, setActiveTab] = useState<"user" | "team" | "pending">(() => {
     const t = searchParams.get("tab");
     return t === "team" || t === "pending" ? t : "user";
   });
+
+  function handleTabChange(next: "user" | "team" | "pending") {
+    setActiveTab(next);
+    const url = next === "user" ? pathname : `${pathname}?tab=${next}`;
+    router.replace(url, { scroll: false });
+  }
   const [pendingPage, setPendingPage] = useState(1);
   const [editOpen, setEditOpen] = useState(false);
   const [editUser, setEditUser] = useState<User | null>(null);
@@ -366,31 +375,20 @@ function UsersPageContent() {
 
 
       {/* Tabs */}
-      <div className="flex gap-1 -mt-2">
-        <button
-          onClick={() => setActiveTab("user")}
-          className={`px-4 py-2 text-sm font-medium ${activeTab === "user" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-        >
-          User
-        </button>
-        <button
-          onClick={() => setActiveTab("team")}
-          className={`px-4 py-2 text-sm font-medium ${activeTab === "team" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-        >
-          Team
-        </button>
-        <button
-          onClick={() => setActiveTab("pending")}
-          className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium ${activeTab === "pending" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-        >
-          Pending Approvals
-          {pendingUsers.length > 0 && (
-            <span className="inline-flex items-center justify-center rounded-full bg-foreground text-background text-xs font-medium min-w-[18px] h-[18px] px-1">
-              {pendingUsers.length}
-            </span>
-          )}
-        </button>
-      </div>
+      <Tabs value={activeTab} onValueChange={(v) => handleTabChange(v as "user" | "team" | "pending")} className="-mt-2">
+        <TabsList>
+          <TabsTrigger value="user">User</TabsTrigger>
+          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="pending">
+            Pending Approvals
+            {pendingUsers.length > 0 && (
+              <span className="inline-flex items-center justify-center rounded-full bg-foreground text-background text-xs font-medium min-w-[18px] h-[18px] px-1">
+                {pendingUsers.length}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
