@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + P1-1 patterns 2/5 (form-dialog + **confirm-dialog**) + `/design-system` 시각 카탈로그 + DialogFooter/showCloseButton Figma 정합)
+최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + EmptyState 컴포넌트 구현 + P1-1 patterns **3/5** (form-dialog + confirm-dialog + **table-list-page**) + `/design-system` 시각 카탈로그)
 
 ## 현재 마일스톤
 
@@ -9,7 +9,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 **Design system maturity 분석 (2026-05-29 착수)** — `rules/`(primitive 룰) + `components/`(컴포넌트 spec) + `pages/`(페이지 스펙) 3 레이어에 더해 누락된 **`patterns/`(조합 패턴) 레이어** 신설 시작. 9개 항목으로 정리 (P1 3개 / P2 3개 / P3 3개), 본 섹션 하단 참조.
 
 다음 우선순위:
-- **P1-1 patterns/ 레이어 (2/5 완료)**: form-dialog ✅ + confirm-dialog ✅ → table-list-page → clickable-card-with-menu → docs-page-shell
+- **P1-1 patterns/ 레이어 (3/5 완료)**: form-dialog ✅ + confirm-dialog ✅ + table-list-page ✅ → clickable-card-with-menu → docs-page-shell
 - **P1-3 반응형/브레이크포인트 문서**
 - 미완 페이지: **Webhooks** (디자인 대기)
 - API Reference 나머지: Get Call / Update Call 본문 (현재 method 배지만 적용, 본문 placeholder)
@@ -26,7 +26,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 | # | 항목 | 상태 |
 |---|---|---|
-| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | 🔵 진행 중 (2/5) |
+| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | 🔵 진행 중 (3/5) |
 | P1-2 | 상태(States) 규칙 — Loading/Empty/Error/Disabled | ✅ 완료 (2026-05-29) |
 | P1-3 | 반응형/브레이크포인트 문서 | ⏳ 대기 |
 
@@ -76,13 +76,20 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 - [x] **ToggleGroup primitive 도입 + segmented control 통일** (2026-05-15) — `src/components/ui/toggle-group.tsx` 신규 (Base UI `@base-ui/react/toggle-group` + `toggle` wrapping, cva variant `outlined`/`pill` + size `default`/`sm`). single-value 외부 API (`value: string`, `onValueChange: (v: string) => void`) 로 Base UI 의 array API 래핑. `AnalyticsTabs.tsx` → `outlined`, `HomeMetricsChart.tsx` → `pill size="sm"` 마이그레이션. raw `<button>` 6건 제거. 자동 부수효과: 화살표 키보드 내비게이션, `aria-pressed`, focus-visible ring. 문서: `design-system/components/toggle-group.md`.
 - [x] **Analytics 메인 차트 단일 라인 변경 + tooltip method 분해** (2026-05-15) — `AnalyticsCallVolumeChart` stacked 2-series(read/write) → 단일 `total` area(info-chart blue). 호버 tooltip 커스텀 `RequestVolumeTooltip` (총 + GET/POST/PUT/PATCH/DELETE 5 row, swatch + 값). 범례 제거. `CallVolumePoint` 타입 `{month, total, get, post, put, patch, delete}` 으로 재구성. 3 period(6m/30d/7d) mock 모두 method-별 breakdown 으로 갱신. 카피 "Call volume trend" → "Request volume trend", summary card 1 "Total calls" → "Total Requests" 3 period 공통.
 - [x] **Analytics 페이지 반응형** (2026-05-15) — 헤더 stacked(`md:flex-row`), Summary 카드 `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`, 하단 row `flex-col lg:flex-row`, MethodDistribution `w-full lg:w-[420px]`, TopApis endpoint 컬럼 `w-[120px] sm:w-[200px]`, CallVolume legend `flex-wrap`, AnalyticsTabs `md` 미만 라벨 축약 (`6m`/`30d`/`7d`). `AnalyticsSummaryCard`에서 `flex-1` 제거 (grid가 폭 결정).
-- [x] **P1-2 States 룰 + EmptyState 베이스라인 spec** (2026-05-29) — `design-system/rules/states.md` 신규 (Truth 출처 경계 표 + 표면×상태 6×3 매트릭스 + Loading/Empty/Error 상세 + Disabled cross-ref + Button 규칙 §5.3 예외 박스). `design-system/components/empty-state.md` 신규 (라이브러리 전용 컴포넌트 없어 자체 정의, 2 variant + Props + 토큰 + 예시 3종 + 안티패턴 5종). 아이콘은 Figma 인스펙트 결과 사용 톤 (icons.md 워크플로우 cross-ref). EmptyState 컴포넌트 코드는 아직 미작성 — spec 만 정의.
+- [x] **P1-2 States 룰 + EmptyState 베이스라인 spec + 컴포넌트 구현** (2026-05-29) — `design-system/rules/states.md` 신규 (Truth 출처 경계 표 + 표면×상태 6×3 매트릭스 + Loading/Empty/Error 상세 + Disabled cross-ref + Button 규칙 §5.3 예외 박스). `design-system/components/empty-state.md` 신규 (라이브러리 전용 컴포넌트 없어 자체 정의, 2 variant + Props + 토큰 + 예시 3종 + 안티패턴 5종). 아이콘은 Figma 인스펙트 결과 사용 톤 (icons.md 워크플로우 cross-ref). **EmptyState 컴포넌트 구현** (`src/components/api-portal/EmptyState.tsx`) — table-list-page 작업과 함께 완료. Pending Approvals 빈 상태에 적용 (인라인 `<p>` 텍스트 → `<EmptyState>` 정합).
 - [x] **P1-1 patterns/ 레이어 신설 + form-dialog 패턴 + 다이얼로그 정합** (2026-05-29) — `design-system/patterns/` 디렉토리 신설. `patterns/form-dialog.md` 신규 (12 섹션: 구조/width/header/필드 gap/검증/footer/variant/autoFocus 2-layer/pre-fill·empty/View 변형/안티패턴 9종/적용 컴포넌트표). 결정 사항:
   - **Cancel 일괄 outline** (form/confirm 모두). `secondary` variant 는 Toolbar/Header 보조 액션으로 재할당 (현재 사용처 0건, 미래 대비). `button.md` / `dialog.md` 갱신.
   - **DialogFooter primitive Figma 정합 plain 화** — Figma MCP 로 Form Dialog (1489:47265) + Confirm Dialog (1460:30528) 풋터 인스펙트 결과 4개 시각 요소(border-t / bg-muted / -mx-4 -mb-4 / rounded-b-xl) 모두 ❌. `src/components/ui/dialog.tsx` 의 DialogFooter cva 에서 제거 (CLAUDE.md 룰 10 정합, className 우회 금지).
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P1-1 table-list-page 패턴 + EmptyState 컴포넌트 + 코드 정합** (2026-05-29) — 4 페이지 (`/api-keys`, `/users` User/Pending 탭, `/users/team/[name]`) 의 공통 골격 문서화. 핵심:
+  - `design-system/patterns/table-list-page.md` 신규 (11 섹션): 페이지 wrapper (gap-10) / Breadcrumb / Header / Tabs (optional) / Toolbar (Search w-60 h-8 + primary CTA) / Table wrapper / Table 헤더·바디 룰 / Pagination / Empty state cross-ref / 8 안티패턴 / 적용 페이지 표.
+  - **EmptyState 컴포넌트 구현** (`src/components/api-portal/EmptyState.tsx`) — `empty-state.md` spec 정합. variant (no-data/no-results) + icon + title + description + action props. CTA variant 자동 (no-data → default / no-results → ghost).
+  - **Pending Approvals 빈 상태 정합** — `users/page.tsx` 의 인라인 `<p className="text-center text-sm text-muted-foreground py-8">No pending approvals</p>` → `<EmptyState variant="no-data" icon={<UserCheck />} ...>`. colSpan={8} → 7 (실제 컬럼 수, 버그 수정). 아이콘은 Figma 디자인 확정 시 교체 (TODO 코멘트).
+  - **Search placeholder 통일** — `/api-keys` 의 `"Search"` → `"Search API Key"`. 4 페이지 모두 `"Search {Entity}"` 형태 정합.
+  - 카탈로그 `/design-system/patterns/table-list-page` 페이지 신규 — 인터랙티브 mini 테이블 (점선 wrapper / Search 필터 → no-results EmptyState / Toggle empty state → no-data EmptyState / 정렬·페이지네이션 동작). Anatomy + 6 decisions + 7 anti-patterns + 5 cross-refs.
+  - nav + Roadmap "3/5" 갱신.
 - [x] **P1-1 confirm-dialog 패턴 + ConfirmDialog 공용 컴포넌트** (2026-05-29) — 5개 confirm-dialog (Delete API Key / Revoke / Deactivate / Reject / **Delete Team 신규**) 모두 `<ConfirmDialog>` thin wrapper 로 통일. 핵심 결정:
   - `src/components/api-portal/ConfirmDialog.tsx` 신규 — 512 width / `showCloseButton={false}` / DialogDescription 필수 / outline Cancel + destructive Confirm 강제. description prop 은 ReactNode (엔티티 이름 강조 지원).
   - DeleteApiKeyDialog / RevokeApiKeyDialog 풀 파일 → 5-line wrapper. users/page.tsx 의 인라인 Deactivate/Reject Dialog → ConfirmDialog 직접 사용.
