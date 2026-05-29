@@ -25,20 +25,22 @@ import {
 
 ## Confirm Dialog 공통 구조
 
+상세 룰은 `patterns/confirm-dialog.md` 참조. 본 섹션은 골격만 — 모든 confirm 다이얼로그는 **`<ConfirmDialog>` 공용 컴포넌트** 사용 (Dialog primitive 직접 조립 금지).
+
 ```tsx
-<Dialog open={!!target} onOpenChange={(open) => { if (!open) setTarget(null); }}>
-  <DialogContent className="sm:max-w-[512px]">
-    <DialogHeader>
-      <DialogTitle>{제목}</DialogTitle>
-      <DialogDescription>{본문(이메일 등 포함)}</DialogDescription>
-    </DialogHeader>
-    <div className="flex justify-end gap-2">
-      <Button variant="outline" onClick={() => setTarget(null)}>Cancel</Button>
-      <Button variant="destructive" onClick={handleConfirm}>{액션명}</Button>
-    </div>
-  </DialogContent>
-</Dialog>
+import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
+
+<ConfirmDialog
+  open={target !== null}
+  onOpenChange={(o) => { if (!o) setTarget(null); }}
+  title="Delete API Key"
+  description="Are you sure you want to delete this API Key?"
+  confirmLabel="Delete"
+  onConfirm={handleDelete}
+/>
 ```
+
+내부적으로 `showCloseButton={false}` + `sm:max-w-[512px]` + outline Cancel + destructive Confirm 으로 조립됨. 자세한 변형 (엔티티 이름 강조, 비-파괴적 변형) 은 `patterns/confirm-dialog.md` §1 / §6.
 
 - 패딩: `24px all` (rounded-lg = 10px, gap 16px)
 - 오버레이: `rgba(0,0,0,0.30)` (기본값 그대로)

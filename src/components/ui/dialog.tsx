@@ -42,7 +42,9 @@ function DialogOverlay({
 function DialogContent({
   className,
   children,
-  showCloseButton = true,
+  // Figma 정합 — form-dialog (1489:47265) / confirm-dialog (1460:30528) 모두 Figma 에 X 버튼 없음.
+  // 명시적으로 X 가 필요한 케이스만 `showCloseButton={true}` 로 옵트인. (현재 호출부 0건)
+  showCloseButton = false,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean

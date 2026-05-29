@@ -1,6 +1,6 @@
 # form-dialog 패턴
 
-> 단일 객체의 **생성·수정·초대** 를 위한 모달. Dialog primitive 위에 본 문서의 룰을 얹는다. 확인용 다이얼로그(Delete / Revoke 등)는 별도 패턴 — `patterns/confirm-dialog.md` (작성 예정) 참조.
+> 단일 객체의 **생성·수정·초대** 를 위한 모달. Dialog primitive 위에 본 문서의 룰을 얹는다. 확인용 다이얼로그(Delete / Revoke / Deactivate / Reject) 는 별도 패턴 — `patterns/confirm-dialog.md` 참조.
 
 ## 적용 범위
 
@@ -51,12 +51,14 @@
 
 ## 2. Width
 
-| 다이얼로그 종류 | width |
-|---|---|
-| form-dialog (본 패턴) | `sm:max-w-[423px]` |
-| confirm-dialog | `sm:max-w-[512px]` (별도 패턴) |
+| 다이얼로그 종류 | width | `showCloseButton` |
+|---|---|---|
+| form-dialog (본 패턴) | `sm:max-w-[423px]` | **false** (X 버튼 없음 — primitive 기본값) |
+| confirm-dialog | `sm:max-w-[512px]` (별도 패턴) | false (명시) |
 
 → Figma 정합. 임의 width 변경 금지.
+
+> **X 버튼 정책 (2026-05-29 정정)** — Figma form-dialog (1489:47265) / confirm-dialog (1460:30528) 모두 우상단 X 가 없다. `DialogContent` primitive 의 `showCloseButton` 기본값을 `true` → `false` 로 변경 (CLAUDE.md 룰 10 정합). dismiss 경로는 Cancel 버튼 / Esc / 백드롭 클릭 3가지로 유지.
 
 ---
 
@@ -329,5 +331,5 @@ ViewApiKeyDialog 처럼 **읽기 전용 + 단일 "Done" 버튼** 형태. 입력 
 - `components/dialog.md` — Dialog primitive spec (width / Title 타이포 / focus 룰)
 - `components/button.md` — Button variant 정의 (secondary 재할당 포함)
 - `components/input.md` / `components/select.md` — 필드 컴포넌트 spec
-- `patterns/confirm-dialog.md` — 파괴적 액션 다이얼로그 (작성 예정)
+- `patterns/confirm-dialog.md` — 파괴적 액션 다이얼로그
 - `rules/instance-variant.md` — Disabled 판별 기준

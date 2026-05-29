@@ -23,14 +23,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -49,6 +41,7 @@ import { CreateTeamDialog } from "@/components/api-portal/CreateTeamDialog";
 import { EditTeamDialog } from "@/components/api-portal/EditTeamDialog";
 import { InviteUserDialog, type InviteUserInput } from "@/components/api-portal/InviteUserDialog";
 import { EditUserDialog, type EditUserPatch } from "@/components/api-portal/EditUserDialog";
+import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
 import { StatusBadge } from "@/components/api-portal/StatusBadge";
 import {
   INITIAL_USERS,
@@ -171,6 +164,8 @@ function UsersPageContent() {
   const [teams, setTeams] = useState<Team[]>(() => getTeams());
   const [createTeamOpen, setCreateTeamOpen] = useState(false);
   const [editTeamTarget, setEditTeamTarget] = useState<Team | null>(null);
+  // Delete Team confirm — TeamCard 의 onDelete 가 즉시 삭제하던 것을 ConfirmDialog 단계 추가
+  const [deleteTeamTarget, setDeleteTeamTarget] = useState<Team | null>(null);
 
   function handleCreateTeam(team: { name: string; description: string }) {
     const newTeam: Team = { name: team.name, description: team.description };
@@ -425,7 +420,7 @@ function UsersPageContent() {
               team={t}
               memberCount={users.filter((u) => u.team === t.name).length}
               onEdit={(team) => setEditTeamTarget(team)}
-              onDelete={handleDeleteTeam}
+              onDelete={setDeleteTeamTarget}
             />
           ))}
         </div>
@@ -479,36 +474,37 @@ function UsersPageContent() {
       {/* Invite User — form-dialog 패턴 (patterns/form-dialog.md) */}
       <InviteUserDialog open={open} onOpenChange={setOpen} onInvite={handleInvite} />
 
-      {/* Deactivate Confirm Dialog */}
-      <Dialog open={!!deactivateTarget} onOpenChange={(open) => { if (!open) setDeactivateTarget(null); }}>
-        <DialogContent className="sm:max-w-[512px]">
-          <DialogHeader>
-            <DialogTitle >Deactivate User</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to deactivate this user ({deactivateTarget?.email})?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setDeactivateTarget(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDeactivateConfirm}>Deactivate</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-      {/* Reject Confirm Dialog */}
-      <Dialog open={!!rejectTarget} onOpenChange={(open) => { if (!open) setRejectTarget(null); }}>
-        <DialogContent className="sm:max-w-[512px]">
-          <DialogHeader>
-            <DialogTitle >Reject registration request</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to reject this registration ({rejectTarget?.email}) request?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setRejectTarget(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRejectConfirm}>Reject</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Deactivate / Reject / Delete Team — confirm-dialog 패턴 (patterns/confirm-dialog.md) */}
+      <ConfirmDialog
+        open={deactivateTarget !== null}
+        onOpenChange={(o) => { if (!o) setDeactivateTarget(null); }}
+        title="Deactivate User"
+        description={
+          <>Are you sure you want to deactivate this user ({deactivateTarget?.email})?</>
+        }
+        confirmLabel="Deactivate"
+        onConfirm={handleDeactivateConfirm}
+      />
+      <ConfirmDialog
+        open={rejectTarget !== null}
+        onOpenChange={(o) => { if (!o) setRejectTarget(null); }}
+        title="Reject registration request"
+        description={
+          <>Are you sure you want to reject this registration ({rejectTarget?.email}) request?</>
+        }
+        confirmLabel="Reject"
+        onConfirm={handleRejectConfirm}
+      />
+      <ConfirmDialog
+        open={deleteTeamTarget !== null}
+        onOpenChange={(o) => { if (!o) setDeleteTeamTarget(null); }}
+        title="Delete Team"
+        description={
+          <>Are you sure you want to delete the <strong className="font-semibold text-foreground">{deleteTeamTarget?.name}</strong> team?</>
+        }
+        confirmLabel="Delete"
+        onConfirm={() => deleteTeamTarget && handleDeleteTeam(deleteTeamTarget)}
+      />
 
       {/* Edit User — form-dialog 패턴 (patterns/form-dialog.md) */}
       <EditUserDialog
