@@ -16,6 +16,9 @@
 - `/api-keys` — API Keys (구현됨)
 - `/webhooks` — 미구현
 
+도구성 페이지 (Figma 없음, 자체 정의):
+- `/design-system` — 디자인 시스템 시각 카탈로그 (2026-05-29 도입). 토큰·primitives·patterns·rules 한 곳. Production 노출은 `src/proxy.ts` Basic Auth 로 보호.
+
 ---
 
 ## 기술 스택 / 도구
@@ -233,32 +236,42 @@ api-portal/
     ├── app/
     │   ├── layout.tsx        ← Root + <Toaster>
     │   ├── globals.css
-    │   └── (dashboard)/
-    │       ├── layout.tsx    ← TopNav + Sidebar + main
-    │       ├── analytics/page.tsx
-    │       ├── api-keys/page.tsx
-    │       ├── users/
-    │       │   ├── page.tsx
-    │       │   └── team/[name]/page.tsx
-    │       └── webhooks/page.tsx
+    │   ├── (dashboard)/
+    │   │   ├── layout.tsx    ← TopNav + Sidebar + main
+    │   │   ├── analytics/page.tsx
+    │   │   ├── api-keys/page.tsx
+    │   │   ├── users/
+    │   │   │   ├── page.tsx
+    │   │   │   └── team/[name]/page.tsx
+    │   │   └── webhooks/page.tsx
+    │   ├── (docs)/           ← Documentation 라우트
+    │   ├── (api-reference)/  ← API Reference 라우트
+    │   └── (design-system)/  ← 디자인 시스템 시각 카탈로그 (TopNav 미포함)
+    │       └── design-system/
+    │           ├── layout.tsx, page.tsx (랜딩)
+    │           ├── foundations/tokens/
+    │           ├── primitives/button/
+    │           ├── patterns/form-dialog/
+    │           └── rules/states/  (placeholder)
     ├── components/
     │   ├── api-portal/       ← 도메인 컴포넌트
-    │   │   ├── AccountDropdown.tsx
-    │   │   ├── AppSidebar.tsx
-    │   │   ├── CreateApiKeyDialog.tsx
-    │   │   ├── CreateTeamDialog.tsx
-    │   │   ├── DeleteApiKeyDialog.tsx
-    │   │   ├── EditApiKeyDialog.tsx
-    │   │   ├── ProfileDialog.tsx
-    │   │   ├── sortable-head.tsx
-    │   │   ├── StatusBadge.tsx
-    │   │   ├── table-pagination.tsx
-    │   │   └── ViewApiKeyDialog.tsx
+    │   │   ├── AccountDropdown.tsx, AppSidebar.tsx
+    │   │   ├── CreateApiKeyDialog.tsx, EditApiKeyDialog.tsx, ViewApiKeyDialog.tsx
+    │   │   ├── DeleteApiKeyDialog.tsx, RevokeApiKeyDialog.tsx
+    │   │   ├── CreateTeamDialog.tsx, EditTeamDialog.tsx
+    │   │   ├── InviteUserDialog.tsx, EditUserDialog.tsx, ProfileDialog.tsx
+    │   │   ├── sortable-head.tsx, StatusBadge.tsx, table-pagination.tsx
+    │   │   └── ...
+    │   ├── design-system/    ← 카탈로그 전용 컴포넌트
+    │   │   ├── CatalogSidebar.tsx, DarkModeToggle.tsx
+    │   │   ├── ComingSoon.tsx
+    │   │   └── TokenSwatch.tsx
     │   └── ui/               ← shadcn primitives + 커스텀 sonner
     │       ├── badge.tsx, breadcrumb.tsx, button.tsx, ...
     │       └── sonner.tsx    ← 커스텀 (시맨틱 토큰 적용)
     ├── lib/
     │   ├── mock-team-data.ts ← Phase1 mock + runtime store
+    │   ├── design-system-nav.ts ← 카탈로그 사이드바 + Roadmap 데이터
     │   └── utils.ts
     ├── styles/
     │   └── tokens.generated.css

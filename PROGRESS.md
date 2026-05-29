@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + P1-1 form-dialog 패턴 착수. 다이얼로그 8개 일괄 정리 + DialogFooter primitive Figma 정합)
+최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + P1-1 form-dialog 패턴 착수 + **`/design-system` 시각 카탈로그 MVP 도입** — 랜딩 + Tokens + Button + Form Dialog 4 페이지)
 
 ## 현재 마일스톤
 
@@ -42,7 +42,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 | # | 항목 | 상태 |
 |---|---|---|
-| P3-7 | `design-system/README.md` 인덱스 + 페이지 스펙 템플릿 표준화 | ⏳ 대기 |
+| P3-7 | `design-system/README.md` 인덱스 + 페이지 스펙 템플릿 표준화 | 🔵 부분 충족 (`/design-system` 카탈로그 랜딩이 인덱스 역할 대신함) |
 | P3-8 | 토큰 남은 갭 (z-index, motion/transition, focus-ring) | ⏳ 대기 |
 | P3-9 | 작은 정합 이슈 (users.md raw RGB → 토큰 교체, Notion log 인레포 추적) | ⏳ 대기 |
 
@@ -83,6 +83,12 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **`/design-system` 시각 카탈로그 MVP** (2026-05-29) — 디자이너/개발자용 reference 사이트. 4 commit 분할 진행. 카탈로그 자체가 디자인 시스템 dogfooding.
+  - **Phase A+B (Scaffolding + Landing)** — `src/app/(design-system)/design-system/` 라우트 그룹, 전용 layout (App TopNav 미포함), `CatalogSidebar` (DocsSidebar 패턴 + `DarkModeToggle`), 5-route 사이드바 nav, 랜딩 페이지 (4 영역 카드 + 9-item Maturity Roadmap 표 + 외부 references). 9 Coming soon placeholder routes 포함.
+  - **Phase C-1 (Tokens)** — 전체 의미 색 토큰 갤러리 (Surface / Foreground / Action / Status 5-set × 4-token / Brand / Sidebar / Border-Input-Ring / Chart sequential+method / Radius 10단 / Shadow 4단). `TokenSwatch` 헬퍼 (ColorSwatch / ForegroundSwatch / RadiusSwatch / ShadowSwatch).
+  - **Phase C-2 (Button)** — variant × size 매트릭스 (6×4 = 24), icon-* 4 size, 상태 데모 (default / disabled / loading with inline Loader2), 인터랙티브 Copy 데모, 6 common patterns (form-dialog footer / confirm footer / page CTA / table inline / marketing CTA / Alert 내부 exception), 6 룰 quick reference.
+  - **Phase C-3 (Form Dialog)** — 4 라이브 다이얼로그 데모 (Create / Edit / Invite / View), Anatomy 다이어그램, 6 key decisions (Cancel outline / footer plain / field gap / error 색 / autoFocus 2-layer / width 423), 7 안티패턴, cross-refs.
+  - **인프라**: Dark mode 토글 (`html.dark` 클래스), production 노출 제한은 기존 `src/proxy.ts` Basic Auth 그대로. Figma 임베드는 MVP 보류 (Share 권한 미검증).
 
 ### TopNav
 
