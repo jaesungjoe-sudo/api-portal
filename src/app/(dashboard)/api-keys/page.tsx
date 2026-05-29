@@ -176,7 +176,7 @@ export default function ApiKeysPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="relative w-60">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-8 h-8 text-sm" placeholder="Search" />
+          <Input className="pl-8 h-8 text-sm" placeholder="Search API Key" />
         </div>
         <Button onClick={() => setCreateOpen(true)}>Create API Key</Button>
       </div>

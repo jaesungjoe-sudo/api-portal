@@ -42,6 +42,7 @@ import { EditTeamDialog } from "@/components/api-portal/EditTeamDialog";
 import { InviteUserDialog, type InviteUserInput } from "@/components/api-portal/InviteUserDialog";
 import { EditUserDialog, type EditUserPatch } from "@/components/api-portal/EditUserDialog";
 import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
+import { EmptyState } from "@/components/api-portal/EmptyState";
 import { StatusBadge } from "@/components/api-portal/StatusBadge";
 import {
   INITIAL_USERS,
@@ -53,7 +54,7 @@ import {
   type Team,
   type User,
 } from "@/lib/mock-team-data";
-import { Info, MoreHorizontal, Search, User as UserIcon } from "lucide-react";
+import { Info, MoreHorizontal, Search, User as UserIcon, UserCheck } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -442,8 +443,15 @@ function UsersPageContent() {
               <TableBody>
                 {pendingPaged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-sm text-muted-foreground py-8">
-                      No pending approvals
+                    {/* colSpan = 7 (Name/Email/Team/Role/Status/Updated/Action) */}
+                    <TableCell colSpan={7} className="py-16">
+                      <EmptyState
+                        variant="no-data"
+                        // TODO: Figma 디자인 확정 시 인스펙트 결과 아이콘으로 교체 (icons.md 워크플로우)
+                        icon={<UserCheck />}
+                        title="No pending approvals"
+                        description="New registrations awaiting review will appear here."
+                      />
                     </TableCell>
                   </TableRow>
                 ) : (
