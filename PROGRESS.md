@@ -1,16 +1,50 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-18 (Phase 3 Tabs primitive 통일 + users `?tab=` URL sync 완료)
+최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + P1-1 form-dialog 패턴 착수. 다이얼로그 8개 일괄 정리 + DialogFooter primitive Figma 정합)
 
 ## 현재 마일스톤
 
 Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start + Inbound Calls), Analytics, API Reference(Create Call)** 주요 플로우 완료. 라이브러리 통일 (Phase 1+2+3) 완료 — 페이지 전반 raw `<button>` 제거 (의도적 1건: `sortable-head.tsx`).
 
+**Design system maturity 분석 (2026-05-29 착수)** — `rules/`(primitive 룰) + `components/`(컴포넌트 spec) + `pages/`(페이지 스펙) 3 레이어에 더해 누락된 **`patterns/`(조합 패턴) 레이어** 신설 시작. 9개 항목으로 정리 (P1 3개 / P2 3개 / P3 3개), 본 섹션 하단 참조.
+
 다음 우선순위:
+- **P1-1 patterns/ 레이어 (1/5 완료)**: form-dialog ✅ → confirm-dialog → table-list-page → clickable-card-with-menu → docs-page-shell
+- **P1-3 반응형/브레이크포인트 문서**
 - 미완 페이지: **Webhooks** (디자인 대기)
-- API Reference 나머지: Get Call / Update Call 본문 (현재 placeholder)
+- API Reference 나머지: Get Call / Update Call 본문 (현재 method 배지만 적용, 본문 placeholder)
 - Documentation 추가 콘텐츠 (Tutorials, Outbound Calls, Call Recording 등 — 현재 blank)
 - 보조 기능: 검색 필터 동작, 팀 Delete 다이얼로그, Invite User to Team
+
+---
+
+## Design system maturity 로드맵 (2026-05-29 도입)
+
+`design-system/` 의 누락 레이어 분석 결과 9개 항목. 본 섹션은 이 conversation 의 작업 단위로 갱신됨.
+
+### 🔴 P1 — 새 화면이 바로 새는 영역
+
+| # | 항목 | 상태 |
+|---|---|---|
+| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | 🔵 진행 중 (1/5) |
+| P1-2 | 상태(States) 규칙 — Loading/Empty/Error/Disabled | ✅ 완료 (2026-05-29) |
+| P1-3 | 반응형/브레이크포인트 문서 | ⏳ 대기 |
+
+### 🟡 P2 — 성숙도/일관성
+
+| # | 항목 | 상태 |
+|---|---|---|
+| P2-4 | 컴포넌트 문서 커버리지 (card / dropdown-menu / tooltip / sonner 우선) | ⏳ 대기 |
+| P2-5 | 타이포그래피 "역할 → 클래스" 시맨틱 매핑 | ⏳ 대기 (states.md / empty-state.md 가 placeholder 로 의존 중) |
+| P2-6 | a11y/인터랙션 베이스라인 (autofocus / aria-label / focus-ring 통합) | ⏳ 대기 |
+
+### 🟢 P3 — 운영/유지보수
+
+| # | 항목 | 상태 |
+|---|---|---|
+| P3-7 | `design-system/README.md` 인덱스 + 페이지 스펙 템플릿 표준화 | ⏳ 대기 |
+| P3-8 | 토큰 남은 갭 (z-index, motion/transition, focus-ring) | ⏳ 대기 |
+| P3-9 | 작은 정합 이슈 (users.md raw RGB → 토큰 교체, Notion log 인레포 추적) | ⏳ 대기 |
 
 ---
 
@@ -42,6 +76,13 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 - [x] **ToggleGroup primitive 도입 + segmented control 통일** (2026-05-15) — `src/components/ui/toggle-group.tsx` 신규 (Base UI `@base-ui/react/toggle-group` + `toggle` wrapping, cva variant `outlined`/`pill` + size `default`/`sm`). single-value 외부 API (`value: string`, `onValueChange: (v: string) => void`) 로 Base UI 의 array API 래핑. `AnalyticsTabs.tsx` → `outlined`, `HomeMetricsChart.tsx` → `pill size="sm"` 마이그레이션. raw `<button>` 6건 제거. 자동 부수효과: 화살표 키보드 내비게이션, `aria-pressed`, focus-visible ring. 문서: `design-system/components/toggle-group.md`.
 - [x] **Analytics 메인 차트 단일 라인 변경 + tooltip method 분해** (2026-05-15) — `AnalyticsCallVolumeChart` stacked 2-series(read/write) → 단일 `total` area(info-chart blue). 호버 tooltip 커스텀 `RequestVolumeTooltip` (총 + GET/POST/PUT/PATCH/DELETE 5 row, swatch + 값). 범례 제거. `CallVolumePoint` 타입 `{month, total, get, post, put, patch, delete}` 으로 재구성. 3 period(6m/30d/7d) mock 모두 method-별 breakdown 으로 갱신. 카피 "Call volume trend" → "Request volume trend", summary card 1 "Total calls" → "Total Requests" 3 period 공통.
 - [x] **Analytics 페이지 반응형** (2026-05-15) — 헤더 stacked(`md:flex-row`), Summary 카드 `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`, 하단 row `flex-col lg:flex-row`, MethodDistribution `w-full lg:w-[420px]`, TopApis endpoint 컬럼 `w-[120px] sm:w-[200px]`, CallVolume legend `flex-wrap`, AnalyticsTabs `md` 미만 라벨 축약 (`6m`/`30d`/`7d`). `AnalyticsSummaryCard`에서 `flex-1` 제거 (grid가 폭 결정).
+- [x] **P1-2 States 룰 + EmptyState 베이스라인 spec** (2026-05-29) — `design-system/rules/states.md` 신규 (Truth 출처 경계 표 + 표면×상태 6×3 매트릭스 + Loading/Empty/Error 상세 + Disabled cross-ref + Button 규칙 §5.3 예외 박스). `design-system/components/empty-state.md` 신규 (라이브러리 전용 컴포넌트 없어 자체 정의, 2 variant + Props + 토큰 + 예시 3종 + 안티패턴 5종). 아이콘은 Figma 인스펙트 결과 사용 톤 (icons.md 워크플로우 cross-ref). EmptyState 컴포넌트 코드는 아직 미작성 — spec 만 정의.
+- [x] **P1-1 patterns/ 레이어 신설 + form-dialog 패턴 + 다이얼로그 정합** (2026-05-29) — `design-system/patterns/` 디렉토리 신설. `patterns/form-dialog.md` 신규 (12 섹션: 구조/width/header/필드 gap/검증/footer/variant/autoFocus 2-layer/pre-fill·empty/View 변형/안티패턴 9종/적용 컴포넌트표). 결정 사항:
+  - **Cancel 일괄 outline** (form/confirm 모두). `secondary` variant 는 Toolbar/Header 보조 액션으로 재할당 (현재 사용처 0건, 미래 대비). `button.md` / `dialog.md` 갱신.
+  - **DialogFooter primitive Figma 정합 plain 화** — Figma MCP 로 Form Dialog (1489:47265) + Confirm Dialog (1460:30528) 풋터 인스펙트 결과 4개 시각 요소(border-t / bg-muted / -mx-4 -mb-4 / rounded-b-xl) 모두 ❌. `src/components/ui/dialog.tsx` 의 DialogFooter cva 에서 제거 (CLAUDE.md 룰 10 정합, className 우회 금지).
+  - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
+  - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
+- [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
 
 ### TopNav
 
@@ -182,8 +223,8 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 ### 4. 보조 기능 / UX 개선
 
 - [x] ✅ **Phase 3 — users underline tabs → shadcn Tabs primitive** (2026-05-18) — `src/components/ui/tabs.tsx` Base UI 기반 신규 (`Tabs`/`TabsList`/`TabsTrigger`/`TabsContent`, cva `text` variant). `users/page.tsx` raw `<button>` 3개 제거. URL `?tab=` 진입 + 변경 양방향 sync (`router.replace` + `pathname` 기본탭 strip). 문서: `design-system/components/tabs.md`.
+- [x] ✅ **ProfileDialog autoFocus 차단 검증** (2026-05-29) — form-dialog 패턴 적용 시 sr-only focus 흡수 span + `autoFocus={false}` 명시. 시각 확인 통과.
 - [ ] **검색 입력 실제 필터** — Users/API Keys/Team 상세 모두 입력 UI만 있고 필터 동작 없음
-- [ ] **ProfileDialog autoFocus 차단 검증** — Base UI Dialog 기본 동작 vs CLAUDE.md 룰 미검증
 - [ ] **`sortable-head.tsx` 라이브러리 통합 여부 재검토** — Phase 1 에서 table th padding 충돌로 의도적 제외. ghost-text-only Button variant 추가 시 통합 가능성 재고.
 
 ### 5. 데이터 / 인프라
@@ -226,7 +267,8 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 ### 알려진 작은 이슈
 
-- **ProfileDialog / EditTeamDialog autoFocus** — Base UI Dialog 기본 동작상 첫 input에 포커스가 잡힐 가능성. CLAUDE.md 규칙은 차단이지만 미검증.
+- ~~**ProfileDialog / EditTeamDialog autoFocus**~~ — ✅ 2026-05-29 form-dialog 패턴 적용 시 sr-only focus 흡수 span + `autoFocus={false}` 명시로 해소.
 - **Team rename 후 user.team 미갱신** — `updateTeam()`은 team 레코드만 변경. 멤버의 `user.team` 필드는 그대로 (Phase1 mock 한계).
 - **EditTeamDialog Description 카피** — Figma에 "Create a team..." (Create 다이얼로그와 동일) 그대로 사용. 디자인팀 의도 확인 필요.
 - **Code block syntax highlighting** — Phase1은 plain text monospace. syntax highlighter(prism/shiki) 도입 시 CodeBlock 컴포넌트만 교체.
+- **다이얼로그 본문 padding** — primitive `p-4` (16) vs Figma 인스펙트 결과 `padding: 24`. form-dialog 정리 PR 에선 스코프 외로 미정정. 별도 결정 필요.
