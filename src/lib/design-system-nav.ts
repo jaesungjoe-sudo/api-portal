@@ -56,6 +56,11 @@ export const DESIGN_SYSTEM_NAV: DesignSystemNavItem[] = [
         href: "/design-system/patterns/table-list-page",
         doc: "design-system/patterns/table-list-page.md",
       },
+      {
+        label: "Docs Page Shell",
+        href: "/design-system/patterns/docs-page-shell",
+        doc: "design-system/patterns/docs-page-shell.md",
+      },
     ],
   },
   {
@@ -86,7 +91,7 @@ export type RoadmapItem = {
 };
 
 export const ROADMAP: RoadmapItem[] = [
-  { id: "P1-1", label: "patterns/ layer (5 patterns)", priority: "P1", status: "🔵 In progress", note: "3 / 5 done (form-dialog, confirm-dialog, table-list-page)" },
+  { id: "P1-1", label: "patterns/ layer (5 patterns)", priority: "P1", status: "🔵 In progress", note: "4 / 5 done (form-dialog, confirm-dialog, table-list-page, docs-page-shell)" },
   { id: "P1-2", label: "States — Loading / Empty / Error / Disabled", priority: "P1", status: "✅ Done" },
   { id: "P1-3", label: "Responsive / breakpoint guide", priority: "P1", status: "⏳ Pending" },
   { id: "P2-4", label: "Component doc coverage (24 primitives)", priority: "P2", status: "⏳ Pending", note: "11 / 24 documented" },
