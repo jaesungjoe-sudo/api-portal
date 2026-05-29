@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -59,7 +60,7 @@ export function CreateApiKeyDialog({
           <DialogTitle>Create a new key</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <Label
             htmlFor="api-key-name"
             className={error ? "text-destructive" : ""}
@@ -70,6 +71,7 @@ export function CreateApiKeyDialog({
             id="api-key-name"
             placeholder="API Key Name"
             value={name}
+            autoFocus={false}
             aria-invalid={error}
             onChange={(e) => {
               setName(e.target.value);
@@ -77,11 +79,11 @@ export function CreateApiKeyDialog({
             }}
           />
           {error && (
-            <p className="text-sm text-muted-foreground">Name is required</p>
+            <p className="text-sm text-destructive">Name is required</p>
           )}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="api-key-expiry">Expiry</Label>
           <Select
             value={expiry}
@@ -100,12 +102,12 @@ export function CreateApiKeyDialog({
           </Select>
         </div>
 
-        <div className="mt-2 flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button onClick={handleCreate}>Create</Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

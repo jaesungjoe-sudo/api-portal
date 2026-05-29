@@ -45,6 +45,8 @@ import {
 
 ## Form Dialog 공통 구조
 
+상세 룰은 `patterns/form-dialog.md` 참조. 본 섹션은 골격만.
+
 ```tsx
 <Dialog open={editOpen} onOpenChange={handleClose}>
   <DialogContent className="sm:max-w-[423px]">
@@ -52,18 +54,22 @@ import {
     <span tabIndex={0} className="sr-only outline-none" aria-hidden="true" />
     <DialogHeader>
       <DialogTitle>{제목}</DialogTitle>
-      <DialogDescription>{설명}</DialogDescription>
+      {/* DialogDescription 은 조건부 — form-dialog.md §3 */}
     </DialogHeader>
-    <div className="flex flex-col gap-4">
-      {/* 필드들: gap-4 (16px) 로 구분 */}
+    {/* 필드 그룹들: 각자 gap-2, 그룹 사이는 DialogContent 의 gap-4 가 책임 */}
+    <div className="flex flex-col gap-2">
+      <Label .../>
+      <Input .../>
     </div>
-    <div className="flex justify-end gap-2 mt-2">
-      <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+    <DialogFooter>
+      <Button variant="outline" onClick={handleClose}>Cancel</Button>
       <Button onClick={handleSave}>{액션명}</Button>
-    </div>
+    </DialogFooter>
   </DialogContent>
 </Dialog>
 ```
+
+> **DialogFooter primitive 는 plain** (Figma 정합 — 풋터 위 구분선 / 배경 / 가장자리 확장 / 둥근 모서리 모두 없음). 별도 `mt-2` 등 위쪽 마진 추가 금지. 자세한 인스펙트 결과는 `patterns/form-dialog.md` §6.
 
 ## Focus 규칙 (Edit 다이얼로그)
 

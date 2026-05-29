@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -60,11 +61,13 @@ export function EditApiKeyDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[423px]">
+        {/* Edit 다이얼로그 focus 흡수 — patterns/form-dialog.md §8 */}
+        <span tabIndex={0} className="sr-only outline-none" aria-hidden="true" />
         <DialogHeader>
           <DialogTitle>Edit API key</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <Label
             htmlFor="edit-api-key-name"
             className={error ? "text-destructive" : ""}
@@ -74,6 +77,7 @@ export function EditApiKeyDialog({
           <Input
             id="edit-api-key-name"
             value={name}
+            autoFocus={false}
             aria-invalid={error}
             onChange={(e) => {
               setName(e.target.value);
@@ -81,11 +85,11 @@ export function EditApiKeyDialog({
             }}
           />
           {error && (
-            <p className="text-sm text-muted-foreground">Name is required</p>
+            <p className="text-sm text-destructive">Name is required</p>
           )}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="edit-api-key-expiry">Expiry</Label>
           <Select
             value={expiry}
@@ -104,19 +108,19 @@ export function EditApiKeyDialog({
           </Select>
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <Label>Created</Label>
           <p className="text-sm text-muted-foreground">
             {initialKey ? formatDate(initialKey.createdMs) : ""}
           </p>
         </div>
 
-        <div className="mt-2 flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button onClick={handleSave}>Save</Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

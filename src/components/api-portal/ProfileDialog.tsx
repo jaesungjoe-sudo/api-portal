@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -56,85 +57,86 @@ export function ProfileDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[423px]">
+        {/* Edit 다이얼로그 focus 흡수 — patterns/form-dialog.md §8 */}
+        <span tabIndex={0} className="sr-only outline-none" aria-hidden="true" />
         <DialogHeader>
           <DialogTitle>Profile</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4">
-          {/* Avatar + Email row */}
-          <div className="flex items-end gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-fuchsia-600 text-xl font-semibold text-white">
-              {CURRENT_USER.initial}
-            </div>
-            <div className="flex flex-1 flex-col gap-2">
-              <Label htmlFor="profile-email">Email</Label>
-              <Input
-                id="profile-email"
-                value={CURRENT_USER.email}
-                disabled
-                readOnly
-              />
-            </div>
+        {/* Avatar + Email row */}
+        <div className="flex items-end gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-fuchsia-600 text-xl font-semibold text-white">
+            {CURRENT_USER.initial}
           </div>
-
-          {/* Name */}
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="profile-name"
-              className={errors.name ? "text-destructive" : ""}
-            >
-              Name
-            </Label>
+          <div className="flex flex-1 flex-col gap-2">
+            <Label htmlFor="profile-email">Email</Label>
             <Input
-              id="profile-name"
-              value={name}
-              aria-invalid={errors.name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) setErrors((p) => ({ ...p, name: false }));
-              }}
+              id="profile-email"
+              value={CURRENT_USER.email}
+              disabled
+              readOnly
             />
-            {errors.name && (
-              <p className="text-sm text-muted-foreground">Name is required</p>
-            )}
-          </div>
-
-          {/* Role — 본인은 자기 role 변경 불가 (Figma: State=disabled) */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="profile-role">Role</Label>
-            <Select value={CURRENT_USER.role} disabled>
-              <SelectTrigger id="profile-role">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="manager">Manager</SelectItem>
-                <SelectItem value="developer">Developer</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Team — Figma State=disabled */}
-          <div className="flex flex-col gap-2">
-            <Label>Team</Label>
-            <Select value={CURRENT_USER.team} disabled>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="api-portal">API Portal</SelectItem>
-                <SelectItem value="default">Default</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 
-        <div className="mt-2 flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
+        {/* Name */}
+        <div className="flex flex-col gap-2">
+          <Label
+            htmlFor="profile-name"
+            className={errors.name ? "text-destructive" : ""}
+          >
+            Name
+          </Label>
+          <Input
+            id="profile-name"
+            value={name}
+            autoFocus={false}
+            aria-invalid={errors.name}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (errors.name) setErrors((p) => ({ ...p, name: false }));
+            }}
+          />
+          {errors.name && (
+            <p className="text-sm text-destructive">Name is required</p>
+          )}
+        </div>
+
+        {/* Role — 본인은 자기 role 변경 불가 (Figma: State=disabled) */}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="profile-role">Role</Label>
+          <Select value={CURRENT_USER.role} disabled>
+            <SelectTrigger id="profile-role">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="manager">Manager</SelectItem>
+              <SelectItem value="developer">Developer</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Team — Figma State=disabled */}
+        <div className="flex flex-col gap-2">
+          <Label>Team</Label>
+          <Select value={CURRENT_USER.team} disabled>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="api-portal">API Portal</SelectItem>
+              <SelectItem value="default">Default</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button onClick={handleSave}>Save</Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

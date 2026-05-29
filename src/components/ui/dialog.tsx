@@ -101,8 +101,11 @@ function DialogFooter({
   return (
     <div
       data-slot="dialog-footer"
+      // Figma 정합 — plain footer (가로 구분선 / 회색 배경 / 가장자리 확장 / 둥근 모서리 모두 없음).
+      // 본문과의 위쪽 간격은 DialogContent 의 gap-4 가 책임지므로 별도 mt-* 불필요.
+      // 자세한 룰: design-system/patterns/form-dialog.md §6
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
         className
       )}
       {...props}

@@ -9,12 +9,16 @@ import { Button } from "@/components/ui/button"
 
 | variant | 용도 | shadow |
 |---|---|---|
-| `default` | 주요 액션 (Save, Send Invite) | `shadow-xs` |
-| `outline` | 보조 액션 (Cancel 대안, Approve, Resend) | `shadow-xs` |
-| `secondary` | Cancel | `shadow-xs` |
+| `default` | 주요 액션 (Save, Send Invite, Create) | `shadow-xs` |
+| `outline` | **모든 Cancel** (form-dialog / confirm-dialog), Approve / Reject / Resend, 랜딩 보조 CTA | `shadow-xs` |
+| `secondary` | **Toolbar / Header 보조 액션** (Export / Filter / Refresh 등). 현재 사용처 0건 — Webhooks / Analytics 등 향후 적용 예정. | `shadow-xs` |
 | `ghost` | 플랫 (icon 버튼) | 없음 |
-| `destructive` | 삭제·파괴 액션 (Deactivate, Reject) | `shadow-xs` |
+| `destructive` | 삭제·파괴 액션 (Deactivate, Reject, Delete) | `shadow-xs` |
 | `link` | 텍스트 링크 | 없음 |
+
+### Cancel 은 모두 `outline` (변경 이력)
+
+이전엔 form-dialog 의 Cancel 이 `secondary`, confirm-dialog 의 Cancel 이 `outline` 으로 갈라져 있었다. 현재는 **모든 다이얼로그의 Cancel 을 `outline` 으로 통일**. `secondary` 는 다이얼로그 외부의 보조 액션 용도로 재할당. 자세한 결정 배경은 `patterns/form-dialog.md` §7 참조.
 
 ## Size
 

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -117,9 +118,9 @@ export function ViewApiKeyDialog({
           </div>
         </div>
 
-        <div className="mt-2 flex justify-end">
+        <DialogFooter>
           <Button onClick={() => onOpenChange(false)}>Done</Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

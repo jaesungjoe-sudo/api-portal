@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -69,6 +70,7 @@ export function CreateTeamDialog({
             id="create-team-name"
             placeholder="Enter Team name"
             value={name}
+            autoFocus={false}
             aria-invalid={error}
             onChange={(e) => {
               setName(e.target.value);
@@ -76,7 +78,7 @@ export function CreateTeamDialog({
             }}
           />
           {error && (
-            <p className="text-sm text-muted-foreground">Team name is required</p>
+            <p className="text-sm text-destructive">Team name is required</p>
           )}
         </div>
 
@@ -94,12 +96,12 @@ export function CreateTeamDialog({
           <p className="text-xs text-muted-foreground">{remaining} characters left</p>
         </div>
 
-        <div className="mt-2 flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button onClick={handleCreate}>Create</Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

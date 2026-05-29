@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -54,6 +55,8 @@ export function EditTeamDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[423px]">
+        {/* Edit 다이얼로그 focus 흡수 — patterns/form-dialog.md §8 */}
+        <span tabIndex={0} className="sr-only outline-none" aria-hidden="true" />
         <DialogHeader>
           <DialogTitle>Edit Team</DialogTitle>
           <DialogDescription>
@@ -73,6 +76,7 @@ export function EditTeamDialog({
             id="edit-team-name"
             placeholder="Enter Team name"
             value={name}
+            autoFocus={false}
             aria-invalid={error}
             onChange={(e) => {
               setName(e.target.value);
@@ -80,7 +84,7 @@ export function EditTeamDialog({
             }}
           />
           {error && (
-            <p className="text-sm text-muted-foreground">Team name is required</p>
+            <p className="text-sm text-destructive">Team name is required</p>
           )}
         </div>
 
@@ -98,12 +102,12 @@ export function EditTeamDialog({
           <p className="text-xs text-muted-foreground">{remaining} characters left</p>
         </div>
 
-        <div className="mt-2 flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => onOpenChange(false)}>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button onClick={handleSave}>Save</Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
