@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + P1-1 form-dialog 패턴 착수 + **`/design-system` 시각 카탈로그 MVP 도입** — 랜딩 + Tokens + Button + Form Dialog 4 페이지)
+최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + P1-1 patterns 2/5 (form-dialog + **confirm-dialog**) + `/design-system` 시각 카탈로그 + DialogFooter/showCloseButton Figma 정합)
 
 ## 현재 마일스톤
 
@@ -9,7 +9,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 **Design system maturity 분석 (2026-05-29 착수)** — `rules/`(primitive 룰) + `components/`(컴포넌트 spec) + `pages/`(페이지 스펙) 3 레이어에 더해 누락된 **`patterns/`(조합 패턴) 레이어** 신설 시작. 9개 항목으로 정리 (P1 3개 / P2 3개 / P3 3개), 본 섹션 하단 참조.
 
 다음 우선순위:
-- **P1-1 patterns/ 레이어 (1/5 완료)**: form-dialog ✅ → confirm-dialog → table-list-page → clickable-card-with-menu → docs-page-shell
+- **P1-1 patterns/ 레이어 (2/5 완료)**: form-dialog ✅ + confirm-dialog ✅ → table-list-page → clickable-card-with-menu → docs-page-shell
 - **P1-3 반응형/브레이크포인트 문서**
 - 미완 페이지: **Webhooks** (디자인 대기)
 - API Reference 나머지: Get Call / Update Call 본문 (현재 method 배지만 적용, 본문 placeholder)
@@ -26,7 +26,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 | # | 항목 | 상태 |
 |---|---|---|
-| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | 🔵 진행 중 (1/5) |
+| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | 🔵 진행 중 (2/5) |
 | P1-2 | 상태(States) 규칙 — Loading/Empty/Error/Disabled | ✅ 완료 (2026-05-29) |
 | P1-3 | 반응형/브레이크포인트 문서 | ⏳ 대기 |
 
@@ -83,6 +83,13 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P1-1 confirm-dialog 패턴 + ConfirmDialog 공용 컴포넌트** (2026-05-29) — 5개 confirm-dialog (Delete API Key / Revoke / Deactivate / Reject / **Delete Team 신규**) 모두 `<ConfirmDialog>` thin wrapper 로 통일. 핵심 결정:
+  - `src/components/api-portal/ConfirmDialog.tsx` 신규 — 512 width / `showCloseButton={false}` / DialogDescription 필수 / outline Cancel + destructive Confirm 강제. description prop 은 ReactNode (엔티티 이름 강조 지원).
+  - DeleteApiKeyDialog / RevokeApiKeyDialog 풀 파일 → 5-line wrapper. users/page.tsx 의 인라인 Deactivate/Reject Dialog → ConfirmDialog 직접 사용.
+  - **Delete Team 백로그 해소** — TeamCard onDelete 가 즉시 삭제하던 것을 ConfirmDialog 확인 단계 추가 (팀 이름 굵게 강조).
+  - **Figma X 버튼 정합 부수 효과** — Figma form-dialog / confirm-dialog 모두 X 없음 확인. `DialogContent` primitive 의 `showCloseButton` 기본값 `true` → `false` 로 변경 (CLAUDE.md 룰 10 정합). 8 form-dialog 모두 자동 정합, 호출부 변경 0건. Dismiss 경로는 Cancel / Esc / 백드롭 3가지 유지.
+  - 카탈로그 `/design-system/patterns/confirm-dialog` 페이지 신규 (5 라이브 데모 + Anatomy + 6 decisions + form vs confirm 비교 표 + 7 anti-patterns). nav + Roadmap "2/5" 갱신.
+  - 문서: `design-system/patterns/confirm-dialog.md` 신규 (9 섹션), `components/dialog.md` 의 Confirm Dialog 섹션 갱신, `patterns/form-dialog.md` 의 X 버튼 정책 박스 + cross-ref 갱신.
 - [x] **`/design-system` 시각 카탈로그 MVP** (2026-05-29) — 디자이너/개발자용 reference 사이트. 4 commit 분할 진행. 카탈로그 자체가 디자인 시스템 dogfooding.
   - **Phase A+B (Scaffolding + Landing)** — `src/app/(design-system)/design-system/` 라우트 그룹, 전용 layout (App TopNav 미포함), `CatalogSidebar` (DocsSidebar 패턴 + `DarkModeToggle`), 5-route 사이드바 nav, 랜딩 페이지 (4 영역 카드 + 9-item Maturity Roadmap 표 + 외부 references). 9 Coming soon placeholder routes 포함.
   - **Phase C-1 (Tokens)** — 전체 의미 색 토큰 갤러리 (Surface / Foreground / Action / Status 5-set × 4-token / Brand / Sidebar / Border-Input-Ring / Chart sequential+method / Radius 10단 / Shadow 4단). `TokenSwatch` 헬퍼 (ColorSwatch / ForegroundSwatch / RadiusSwatch / ShadowSwatch).
@@ -223,7 +230,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 ### 3. Team 운영 보조 기능
 
-- [ ] **Delete Team 확인 다이얼로그** — 현재 toast placeholder. DeleteApiKeyDialog 패턴 재사용 가능 여부 확인 필요.
+- [x] ✅ **Delete Team 확인 다이얼로그** (2026-05-29) — ConfirmDialog 공용 컴포넌트로 해소. 팀 이름 강조 + destructive Confirm.
 - [ ] **Invite User (특정 팀에)** — 팀 상세 페이지의 Invite 버튼 toast placeholder.
 
 ### 4. 보조 기능 / UX 개선
@@ -258,7 +265,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 ### 사용자 결정 / 디자인 노드 필요
 
-- [ ] **Delete Team 확인 다이얼로그** Figma 노드 ID — 또는 "DeleteApiKeyDialog 패턴 재사용 OK" 확인
+- [x] ✅ **Delete Team 확인 다이얼로그** Figma 노드 ID (2026-05-29) — DeleteApiKeyDialog 패턴 (ConfirmDialog 공용 컴포넌트) 재사용으로 해소.
 - [ ] **Invite User to Team** Figma 노드 ID — 또는 "기존 Invite User 다이얼로그 재사용 OK" 확인
 - [ ] **Webhooks 페이지** Figma 노드 위치
 - [x] ✅ **Analytics 30d/7d 탭 mock 데이터** (2026-05-14) — 그럴듯한 mock 추가 (Week 1-4 / Mon-Sun). 캡션도 period-aware (`Total for the last N days`).
