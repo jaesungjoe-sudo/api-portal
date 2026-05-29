@@ -117,13 +117,12 @@ export default function CreateCallPage() {
         { label: "API Reference", href: "/api-reference/create-call" },
         { label: "Create Call" },
       ]}
+      tag={<MethodBadge method="POST" />}
       title="Create Call"
       description="Create an inbound call for testing or integration purposes."
       toc={TOC}
       next={{ label: "Get Call", href: "/api-reference/get-call" }}
     >
-      <PostBadge />
-
       <DocsSection id="authentication" title="Endpoint">
         <EndpointCard method="POST" url="https://{subdomain}.ujet.cx/apps/api/v1/calls" />
         <p className="text-base text-foreground">
@@ -265,14 +264,6 @@ export default function CreateCallPage() {
         />
       </DocsSection>
     </DocsPageShell>
-  );
-}
-
-function PostBadge() {
-  return (
-    <div className="-mt-6">
-      <MethodBadge method="POST" />
-    </div>
   );
 }
 

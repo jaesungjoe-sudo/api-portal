@@ -14,6 +14,7 @@ export type DocsNavLink = { label: string; href: string };
 
 export function DocsPageShell({
   breadcrumb,
+  tag,
   title,
   description,
   toc,
@@ -22,6 +23,8 @@ export function DocsPageShell({
   children,
 }: {
   breadcrumb: { label: string; href?: string }[];
+  /** Figma Header 프레임 최상단 배지(예: API Reference method badge). 없으면 title이 breadcrumb 바로 아래. */
+  tag?: React.ReactNode;
   title: string;
   description?: string;
   toc?: TocItem[];
@@ -54,6 +57,9 @@ export function DocsPageShell({
               })}
             </BreadcrumbList>
           </Breadcrumb>
+
+          {/* Tag (method badge 등) — Figma Header 프레임 최상단, 제목 위 */}
+          {tag && <div className="mb-3">{tag}</div>}
 
           {/* Title */}
           <h1 className="mb-4 text-4xl font-semibold text-foreground">{title}</h1>

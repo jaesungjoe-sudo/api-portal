@@ -1,4 +1,5 @@
 import { DocsPageShell } from "@/components/api-portal/DocsPageShell";
+import { MethodBadge } from "@/components/api-portal/MethodBadge";
 
 export default function GetCallPage() {
   return (
@@ -8,6 +9,7 @@ export default function GetCallPage() {
         { label: "API Reference", href: "/api-reference/create-call" },
         { label: "Get Call" },
       ]}
+      tag={<MethodBadge method="GET" />}
       title="Get Call"
       description="Coming soon."
     >
