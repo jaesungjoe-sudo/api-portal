@@ -46,6 +46,16 @@ export const DESIGN_SYSTEM_NAV: DesignSystemNavItem[] = [
         href: "/design-system/primitives/dropdown-menu",
         doc: "design-system/components/dropdown-menu.md",
       },
+      {
+        label: "Sonner (Toast)",
+        href: "/design-system/primitives/sonner",
+        doc: "design-system/components/sonner.md",
+      },
+      {
+        label: "Tooltip",
+        href: "/design-system/primitives/tooltip",
+        doc: "design-system/components/tooltip.md",
+      },
     ],
   },
   {
@@ -119,7 +129,7 @@ export const ROADMAP: RoadmapItem[] = [
   { id: "P1-1", label: "patterns/ layer (5 patterns)", priority: "P1", status: "✅ Done", note: "5 / 5 complete — patterns layer fully established" },
   { id: "P1-2", label: "States — Loading / Empty / Error / Disabled", priority: "P1", status: "✅ Done" },
   { id: "P1-3", label: "Responsive / breakpoint guide", priority: "P1", status: "✅ Done" },
-  { id: "P2-4", label: "Component doc coverage (24 primitives)", priority: "P2", status: "⏳ Pending", note: "11 / 24 documented" },
+  { id: "P2-4", label: "Component doc coverage (24 primitives)", priority: "P2", status: "🔵 In progress", note: "15 / 24 documented (priority 4 added: breadcrumb, dropdown-menu, sonner, tooltip)" },
   { id: "P2-5", label: "Typography role → class mapping", priority: "P2", status: "✅ Done" },
   { id: "P2-6", label: "a11y / interaction baseline", priority: "P2", status: "⏳ Pending" },
   { id: "P3-7", label: "design-system/README.md index + page template", priority: "P3", status: "⏳ Pending" },

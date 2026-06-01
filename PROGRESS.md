@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-01 (P1 완료 + **P2-5 Typography 역할표** — 4/9 (44%) 달성. 다음: P2-4 (컴포넌트 커버리지) / P2-6 (a11y))
+최종 업데이트: 2026-06-01 (P1 완료 + P2-5 Typography + **P2-4 우선 4개 컴포넌트 문서화** (breadcrumb / dropdown-menu / sonner / tooltip) — 15/24 documented. 다음: P2-6 (a11y))
 
 ## 현재 마일스톤
 
@@ -34,7 +34,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 | # | 항목 | 상태 |
 |---|---|---|
-| P2-4 | 컴포넌트 문서 커버리지 (card / dropdown-menu / tooltip / sonner 우선) | ⏳ 대기 |
+| P2-4 | 컴포넌트 문서 커버리지 (24 primitives) | 🔵 부분 (15/24 — breadcrumb / dropdown-menu / sonner / tooltip 추가, Card 는 unused 라 후순위) |
 | P2-5 | 타이포그래피 "역할 → 클래스" 시맨틱 매핑 | ✅ 완료 (2026-06-01) — 문서 only, shadcn scope 분리 |
 | P2-6 | a11y/인터랙션 베이스라인 (autofocus / aria-label / focus-ring 통합) | ⏳ 대기 |
 
@@ -83,6 +83,15 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P2-4 (부분) 우선 4개 컴포넌트 문서화** (2026-06-01) — 11/24 → 15/24. 2 commit 분할.
+  - **commit 1**: `breadcrumb.md` + `dropdown-menu.md` 신규 (네비/메뉴 묶음). 카탈로그 페이지 2개 추가.
+  - **commit 2**: `tooltip.md` + `sonner.md` 신규 (피드백 묶음). 카탈로그 페이지 2개 추가.
+  - **Card 는 후순위** — primitive 파일 존재하나 앱 사용처 0건. 채택 결정 시 다시 문서화.
+  - Breadcrumb: 3 라이브 데모 (3-level / detail dynamic / DocsPageShell prop), Anatomy 6 row.
+  - DropdownMenu: 4 라이브 데모 (Standard ⋯ / Protected conditional / Separator group / Avatar trigger), 7 anti-patterns.
+  - Tooltip: Help icon + Disabled button reason + 4-side position variants 데모. `<TooltipProvider>` 루트 mount 룰 명시.
+  - Sonner: 5 semantic types 라이브 toast + description + promise 패턴 데모. toast vs Alert 채널 결정 표.
+  - Primitives 그룹 nav: Button 1개 → 5개 (Breadcrumb / Button / DropdownMenu / Sonner / Tooltip 알파벳 순).
 - [x] **P2-5 타이포그래피 역할 → 클래스 매핑** (2026-06-01) — 문서 only 접근. shadcn primitive scope 외 명시. 코드 변경 0건.
   - `design-system/rules/typography.md` 신규 (8 섹션): Scope (shadcn primitive 제외 이유 설명) / 12 역할 표 (Heading 7 + Body 5 + Code-Link 3) / page-title / section-title 의 2-variant 룰 (dashboard vs docs 의도된 차이) / 사용 예시 / 향후 추가 검토 항목 / 안티패턴 / 표 갱신 룰.
   - **shadcn 정합 분석 후 의도적 결정**: shadcn 은 시맨틱 typography role 정의 안 함 (Tailwind utility-first 철학). 우리도 Tailwind 유틸리티 클래스 (`.text-page-title` 등) 신설은 비추. 본 표는 *클러스터 라벨 lookup* 으로만 운영. 248곳 `text-sm` 마이그레이션 0건, shadcn 컴포넌트 추가 시 충돌 0건.
