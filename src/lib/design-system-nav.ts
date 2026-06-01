@@ -32,9 +32,19 @@ export const DESIGN_SYSTEM_NAV: DesignSystemNavItem[] = [
     label: "Primitives",
     items: [
       {
+        label: "Breadcrumb",
+        href: "/design-system/primitives/breadcrumb",
+        doc: "design-system/components/breadcrumb.md",
+      },
+      {
         label: "Button",
         href: "/design-system/primitives/button",
         doc: "design-system/components/button.md",
+      },
+      {
+        label: "DropdownMenu",
+        href: "/design-system/primitives/dropdown-menu",
+        doc: "design-system/components/dropdown-menu.md",
       },
     ],
   },
