@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-01 (**P1-1 patterns/ 레이어 5/5 완성** ✅ — 5개 패턴 + 카탈로그 페이지 + 코드 정합 마무리. CLAUDE.md slim 처리.)
+최종 업데이트: 2026-06-01 (**P1 전체 완료** ✅ — P1-1 patterns 5/5 + P1-2 States + P1-3 Responsive 룰. 다음: P2 영역 (컴포넌트 커버리지 / 타이포 역할표 / a11y 베이스라인))
 
 ## 현재 마일스톤
 
@@ -9,7 +9,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 **Design system maturity 분석 (2026-05-29 착수)** — `rules/`(primitive 룰) + `components/`(컴포넌트 spec) + `pages/`(페이지 스펙) 3 레이어에 더해 누락된 **`patterns/`(조합 패턴) 레이어** 신설 시작. 9개 항목으로 정리 (P1 3개 / P2 3개 / P3 3개), 본 섹션 하단 참조.
 
 다음 우선순위:
-- **P1-1 patterns/ 레이어 5/5 완성** ✅ — form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu. 다음: P1-3 반응형 또는 P2 영역.
+- **P1 전체 완료** ✅ — patterns 5/5 (form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu) + States 룰 + Responsive 룰. 다음: P2 영역 — 컴포넌트 커버리지 / 타이포 역할표 / a11y 베이스라인.
 - **P1-3 반응형/브레이크포인트 문서**
 - 미완 페이지: **Webhooks** (디자인 대기)
 - API Reference 나머지: Get Call / Update Call 본문 (현재 method 배지만 적용, 본문 placeholder)
@@ -28,7 +28,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 |---|---|---|
 | P1-1 | **patterns/ 레이어 신설** (5개 패턴) | ✅ 완료 (5/5) |
 | P1-2 | 상태(States) 규칙 — Loading/Empty/Error/Disabled | ✅ 완료 (2026-05-29) |
-| P1-3 | 반응형/브레이크포인트 문서 | ⏳ 대기 |
+| P1-3 | 반응형/브레이크포인트 문서 | ✅ 완료 (2026-06-01) |
 
 ### 🟡 P2 — 성숙도/일관성
 
@@ -83,6 +83,11 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P1-3 반응형 / 브레이크포인트 룰** (2026-06-01) — 코드 refactor 없이 룰 문서화 + 카탈로그. P1 영역 완성.
+  - `design-system/rules/responsive.md` 신규 (8 섹션): BP 의미 표 (시맨틱 의도) + Mobile-first 원칙 / 페이지 wrapper padding 표준 (`px-6 md:px-10`) / 컨테이너 max-width 룰 (페이지/다이얼로그/카탈로그별 5 카테고리) / 알려진 패턴 6종 (Sidebar md / TopNav 3-단계 / TocSidebar xl / Grid 단계 / Dialog sm / 헤더 stacked→row) / 6 안티패턴 / Sidebar·Toaster 외부 layout 영향 / cross-refs.
+  - **2xl 미사용 정책** 명시 — Phase1 디자인 미정의, Figma 가 2xl 레이아웃 추가 시 도입.
+  - 카탈로그 `/design-system/rules/responsive` 페이지 신규 — **라이브 viewport pill** (현재 BP + px 너비 실시간 표시, 브라우저 리사이즈로 즉시 확인 가능) + BP 의미 표 + Mobile-first 비교 카드 + Max-width 표 + 패턴 4 카드 + 안티패턴 + 리사이즈 가이드 (실 페이지 링크 4개 — sidebar/TopNav/TocSidebar/Grid 전환 각각 데모).
+  - nav + Roadmap P1-3 ✅ 갱신. Rules 그룹에 Responsive 추가 (States 와 짝).
 - [x] **P1-1 clickable-card-with-menu 패턴 + CLAUDE.md slim 처리** (2026-06-01) — P1-1 patterns 5/5 완성. 
   - `design-system/patterns/clickable-card-with-menu.md` 신규 (9 섹션): 핵심 문제 (naive 구현 결점) / Absolute overlay + pointer-events 3-layer 구조 / 키보드·a11y / hover + focus-within 페어 / `protected` 플래그 룰 / 카드 외곽 토큰 / 내부 레이아웃 / 8 안티패턴 / 적용 표.
   - **CLAUDE.md slim 처리** — 본문에 박혀 있던 "클릭 가능한 카드 + 내부 메뉴 (TeamCard 패턴)" 코드 블록 + "시스템 vs 일반 엔티티" 섹션을 cross-ref 한 줄로 축약. 패턴 본문은 patterns/clickable-card-with-menu.md 로 이관.
