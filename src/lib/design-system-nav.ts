@@ -106,6 +106,11 @@ export const DESIGN_SYSTEM_NAV: DesignSystemNavItem[] = [
         href: "/design-system/rules/typography",
         doc: "design-system/rules/typography.md",
       },
+      {
+        label: "A11y / Interaction",
+        href: "/design-system/rules/a11y",
+        doc: "design-system/rules/a11y.md",
+      },
     ],
   },
 ];
@@ -131,7 +136,7 @@ export const ROADMAP: RoadmapItem[] = [
   { id: "P1-3", label: "Responsive / breakpoint guide", priority: "P1", status: "✅ Done" },
   { id: "P2-4", label: "Component doc coverage (24 primitives)", priority: "P2", status: "🔵 In progress", note: "15 / 24 documented (priority 4 added: breadcrumb, dropdown-menu, sonner, tooltip)" },
   { id: "P2-5", label: "Typography role → class mapping", priority: "P2", status: "✅ Done" },
-  { id: "P2-6", label: "a11y / interaction baseline", priority: "P2", status: "⏳ Pending" },
+  { id: "P2-6", label: "a11y / interaction baseline", priority: "P2", status: "✅ Done" },
   { id: "P3-7", label: "design-system/README.md index + page template", priority: "P3", status: "⏳ Pending" },
   { id: "P3-8", label: "Token gaps (z-index, motion, focus-ring)", priority: "P3", status: "⏳ Pending" },
   { id: "P3-9", label: "Small inconsistencies (users.md raw RGB, etc.)", priority: "P3", status: "⏳ Pending" },

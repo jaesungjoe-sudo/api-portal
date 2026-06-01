@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-01 (P1 완료 + P2-5 Typography + **P2-4 우선 4개 컴포넌트 문서화** (breadcrumb / dropdown-menu / sonner / tooltip) — 15/24 documented. 다음: P2-6 (a11y))
+최종 업데이트: 2026-06-01 (**P1 + P2 전체 완료** ✅ — P1 3개 + P2 3개 (5/9 → 6/9, 67% 달성). 다음: P3 영역 (인덱스 / 토큰 갭 / 정합 이슈))
 
 ## 현재 마일스톤
 
@@ -36,7 +36,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 |---|---|---|
 | P2-4 | 컴포넌트 문서 커버리지 (24 primitives) | 🔵 부분 (15/24 — breadcrumb / dropdown-menu / sonner / tooltip 추가, Card 는 unused 라 후순위) |
 | P2-5 | 타이포그래피 "역할 → 클래스" 시맨틱 매핑 | ✅ 완료 (2026-06-01) — 문서 only, shadcn scope 분리 |
-| P2-6 | a11y/인터랙션 베이스라인 (autofocus / aria-label / focus-ring 통합) | ⏳ 대기 |
+| P2-6 | a11y/인터랙션 베이스라인 (autofocus / aria-label / focus-ring 통합) | ✅ 완료 (2026-06-01) |
 
 ### 🟢 P3 — 운영/유지보수
 
@@ -83,6 +83,11 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P2-6 a11y / 인터랙션 베이스라인** (2026-06-01) — 코드 변경 없이 흩어진 룰을 1곳에 통합. P2 영역 완료.
+  - `design-system/rules/a11y.md` 신규 (9 섹션): 적용 범위 (shadcn primitive 내부는 shadcn 책임) / 키보드 네비 (Tab 순서, focus-visible:ring, primitive 자동 단축키) / 포커스 관리 (autoFocus 2-layer 차단, disabled hover wrap, 다이얼로그 focus 복귀) / ARIA 속성 (aria-label / aria-invalid / aria-current / aria-describedby / aria-hidden / role) / 시각 피드백 (글로벌 cursor pointer, cursor-default, hover+focus-within 페어) / 컴포넌트별 a11y 체크리스트 (10 항목 표) / 10 안티패턴 / 출시 전 수동 체크 (키보드 / screen reader / 시각 일관성 3 카테고리).
+  - 이전에 흩어져 있던 a11y 룰을 cross-ref 로 연결: CLAUDE.md / form-dialog.md §8 / dialog.md / dropdown-menu.md / tooltip.md / breadcrumb.md / sonner.md / clickable-card-with-menu.md / table-list-page.md / globals.css.
+  - 카탈로그 `/design-system/rules/a11y` 페이지 신규 — focus-visible ring 라이브 데모 / aria-label 시연 (title 속성으로 힌트) / aria-invalid 폼 데모 (Submit/Reset 인터랙티브) / cursor 피드백 (disabled vs Info icon) / hover+focus-within 비교 카드 (correct vs anti-pattern) / autoFocus 2-layer 코드 스니펫 / 컴포넌트별 체크리스트 표 / 3-그룹 수동 체크 (키보드 / SR / 시각).
+  - nav + Roadmap P2-6 ✅ 갱신. Rules 그룹 4개 (States / Responsive / Typography / A11y).
 - [x] **P2-4 (부분) 우선 4개 컴포넌트 문서화** (2026-06-01) — 11/24 → 15/24. 2 commit 분할.
   - **commit 1**: `breadcrumb.md` + `dropdown-menu.md` 신규 (네비/메뉴 묶음). 카탈로그 페이지 2개 추가.
   - **commit 2**: `tooltip.md` + `sonner.md` 신규 (피드백 묶음). 카탈로그 페이지 2개 추가.
