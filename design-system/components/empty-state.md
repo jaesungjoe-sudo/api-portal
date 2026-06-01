@@ -84,7 +84,11 @@ type EmptyStateProps = {
 | 설명 | `text-sm text-muted-foreground max-w-sm` |
 | CTA | `mt-2` (gap-3 위에 추가 8px 확보) |
 
-> **타이포 토큰은 잠정값**. 정확한 제목·설명 사이즈는 P2-5 "타이포 역할표(display / page-title / section / body / caption)" 도입 시 시맨틱 토큰(`text-section`, `text-body` 등)으로 교체 예정. 본 spec 의 `text-base` / `text-sm` 은 그때까지의 placeholder.
+> **타이포 역할 매핑** (`rules/typography.md` 정합):
+> - 제목 `text-base font-medium text-foreground` → role `card-title`
+> - 설명 `text-sm text-muted-foreground` → role `body-sm`
+>
+> 본 spec 은 위 role 의 클래스를 직접 사용. 시맨틱 lookup 은 `rules/typography.md` 참조 (Tailwind 유틸리티는 그대로 사용 — 본 프로젝트는 typography 역할을 문서 컨벤션으로 운영).
 
 - 색 토큰은 시맨틱 토큰만 사용. raw RGB/hex/팔레트 클래스 금지 (CLAUDE.md).
 - `gap-3` (12px) — 아이콘·제목·설명 사이 간격. CTA 만 추가 `mt-2` 로 한 단계 띄움.

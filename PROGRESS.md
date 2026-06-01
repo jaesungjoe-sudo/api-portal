@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-01 (**P1 전체 완료** ✅ — P1-1 patterns 5/5 + P1-2 States + P1-3 Responsive 룰. 다음: P2 영역 (컴포넌트 커버리지 / 타이포 역할표 / a11y 베이스라인))
+최종 업데이트: 2026-06-01 (P1 완료 + **P2-5 Typography 역할표** — 4/9 (44%) 달성. 다음: P2-4 (컴포넌트 커버리지) / P2-6 (a11y))
 
 ## 현재 마일스톤
 
@@ -35,7 +35,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 | # | 항목 | 상태 |
 |---|---|---|
 | P2-4 | 컴포넌트 문서 커버리지 (card / dropdown-menu / tooltip / sonner 우선) | ⏳ 대기 |
-| P2-5 | 타이포그래피 "역할 → 클래스" 시맨틱 매핑 | ⏳ 대기 (states.md / empty-state.md 가 placeholder 로 의존 중) |
+| P2-5 | 타이포그래피 "역할 → 클래스" 시맨틱 매핑 | ✅ 완료 (2026-06-01) — 문서 only, shadcn scope 분리 |
 | P2-6 | a11y/인터랙션 베이스라인 (autofocus / aria-label / focus-ring 통합) | ⏳ 대기 |
 
 ### 🟢 P3 — 운영/유지보수
@@ -83,6 +83,12 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P2-5 타이포그래피 역할 → 클래스 매핑** (2026-06-01) — 문서 only 접근. shadcn primitive scope 외 명시. 코드 변경 0건.
+  - `design-system/rules/typography.md` 신규 (8 섹션): Scope (shadcn primitive 제외 이유 설명) / 12 역할 표 (Heading 7 + Body 5 + Code-Link 3) / page-title / section-title 의 2-variant 룰 (dashboard vs docs 의도된 차이) / 사용 예시 / 향후 추가 검토 항목 / 안티패턴 / 표 갱신 룰.
+  - **shadcn 정합 분석 후 의도적 결정**: shadcn 은 시맨틱 typography role 정의 안 함 (Tailwind utility-first 철학). 우리도 Tailwind 유틸리티 클래스 (`.text-page-title` 등) 신설은 비추. 본 표는 *클러스터 라벨 lookup* 으로만 운영. 248곳 `text-sm` 마이그레이션 0건, shadcn 컴포넌트 추가 시 충돌 0건.
+  - placeholder 의존 해소: `components/empty-state.md` 의 "P2-5 도입 시 시맨틱 토큰으로 교체 예정" 박스 → 실제 role 매핑 (card-title / body-sm) 으로 갱신.
+  - 카탈로그 `/design-system/rules/typography` 페이지 신규 — 각 role 의 라이브 sample 렌더 + Scope 카드 (Covered / Out of scope) + 2-variant 룰 시각 카드 (각 variant 별 클래스·적용 페이지 표시) + 안티패턴 + cross-refs.
+  - nav + Roadmap P2-5 ✅ 갱신. Rules 그룹에 Typography 추가 (States / Responsive / Typography 3개).
 - [x] **P1-3 반응형 / 브레이크포인트 룰** (2026-06-01) — 코드 refactor 없이 룰 문서화 + 카탈로그. P1 영역 완성.
   - `design-system/rules/responsive.md` 신규 (8 섹션): BP 의미 표 (시맨틱 의도) + Mobile-first 원칙 / 페이지 wrapper padding 표준 (`px-6 md:px-10`) / 컨테이너 max-width 룰 (페이지/다이얼로그/카탈로그별 5 카테고리) / 알려진 패턴 6종 (Sidebar md / TopNav 3-단계 / TocSidebar xl / Grid 단계 / Dialog sm / 헤더 stacked→row) / 6 안티패턴 / Sidebar·Toaster 외부 layout 영향 / cross-refs.
   - **2xl 미사용 정책** 명시 — Phase1 디자인 미정의, Figma 가 2xl 레이아웃 추가 시 도입.
