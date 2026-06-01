@@ -35,12 +35,12 @@
 ### 탭 구성
 - Layout: HORIZONTAL, gap=4px
 - 탭 목록: **User (64px)** | **Team (69px)** | **Pending Approvals (182px)**
-- Active 탭 텍스트: rgb(10,10,10) / Inactive: rgb(115,115,115)
+- Active 탭 텍스트: `text-foreground` / Inactive: `text-muted-foreground` (`components/tabs.md` 의 underline tabs 정합)
 - Pending Approvals 탭 옆 count badge: pending 건수 표시 (badge 패턴은 `components/badge.md` 참조)
 
 ### 툴바 (탭 아래)
 - 왼쪽: Search Input (`w-60`, `h-8`, placeholder `Search User`)
-- 오른쪽: **Invite User** 버튼 (`size="sm"`, `variant="default"`)
+- 오른쪽: **Invite User** 버튼 (default size = `h-9`, default variant — `patterns/table-list-page.md` §5 toolbar CTA 룰)
   - **Pending Approvals 탭에선 숨김** — User / Team 탭에서만 표시
 
 ### Footer (Pagination 배치)

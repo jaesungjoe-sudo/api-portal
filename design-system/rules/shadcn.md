@@ -158,8 +158,11 @@ Tailwind 기본 spacing 스케일 사용:
 
 ## 커스텀 컴포넌트 위치
 
-shadcn 에 없는 컴포넌트는 `/src/components/api-portal/` 에서 import.
-작업 전 Notion Component Decision Log 확인 필수.
+shadcn 에 없는 컴포넌트는 `/src/components/api-portal/` 에서 import. 컴포넌트 결정 사항 — 어떤 variant 가 왜 추가/수정됐는지, 어떤 패턴으로 사용하는지 — 은 다음 위치에서 추적:
+
+- **`design-system/patterns/*.md`** — 조합 패턴 (form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu). 컴포넌트가 *어떻게 합쳐져* 동작하는지 + 결정 배경.
+- **`design-system/components/*.md`** — 개별 컴포넌트 spec. variant·size·props 정의 + Figma 정합 결정.
+- **git commit history** — primitive 변경 (예: `DialogContent.showCloseButton` 기본값을 `true` → `false` 로 변경한 commit 0aad508) 은 commit 메시지에 결정 배경 기록.
 
 ---
 

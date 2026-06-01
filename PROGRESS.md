@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-01 (**P1 + P2 전체 완료** ✅ — P1 3개 + P2 3개 (5/9 → 6/9, 67% 달성). 다음: P3 영역 (인덱스 / 토큰 갭 / 정합 이슈))
+최종 업데이트: 2026-06-01 (P1+P2 완료 + **P3-9 정합 이슈** — 7/9 (78%). 다음: P3-7 인덱스 / P3-8 토큰 갭)
 
 ## 현재 마일스톤
 
@@ -44,7 +44,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 |---|---|---|
 | P3-7 | `design-system/README.md` 인덱스 + 페이지 스펙 템플릿 표준화 | 🔵 부분 충족 (`/design-system` 카탈로그 랜딩이 인덱스 역할 대신함) |
 | P3-8 | 토큰 남은 갭 (z-index, motion/transition, focus-ring) | ⏳ 대기 |
-| P3-9 | 작은 정합 이슈 (users.md raw RGB → 토큰 교체, Notion log 인레포 추적) | ⏳ 대기 |
+| P3-9 | 작은 정합 이슈 (users.md raw RGB → 토큰 교체, Notion log 인레포 추적) | ✅ 완료 (2026-06-01) |
 
 ---
 
@@ -83,6 +83,11 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P3-9 작은 정합 이슈 정정** (2026-06-01) — 3개 micro-fix. 단일 commit.
+  - `pages/users.md` line 38: `rgb(10,10,10) / rgb(115,115,115)` raw RGB → `text-foreground` / `text-muted-foreground` 토큰명 + `components/tabs.md` cross-ref.
+  - `pages/users.md` line 43: Invite User 버튼 `size="sm"` (잘못된 정보) → default size + `patterns/table-list-page.md` §5 toolbar CTA 룰 cross-ref. 실제 코드는 default 사이즈.
+  - `rules/shadcn.md` line 162: 외부 "Notion Component Decision Log" 참조 → 인레포 추적 위치 명시 (patterns/ + components/ + git commit history). 외부 의존 제거.
+  - 다른 page spec audit 결과 `rgb()` / 잘못된 `size="sm"` 추가 발견 없음. analytics.md / api-keys.md / create-call.md / tutorials.md 의 hex 값은 의도된 spec 문서 (Figma → 코드 매핑 표) 라 유지.
 - [x] **P2-6 a11y / 인터랙션 베이스라인** (2026-06-01) — 코드 변경 없이 흩어진 룰을 1곳에 통합. P2 영역 완료.
   - `design-system/rules/a11y.md` 신규 (9 섹션): 적용 범위 (shadcn primitive 내부는 shadcn 책임) / 키보드 네비 (Tab 순서, focus-visible:ring, primitive 자동 단축키) / 포커스 관리 (autoFocus 2-layer 차단, disabled hover wrap, 다이얼로그 focus 복귀) / ARIA 속성 (aria-label / aria-invalid / aria-current / aria-describedby / aria-hidden / role) / 시각 피드백 (글로벌 cursor pointer, cursor-default, hover+focus-within 페어) / 컴포넌트별 a11y 체크리스트 (10 항목 표) / 10 안티패턴 / 출시 전 수동 체크 (키보드 / screen reader / 시각 일관성 3 카테고리).
   - 이전에 흩어져 있던 a11y 룰을 cross-ref 로 연결: CLAUDE.md / form-dialog.md §8 / dialog.md / dropdown-menu.md / tooltip.md / breadcrumb.md / sonner.md / clickable-card-with-menu.md / table-list-page.md / globals.css.

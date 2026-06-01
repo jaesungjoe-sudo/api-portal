@@ -139,5 +139,5 @@ export const ROADMAP: RoadmapItem[] = [
   { id: "P2-6", label: "a11y / interaction baseline", priority: "P2", status: "✅ Done" },
   { id: "P3-7", label: "design-system/README.md index + page template", priority: "P3", status: "⏳ Pending" },
   { id: "P3-8", label: "Token gaps (z-index, motion, focus-ring)", priority: "P3", status: "⏳ Pending" },
-  { id: "P3-9", label: "Small inconsistencies (users.md raw RGB, etc.)", priority: "P3", status: "⏳ Pending" },
+  { id: "P3-9", label: "Small inconsistencies (users.md raw RGB, etc.)", priority: "P3", status: "✅ Done" },
 ];
