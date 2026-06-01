@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-05-29 (Design system maturity: P1-2 States 룰 + EmptyState 컴포넌트 구현 + P1-1 patterns **4/5** (form-dialog + confirm-dialog + table-list-page + **docs-page-shell**) + `/design-system` 시각 카탈로그)
+최종 업데이트: 2026-06-01 (**P1-1 patterns/ 레이어 5/5 완성** ✅ — 5개 패턴 + 카탈로그 페이지 + 코드 정합 마무리. CLAUDE.md slim 처리.)
 
 ## 현재 마일스톤
 
@@ -9,7 +9,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 **Design system maturity 분석 (2026-05-29 착수)** — `rules/`(primitive 룰) + `components/`(컴포넌트 spec) + `pages/`(페이지 스펙) 3 레이어에 더해 누락된 **`patterns/`(조합 패턴) 레이어** 신설 시작. 9개 항목으로 정리 (P1 3개 / P2 3개 / P3 3개), 본 섹션 하단 참조.
 
 다음 우선순위:
-- **P1-1 patterns/ 레이어 (4/5 완료)**: form-dialog ✅ + confirm-dialog ✅ + table-list-page ✅ + docs-page-shell ✅ → clickable-card-with-menu
+- **P1-1 patterns/ 레이어 5/5 완성** ✅ — form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu. 다음: P1-3 반응형 또는 P2 영역.
 - **P1-3 반응형/브레이크포인트 문서**
 - 미완 페이지: **Webhooks** (디자인 대기)
 - API Reference 나머지: Get Call / Update Call 본문 (현재 method 배지만 적용, 본문 placeholder)
@@ -26,7 +26,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 
 | # | 항목 | 상태 |
 |---|---|---|
-| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | 🔵 진행 중 (4/5) |
+| P1-1 | **patterns/ 레이어 신설** (5개 패턴) | ✅ 완료 (5/5) |
 | P1-2 | 상태(States) 규칙 — Loading/Empty/Error/Disabled | ✅ 완료 (2026-05-29) |
 | P1-3 | 반응형/브레이크포인트 문서 | ⏳ 대기 |
 
@@ -83,6 +83,11 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - **8개 다이얼로그 일괄 정리** — CreateApiKey / EditApiKey / ViewApiKey / CreateTeam / EditTeam / Profile + 신규 InviteUser / EditUser. `variant="secondary"` → `outline` (Cancel), raw `<div className="mt-2 flex justify-end gap-2">` → `<DialogFooter>` (mt-2 제거), 필드 gap-3/4 → gap-2 통일, 에러 메시지 색 `text-muted-foreground` → `text-destructive`, 첫 input `autoFocus={false}` 명시, Edit 4개에 `sr-only` focus 흡수 span 추가.
   - **InviteUserDialog / EditUserDialog 추출** — users/page.tsx 530~720줄 인라인 Dialog 2개 → 도메인 컴포넌트로. 9 state + 5 handlers → 2 handlers 로 축약.
 - [x] **API Reference method 배지 via `DocsPageShell` tag prop** (2026-05-29) — `DocsPageShell` 에 `tag` prop 슬롯(breadcrumb 과 title 사이) 추가. create-call 의 인라인 `PostBadge()` (`-mt-6` 마진 hack) 제거. get-call / update-call 에 GET / PATCH 배지 같은 방식으로 적용.
+- [x] **P1-1 clickable-card-with-menu 패턴 + CLAUDE.md slim 처리** (2026-06-01) — P1-1 patterns 5/5 완성. 
+  - `design-system/patterns/clickable-card-with-menu.md` 신규 (9 섹션): 핵심 문제 (naive 구현 결점) / Absolute overlay + pointer-events 3-layer 구조 / 키보드·a11y / hover + focus-within 페어 / `protected` 플래그 룰 / 카드 외곽 토큰 / 내부 레이아웃 / 8 안티패턴 / 적용 표.
+  - **CLAUDE.md slim 처리** — 본문에 박혀 있던 "클릭 가능한 카드 + 내부 메뉴 (TeamCard 패턴)" 코드 블록 + "시스템 vs 일반 엔티티" 섹션을 cross-ref 한 줄로 축약. 패턴 본문은 patterns/clickable-card-with-menu.md 로 이관.
+  - 카탈로그 `/design-system/patterns/clickable-card-with-menu` 페이지 신규 — 라이브 데모 3 카드 그리드 (1 protected + 2 일반). 카드 클릭 / ⋯ 메뉴 클릭 / Edit·Delete 모두 toast 로 동작 검증. Anatomy + 6 decisions + 8 anti-patterns + cross-refs.
+  - nav + Roadmap **"5/5 ✅ Done"** 갱신. P1-1 patterns/ 레이어 완료.
 - [x] **P1-1 docs-page-shell 패턴** (2026-05-29) — `DocsPageShell` 컴포넌트는 이미 6 페이지에서 일관 사용 + 최근 `tag` prop 추가까지 정합 상태였음. 코드 refactor 없이 패턴 문서화만 진행. 
   - `design-system/patterns/docs-page-shell.md` 신규 (10 섹션): 사용법 / Props 표 / Anatomy / Title text-4xl vs table-list-page text-3xl 차이 / DocsSection 헬퍼 / TOC 통합 (TocSidebar + MobileToc dual render + scrollSpy) / Prev·Next 풋터 / `tag` prop (2026-05-29 추가) / 7 안티패턴 / 적용 페이지 표.
   - 카탈로그 `/design-system/patterns/docs-page-shell` 페이지 신규 — 4 라이브 페이지 reference 카드 (외부 링크) + 점선 wrapper mock skeleton + Anatomy + 6 decisions + 7 anti-patterns. 라이브 페이지 자체 임베드는 TocSidebar 가 외부 layout 의존이라 mock 으로 대체.

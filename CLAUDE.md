@@ -190,23 +190,9 @@ Figma 파일:
   4. 새 아이콘 사용 시 `design-system/icons.md` 매핑 표 갱신
 - 상세: `design-system/icons.md` ("아이콘 사용 워크플로우" 섹션)
 
-### 클릭 가능한 카드 + 내부 메뉴 (TeamCard 패턴)
+### 클릭 가능한 카드 + 내부 메뉴
 
-```tsx
-<div className="relative ...">
-  <Link href={...} className="absolute inset-0" aria-label={...} />
-  <div className="relative pointer-events-none">
-    {/* 카드 콘텐츠 — 클릭 통과 */}
-    <div className="pointer-events-auto">
-      <DropdownMenu>...</DropdownMenu>
-    </div>
-  </div>
-</div>
-```
-
-### 시스템 vs 일반 엔티티
-
-- 보호 엔티티(예: Default 팀)는 `protected: true` 플래그로 표시 → 메뉴/UI에서 Delete 항목 조건부 숨김.
+Absolute overlay `<Link>` + `pointer-events` 토글 패턴. 시스템 엔티티 보호(`protected: true`) 포함 상세 룰은 **`design-system/patterns/clickable-card-with-menu.md`** 참조.
 
 ---
 
