@@ -14,7 +14,7 @@ echo "== Design System Harness install =="
 # 1) Node version (>=18)
 if command -v node >/dev/null 2>&1; then
   MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
-  if [ "$MAJOR" -ge 18 ]; then ok "node v$(node -v) (>=18)"; else bad "node too old: $(node -v)"; fi
+  if [ "$MAJOR" -ge 18 ]; then ok "node $(node -v) (>=18)"; else bad "node too old: $(node -v)"; fi
 else
   bad "node not found"; fi
 

@@ -38,7 +38,9 @@
 ## 강제 수준
 
 - 누락 = **경고**, 차단 아님. `check-catalog-exists.mjs`(하네스 hook, Phase B 도입) 는 **git 미추적(신규) ui 파일**에만 경고.
-- 기존 미커버(primitive 19 / 도메인 32)는 위반 아님.
+- 기존 미커버(미커버 primitive 19 / 24 + 도메인 32)는 위반 아님.
+
+> **하드코딩 탐지의 canonical 출처는 hook `check-design-tokens.mjs`** (per-file, 신규 편집 시). `design-qa`/`design-reviewer` 의 grep 은 advisory 근사치(superset) — Figma 가 지정한 고정폭(`sm:max-w-[423px]`/`512px`, `calc(...)`, 레이아웃 offset)은 원칙 11이 허용하므로 **예상되는 경고**다(수동 triage). 새 위반만 잡으면 됨.
 
 ## Cross-refs
 
