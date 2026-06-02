@@ -204,3 +204,20 @@ for (const meta of metaList) {
 - FLOAT 토큰(radius-*, border-width, stroke-width) → misc.json 확장
 - `tw/colors` 팔레트 자체의 drift 감지 (추가 STEP)
 - Enterprise 플랜 확보 시 REST API 기반 CI 자동화로 승격
+
+---
+
+## 토큰 sync 방향 (2026-06-02 추가)
+
+토큰 그룹별로 Figma 라이브러리 ↔ 코드 sync 방식이 다름. P3-8 합의:
+
+| 토큰 그룹 | sync 방향 | 비고 |
+|---|---|---|
+| colors | Figma → 코드 (양방향) | `colors.json` 가 mirror. Figma `tw/colors` + mode collection 이 source. |
+| radius | Figma → 코드 (양방향) | `misc.json#radius`. Figma `radius-*` variables (2026-05-08 정합). |
+| shadow | 코드 truth (예정 정합) | 현재 `globals.css` 의 `@theme inline` 에 직접 정의. Figma 라이브러리에 effect style 있으나 sync 워크플로우 미정의. |
+| ring-width | Figma → 코드 (양방향, 디자이너 작업 예정) | `misc.json#ring.width = 3px`. Figma 라이브러리 `ring/width` Number variable 신설 예정 (P3-8 designer handoff). |
+| motion | 코드 truth (one-way) | `misc.json#motion`. Figma 라이브러리에는 spec 페이지만 (디자이너 참조용). |
+| z-index | 코드 only | Figma 모델링 안 함. 라이브러리에 메모 페이지만 합의 (P3-8 designer handoff). |
+
+> Designer handoff 세부 사항은 `docs/superpowers/specs/2026-06-02-p3-8-token-gaps-design.md` §6 참조.

@@ -1,6 +1,6 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-01 (P1+P2 완료 + **P3-9 정합 이슈** — 7/9 (78%). 다음: P3-7 인덱스 / P3-8 토큰 갭)
+최종 업데이트: 2026-06-02 (P3-8 완료 — Maturity Roadmap 8/9 (89%). 남은 항목: P3-7 인덱스/템플릿, P2-4 잔여 9 컴포넌트)
 
 ## 현재 마일스톤
 
@@ -43,7 +43,7 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
 | # | 항목 | 상태 |
 |---|---|---|
 | P3-7 | `design-system/README.md` 인덱스 + 페이지 스펙 템플릿 표준화 | 🔵 부분 충족 (`/design-system` 카탈로그 랜딩이 인덱스 역할 대신함) |
-| P3-8 | 토큰 남은 갭 (z-index, motion/transition, focus-ring) | ⏳ 대기 |
+| P3-8 | 토큰 남은 갭 (z-index, motion/transition, focus-ring) | ✅ 완료 (2026-06-02) |
 | P3-9 | 작은 정합 이슈 (users.md raw RGB → 토큰 교체, Notion log 인레포 추적) | ✅ 완료 (2026-06-01) |
 
 ---
@@ -88,6 +88,17 @@ Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start +
   - `pages/users.md` line 43: Invite User 버튼 `size="sm"` (잘못된 정보) → default size + `patterns/table-list-page.md` §5 toolbar CTA 룰 cross-ref. 실제 코드는 default 사이즈.
   - `rules/shadcn.md` line 162: 외부 "Notion Component Decision Log" 참조 → 인레포 추적 위치 명시 (patterns/ + components/ + git commit history). 외부 의존 제거.
   - 다른 page spec audit 결과 `rgb()` / 잘못된 `size="sm"` 추가 발견 없음. analytics.md / api-keys.md / create-call.md / tutorials.md 의 hex 값은 의도된 spec 문서 (Figma → 코드 매핑 표) 라 유지.
+- [x] **P3-8 토큰 갭 (z-index / motion / focus-ring)** (2026-06-02) — 코드 토큰 신설 + 9건 outlier refactor + 3 룰 + 3 카탈로그. 2 commit 분할 (foundation + docs/catalog).
+  - **misc.json 확장**: `zIndex` (4 단계 0/10/50/100), `motion.duration` (fast/base/slow = 100/200/300ms), `motion.ease.emphasized` (cubic-bezier(0.22,1,0.36,1)), `ring.width` (3px).
+  - **sync-tokens.ts 확장** → `tokens.generated.css` 의 `:root` 에 `--z-*` / `--duration-*` / `--ease-emphasized` / `--ring-width` 신규 emit.
+  - **globals.css** `@theme inline` 에 `--ease-emphasized` 1 줄로 Tailwind `ease-emphasized` 키 활성화. Duration 은 Tailwind native (`duration-100/200/300`) 사용 — `--duration-*` CSS var 는 룰 문서 + 커스텀 CSS 참조용.
+  - **Outlier refactor 9건**: sidebar.tsx 5×(`ring-2`→`ring-3`), badge.tsx 1×(`ring-[3px]`→`ring-3`), navigation-menu.tsx 3×(`duration-[0.35s] ease-[cubic-bezier(...)]` → `duration-300 ease-emphasized`). `z-50` / `duration-100/200` 같은 기존 정합 사용처는 룰 문서가 *카논 선언* 으로 작동 — 코드 일괄 rename 없음.
+  - **3 룰 문서 신규**: `rules/z-index.md` (4 단계 + 안티패턴 4), `rules/motion.md` (duration/ease 표 + prefers-reduced-motion 박스 + 안티패턴 5), `rules/focus-ring.md` (시각 토큰 3 + cva 스니펫 + 안티패턴 5).
+  - **`rules/a11y.md`** §3 (포커스 관리) → `focus-ring.md` cross-ref 1줄. 행동 vs 시각 토큰 역할 분리.
+  - **`rules/figma-token-sync.md`** → "토큰 sync 방향" 매트릭스 섹션 추가 (colors / radius / shadow / ring-width / motion / z-index 6 행).
+  - **3 카탈로그 페이지 신규**: `/foundations/{z-index,motion,focus-ring}`. z-index 는 4 layer 겹친 stack 데모, motion 은 duration 3 박스 동시 토글 + easing 2 박스 비교 + SVG 곡선, focus-ring 은 Tab 순회 + ring-2 vs ring-3 비교 + aria-invalid 데모.
+  - **nav** Foundations 그룹 4 항목 (Tokens / Focus Ring / Motion / Z-Index). Roadmap P3-8 ✅.
+  - **Designer handoff** (별도 작업): Figma 라이브러리 `ring/width` Number variable 추가 + `Motion` spec 페이지 + `Layer Stack (code-only)` 메모 페이지. Spec doc §6 참조.
 - [x] **P2-6 a11y / 인터랙션 베이스라인** (2026-06-01) — 코드 변경 없이 흩어진 룰을 1곳에 통합. P2 영역 완료.
   - `design-system/rules/a11y.md` 신규 (9 섹션): 적용 범위 (shadcn primitive 내부는 shadcn 책임) / 키보드 네비 (Tab 순서, focus-visible:ring, primitive 자동 단축키) / 포커스 관리 (autoFocus 2-layer 차단, disabled hover wrap, 다이얼로그 focus 복귀) / ARIA 속성 (aria-label / aria-invalid / aria-current / aria-describedby / aria-hidden / role) / 시각 피드백 (글로벌 cursor pointer, cursor-default, hover+focus-within 페어) / 컴포넌트별 a11y 체크리스트 (10 항목 표) / 10 안티패턴 / 출시 전 수동 체크 (키보드 / screen reader / 시각 일관성 3 카테고리).
   - 이전에 흩어져 있던 a11y 룰을 cross-ref 로 연결: CLAUDE.md / form-dialog.md §8 / dialog.md / dropdown-menu.md / tooltip.md / breadcrumb.md / sonner.md / clickable-card-with-menu.md / table-list-page.md / globals.css.
