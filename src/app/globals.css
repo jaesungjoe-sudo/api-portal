@@ -8,14 +8,21 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ── Non-sync tokens (manual) ─────────────────────────────
- * Color tokens AND radius scale are generated from design-system/tokens/*.json
- * into src/styles/tokens.generated.css (run `npm run sync-tokens`).
- * The remaining tokens below are kept manual — add equivalents to
- * tokens/misc.json + extend sync-tokens.ts when ready to sync.
+/* ── Tokens (mixed: synced + manual) ─────────────────────
+ * Color tokens, radius scale, z-index, motion, and ring-width are generated
+ * from design-system/tokens/*.json into src/styles/tokens.generated.css
+ * (run `npm run sync-tokens`).
+ * Below: shadow / font / breakpoint are kept manual.
+ * --ease-emphasized is partially synced — value lives in tokens.generated.css,
+ * the @theme inline registration below exposes it as a Tailwind utility key.
  */
 
 @theme inline {
+  /* Motion easing — value from tokens.generated.css. The self-reference is the
+   * Tailwind v4 idiom for re-exposing an existing CSS custom property as a utility
+   * (enables ease-emphasized class). */
+  --ease-emphasized: var(--ease-emphasized);
+
   --shadow-2xs:   0 1px 0 0 rgb(0 0 0 / 0.05);
   --shadow-xs:    0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-sm:    0 1px 3px 0 rgb(0 0 0 / 0.1);

@@ -63,6 +63,19 @@
   --background-color: 0 0% 0% / 0.05;
 
   --radius: 0.5rem;
+
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-overlay: 50;
+  --z-toast: 100;
+
+  --duration-fast: 100ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+
+  --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --ring-width: 3px;
 }
 
 .dark {

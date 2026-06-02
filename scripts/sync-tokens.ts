@@ -25,6 +25,14 @@ type MiscJson = {
     /** Tailwind radius scale — Figma 라이브러리 truth와 동기화 */
     scale?: Record<string, number | string>;
   };
+  zIndex?: Record<string, number>;
+  motion?: {
+    duration?: Record<string, string>;
+    ease?: Record<string, string>;
+  };
+  ring?: {
+    width?: string | number;
+  };
 };
 
 // ── HSL conversion ───────────────────────────────────────────────────────────
@@ -130,6 +138,32 @@ function generateCss(colors: ColorsJson, misc: MiscJson): string {
   if (misc.radius?.base) {
     lines.push("");
     lines.push(`  --radius: ${misc.radius.base};`);
+  }
+  // z-index scale
+  if (misc.zIndex) {
+    lines.push("");
+    for (const [name, value] of Object.entries(misc.zIndex)) {
+      lines.push(`  --z-${name}: ${value};`);
+    }
+  }
+  // Motion (durations + easings)
+  if (misc.motion?.duration) {
+    lines.push("");
+    for (const [name, value] of Object.entries(misc.motion.duration)) {
+      lines.push(`  --duration-${name}: ${value};`);
+    }
+  }
+  if (misc.motion?.ease) {
+    lines.push("");
+    for (const [name, value] of Object.entries(misc.motion.ease)) {
+      lines.push(`  --ease-${name}: ${value};`);
+    }
+  }
+  // Focus ring width — Figma 라이브러리 sync 예정 (Number variable). 미리 px 변환 지원.
+  if (misc.ring?.width !== undefined) {
+    lines.push("");
+    const widthValue = typeof misc.ring.width === "number" ? `${misc.ring.width}px` : misc.ring.width;
+    lines.push(`  --ring-width: ${widthValue};`);
   }
   lines.push("}");
   lines.push("");

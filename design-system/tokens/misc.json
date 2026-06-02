@@ -13,5 +13,24 @@
       "4xl": 26,
       "full": 9999
     }
+  },
+  "zIndex": {
+    "base": 0,
+    "sticky": 10,
+    "overlay": 50,
+    "toast": 100
+  },
+  "motion": {
+    "duration": {
+      "fast": "100ms",
+      "base": "200ms",
+      "slow": "300ms"
+    },
+    "ease": {
+      "emphasized": "cubic-bezier(0.22, 1, 0.36, 1)"
+    }
+  },
+  "ring": {
+    "width": "3px"
   }
 }
