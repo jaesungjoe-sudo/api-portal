@@ -50,6 +50,20 @@ Figma 파일:
 8. **Figma `visible: false` 노드 구현 금지** — hidden 노드는 *항상* 제외.
 9. **Container children 전체 enumerate** — 텍스트만 추출 금지. INSTANCE / DIVIDER / 장식 Rectangle 모두 visible 자식이면 구현 항목으로 매핑.
 10. **shadcn 기본값 ≠ Figma 스펙이면 `src/components/ui/*.tsx` 직접 수정** — className 오버라이드로 우회 X.
+11. **컴포넌트 너비는 고정 px 금지** — `w-[320px]` 같은 고정폭 대신 `w-full` + 부모의 padding/max-width 로 제어. 예외: Figma 가 명시적으로 `fixed` width 인 경우만 (`max-w-*` 우선). 상세 매핑은 "Figma fill container → 코드" 표.
+12. **Figma에 없는 variant/속성 임의 생성 금지** — variant·size·색·상태는 Figma 컴포넌트 set / 인스턴스에 존재하는 것만. "있으면 편할 것 같아서" 추가 금지.
+
+### 금지사항 (요약 테이블)
+
+| 금지 | 대신 | 출처 |
+|---|---|---|
+| hex/rgb 하드코딩 (`#fff`, `rgb(...)`) | 시맨틱 Tailwind 클래스 (`bg-primary`) | 원칙 3 / `rules/color.md` |
+| 임의값 (`text-[14px]`, `bg-[#...]`, `rounded-[Npx]`) | Tailwind 스케일 (`text-sm`, `rounded-lg`) | 원칙 3 |
+| `var(--color-*)` 직접 사용 | 시맨틱 클래스 | `rules/color.md` |
+| 고정 px 너비 | `w-full` + 부모 제어 | 원칙 11 |
+| Figma 없는 variant 임의 생성 | Figma 존재분만 | 원칙 12 |
+| `dark:` prefix | CSS 변수 자동 적용 | 원칙 4 |
+| `.env*` 수정 | 수동 처리 (hook 차단됨) | 하네스 |
 
 상세 사례 + WRONG/CORRECT 예제: `design-system/rules/shadcn.md`, `design-system/rules/figma-reading.md`.
 
@@ -147,6 +161,10 @@ Figma 파일:
 ---
 
 ## 컴포넌트 컨벤션
+
+### 컴포넌트 아티팩트 (티어)
+
+1 컴포넌트 = 최대 4 아티팩트(구현 `.tsx` / 스펙 `components/*.md` / 카탈로그 page / nav 등록). **모든 컴포넌트에 4개 강제 안 함** — 티어별 요구 + 재사용 시 승격 규칙은 **`design-system/rules/component-artifacts.md`** 단일 출처. 신규 재사용 primitive 만 4개 권장(경고 수준).
 
 ### 디렉토리
 
