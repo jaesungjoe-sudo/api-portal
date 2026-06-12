@@ -1,66 +1,66 @@
-# Tutorials 페이지 스펙
+# Tutorials page spec
 
 > Figma: `[Phase1] Design` → `Documentation/tutorials` (node `1630:27361`)
-> 코드: `src/app/(docs)/documentation/tutorials/page.tsx`
+> Code: `src/app/(docs)/documentation/tutorials/page.tsx`
 
-## 레이아웃
+## Layout
 
-3-column docs 레이아웃 (DocsLayout 공통):
+3-column docs layout (DocsLayout common):
 - Sidebar 255w (DocsSidebar)
-- Body 760w (max-width container, padding 좌우)
+- Body 760w (max-width container, left/right padding)
 - Right TOC 305w (TocSidebar)
 
-## 본문 구성 (11 섹션)
+## Body composition (11 sections)
 
-| # | TOC id | 섹션 제목 | 비고 |
+| # | TOC id | Section title | Note |
 |---|---|---|---|
-| 1 | `what-youll-build` | What You'll Build | `BuildOverviewCard` (highlight-subtle 패널 안에 SETUP 4단계 + LIVE DEMO 1단계 카드 그룹) |
-| 2 | `prerequisites` | Prerequisites | 4개 항목 (Sign up / API key / 전화 / 5분) |
+| 1 | `what-youll-build` | What You'll Build | `BuildOverviewCard` (SETUP 4-step + LIVE DEMO 1-step card group inside a highlight-subtle panel) |
+| 2 | `prerequisites` | Prerequisites | 4 items (Sign up / API key / phone / 5 min) |
 | 3 | `step-1` | Step 1. Get your phone number | `NumberedStep` 1, Request/Response code + WhatYouGet + TestPhoneField |
 | 4 | `step-2` | Step 2. Create Agent | `NumberedStep` 2, Request/Response + AgentCard |
-| 5 | `step-3` | Step 3. Create Queue | `NumberedStep` 3, Request/Response + IVR 안내 멘트 박스 |
-| 6 | `step-4` | Step 4. Assign agent to queue | `NumberedStep` 4, Request/Response + AgentCard (assigned queue 목록) |
-| 7 | `step-5` | Step 5. Make a test call | `NumberedStep` 5, 4 sub-step + Ready 배지 + Callout "Why deflection?" |
-| 8 | `view-call-data` | View your call data | 4 항목 bullet |
-| 9 | `accomplished` | What you accomplished | 5 체크리스트 ✓ |
-| 10 | `continue-learning` | Continue learning | 4 next-step |
-| 11 | `need-help` | Need Help? | 3 링크 |
+| 5 | `step-3` | Step 3. Create Queue | `NumberedStep` 3, Request/Response + IVR prompt box |
+| 6 | `step-4` | Step 4. Assign agent to queue | `NumberedStep` 4, Request/Response + AgentCard (assigned queue list) |
+| 7 | `step-5` | Step 5. Make a test call | `NumberedStep` 5, 4 sub-steps + Ready badge + Callout "Why deflection?" |
+| 8 | `view-call-data` | View your call data | 4-item bullet |
+| 9 | `accomplished` | What you accomplished | 5-item checklist ✓ |
+| 10 | `continue-learning` | Continue learning | 4 next-steps |
+| 11 | `need-help` | Need Help? | 3 links |
 
-페이지 푸터 nav: Prev = `Quick Start` (/documentation), Next = `Inbound Calls` (/documentation/inbound-calls).
+Page footer nav: Prev = `Quick Start` (/documentation), Next = `Inbound Calls` (/documentation/inbound-calls).
 
-## BuildOverviewCard 색상 정합 (Figma 인스펙트 truth)
+## BuildOverviewCard color fidelity (Figma inspection truth)
 
-- **외곽 패널**: `bg-background border-border` (흰 카드 + 일반 border)
-- **SETUP 4행**: `bg-highlight-subtle border-highlight-border` (보라 톤)
-- **LIVE DEMO 행**: `bg-success-subtle border-success-border` (녹 톤)
-- **아이콘 컨테이너** (4 + 1 행 모두 공통): `h-12 w-12 rounded-full bg-background border border-border` (흰 원 + border)
-  - 내부 lucide 아이콘: `text-foreground`, `h-5 w-5`
-- **"SETUP" / "LIVE DEMO" 라벨**: `text-muted-foreground` (회색), `uppercase tracking-wider text-xs font-semibold`
+- **Outer panel**: `bg-background border-border` (white card + regular border)
+- **SETUP 4 rows**: `bg-highlight-subtle border-highlight-border` (purple tone)
+- **LIVE DEMO row**: `bg-success-subtle border-success-border` (green tone)
+- **Icon container** (common to all 4 + 1 rows): `h-12 w-12 rounded-full bg-background border border-border` (white circle + border)
+  - Inner lucide icon: `text-foreground`, `h-5 w-5`
+- **"SETUP" / "LIVE DEMO" labels**: `text-muted-foreground` (gray), `uppercase tracking-wider text-xs font-semibold`
 
-> ⚠️ Phase1 작업 중 외곽/행 색이 안팎으로 뒤집힌 채 머지된 사례가 있었음 (2026-05-14). 스크린샷만 보고 톤 위치 추정 금지 → 각 레이어 `fillVar` 인스펙트 후 구현 (`design-system/rules/figma-reading.md` "다층 톤 카드 인스펙트 의무화" 참조).
+> ⚠️ During Phase1 work there was a case where the outer/row colors were merged with inside and outside flipped (2026-05-14). Don't infer tone placement from a screenshot alone → inspect each layer's `fillVar` before implementing (see `design-system/rules/figma-reading.md` "mandatory inspection of multi-layer tone cards").
 
-## NumberedStep 색상 정합
+## NumberedStep color fidelity
 
-좌측 번호 배지: `h-7 w-7 rounded-md bg-highlight-subtle text-highlight`
+Left number badge: `h-7 w-7 rounded-md bg-highlight-subtle text-highlight`
 
-## 페이지 인라인 컴포넌트
+## Page inline components
 
 - `BuildOverviewCard` / `StepRow` (highlight | success tone)
-- `NumberedStep` (id + 번호 + 제목)
-- `WhatYouGet` (mt-2 회색 박스 안 콘텐츠)
-- `TestPhoneField` (read-only 전화번호 표시)
-- `AgentCard` (●  이름 + 설명)
-- `Callout` (info-subtle 박스, 제목 + 본문)
+- `NumberedStep` (id + number + title)
+- `WhatYouGet` (content in an mt-2 gray box)
+- `TestPhoneField` (read-only phone number display)
+- `AgentCard` (●  name + description)
+- `Callout` (info-subtle box, title + body)
 - `Divider` (h-px border)
 
-이 컴포넌트들은 페이지 전용 — 다른 페이지에서 재사용 안 함. 다른 페이지에서 비슷한 패턴 필요하면 도메인 컴포넌트로 승격.
+These components are page-only — not reused on other pages. If a similar pattern is needed on another page, promote it to a domain component.
 
-## 콘텐츠 mock
+## Content mock
 
-Step 1-4 의 Request / Response 코드는 UJet 추정 mock (실제 endpoint payload 와 정확히 일치하지 않음). 실제 스펙 받으면 상수만 교체.
+The Request / Response code in Steps 1-4 is presumed UJet mock (does not exactly match the actual endpoint payload). Once the actual spec is received, just swap the constants.
 
-## hidden 노드
+## hidden nodes
 
-- 각 단계의 `Buttons` (외부 링크 / "View Reference" 같은 보조 버튼) — 모두 visible=false. 미구현.
-- Step 4 의 `Default/alert/badge`, Step 4 의 `Default/alert` — visible=false (대신 AgentCard 로 표시).
-- Step 5 의 `Final Step/Frame 51`, `Field/Divider`, `Field/With_label`, `Field/Section` (일부) — visible=false.
+- The `Buttons` of each step (external links / secondary buttons like "View Reference") — all visible=false. Not implemented.
+- Step 4's `Default/alert/badge` and Step 4's `Default/alert` — visible=false (shown as AgentCard instead).
+- Step 5's `Final Step/Frame 51`, `Field/Divider`, `Field/With_label`, `Field/Section` (some) — visible=false.

@@ -27,9 +27,9 @@ export default function SkeletonDemoPage() {
       <header className="mb-10">
         <h1 className="text-3xl font-semibold text-foreground">Skeleton</h1>
         <p className="mt-2 max-w-2xl text-base text-muted-foreground">
-          로딩 자리표시. <code className="rounded bg-muted px-1 py-0.5 text-sm">animate-pulse rounded-md bg-muted</code> —
-          크기는 실 콘텐츠에 맞춰 <code className="rounded bg-muted px-1 py-0.5 text-sm">className</code> 으로 지정.
-          모든 로딩 placeholder 는 raw <code className="rounded bg-muted px-1 py-0.5 text-sm">animate-pulse bg-muted</code> 대신 이 컴포넌트를 쓴다.
+          Loading placeholder. <code className="rounded bg-muted px-1 py-0.5 text-sm">animate-pulse rounded-md bg-muted</code> —
+          size it to match the real content via <code className="rounded bg-muted px-1 py-0.5 text-sm">className</code>.
+          Every loading placeholder uses this component instead of raw <code className="rounded bg-muted px-1 py-0.5 text-sm">animate-pulse bg-muted</code>.
         </p>
         <p className="mt-2 text-sm">
           <a
@@ -46,7 +46,7 @@ export default function SkeletonDemoPage() {
       {/* Base primitive */}
       <Section
         title="Base primitive"
-        description="단일 Skeleton. height / width / radius 를 className 으로 콘텐츠에 맞춘다 (layout shift 최소화)."
+        description="A single Skeleton. Match its height / width / radius to the content via className (minimizes layout shift)."
       >
         <DemoBox>
           <div className="space-y-3">
@@ -67,8 +67,8 @@ export default function SkeletonDemoPage() {
 
       {/* Table loading */}
       <Section
-        title="Table — 표 로딩"
-        description="헤더는 유지하고 본문만 row skeleton ×N 으로 교체. 셀 skeleton 너비는 실 콘텐츠 폭에 맞춘다. (API Keys 7-컬럼 예시)"
+        title="Table — table loading"
+        description="Keep the header, replace only the body with N row skeletons. Match each cell skeleton's width to the real content. (API Keys 7-column example)"
       >
         <DemoBox>
           <div className="overflow-hidden rounded-md border border-border">
@@ -110,14 +110,14 @@ export default function SkeletonDemoPage() {
   ))}
 </TableBody>`}</Snippet>
         <p className="mt-3 text-sm text-muted-foreground">
-          정렬·페이지 전환처럼 데이터 컨텍스트가 유지되는 재요청은 row 를 통째로 교체하지 않는다 — 서버 지연 시 헤더 위 2px indeterminate bar (states.md §3.2).
+          For refetches that keep the data context (sorting, page changes), don&apos;t replace whole rows — show a 2px indeterminate bar above the header when the server is slow (states.md §3.2).
         </p>
       </Section>
 
       {/* Dashboard loading */}
       <Section
-        title="Dashboard — 대시보드 로딩"
-        description="Summary 카드 그리드 + 차트 영역. 카드/차트의 실제 높이·간격을 그대로 유지해 로드 후 점프가 없게 한다."
+        title="Dashboard — dashboard loading"
+        description="Summary card grid + chart area. Preserve the real height and spacing of the cards/chart so there's no jump after load."
       >
         <DemoBox>
           <div className="space-y-6">
@@ -154,19 +154,19 @@ export default function SkeletonDemoPage() {
           <div className="rounded-md border border-success-border bg-success-subtle/40 p-4">
             <p className="mb-2 text-sm font-medium text-foreground">✓ Do</p>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
-              <li>항상 <code className="rounded bg-muted px-1 py-0.5 text-xs">&lt;Skeleton /&gt;</code> 사용</li>
-              <li>실 콘텐츠와 같은 height·radius·간격</li>
-              <li>테이블은 헤더 유지, 본문만 교체</li>
-              <li>카드/차트는 실제 박스 크기 유지</li>
+              <li>Always use <code className="rounded bg-muted px-1 py-0.5 text-xs">&lt;Skeleton /&gt;</code></li>
+              <li>Same height, radius, and spacing as the real content</li>
+              <li>Tables keep the header, replace only the body</li>
+              <li>Cards/charts keep their real box size</li>
             </ul>
           </div>
           <div className="rounded-md border border-destructive-border bg-destructive-subtle/40 p-4">
             <p className="mb-2 text-sm font-medium text-foreground">✗ Don&apos;t</p>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
-              <li>raw <code className="rounded bg-muted px-1 py-0.5 text-xs">animate-pulse bg-muted</code> 직접 작성</li>
-              <li>정렬·페이지 전환 시 row 통째 교체</li>
-              <li>캐시 백그라운드 재검증에 인디케이터 표시</li>
-              <li>콘텐츠와 다른 크기 → 로드 후 점프</li>
+              <li>Writing raw <code className="rounded bg-muted px-1 py-0.5 text-xs">animate-pulse bg-muted</code> by hand</li>
+              <li>Replacing whole rows on sorting / page changes</li>
+              <li>Showing an indicator for background cache revalidation</li>
+              <li>Sizes that differ from the content → jump after load</li>
             </ul>
           </div>
         </div>
@@ -176,13 +176,13 @@ export default function SkeletonDemoPage() {
       <Section title="Cross-refs">
         <ul className="list-disc space-y-1 pl-6 text-sm">
           <CrossRef href="https://github.com/jaesungjoe-sudo/api-portal/blob/main/design-system/rules/states.md">
-            rules/states.md — Loading/Empty/Error 매트릭스 + §3 Loading 상세
+            rules/states.md — Loading/Empty/Error matrix + §3 Loading details
           </CrossRef>
           <CrossRef href="https://github.com/jaesungjoe-sudo/api-portal/blob/main/design-system/patterns/table-list-page.md">
-            patterns/table-list-page.md — 테이블 페이지 골격
+            patterns/table-list-page.md — table page skeleton
           </CrossRef>
           <CrossRef href="https://github.com/jaesungjoe-sudo/api-portal/blob/main/design-system/components/skeleton.md">
-            components/skeleton.md — 스펙
+            components/skeleton.md — spec
           </CrossRef>
         </ul>
       </Section>

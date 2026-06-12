@@ -1,18 +1,18 @@
 # Figma → tokens/colors.json Sync Workflow
 
-> 디자이너가 Figma Library 의 Variables 를 수정했을 때, 그 값을 `design-system/tokens/colors.json` 의 `semantic` 섹션에 반영하는 워크플로우.
-> **Claude Code 가 실행하는 semi-automated 절차**. REST API (Enterprise 전용) 아닌 Plugin API (MCP) 기반.
+> The workflow for reflecting changes a designer makes to the Figma Library Variables into the `semantic` section of `design-system/tokens/colors.json`.
+> A **semi-automated procedure run by Claude Code**. Based on the Plugin API (MCP), not the REST API (Enterprise only).
 
 ---
 
-## 전체 흐름
+## Overall flow
 
 ```
 Figma Library (Variables)
       │
       │  figma.teamLibrary / figma.variables (MCP)
       ▼
-tokens/colors.json  (semantic 섹션 갱신)
+tokens/colors.json  (update semantic section)
       │
       │  npm run sync-tokens
       ▼
@@ -20,69 +20,69 @@ src/styles/tokens.generated.css
       │
       │  @import
       ▼
-globals.css → 브라우저 렌더
+globals.css → browser render
 ```
 
-각 화살표마다 **사람이 확인 후 통과**. 무인 cron 아님.
+Each arrow **passes after human review**. Not an unattended cron.
 
 ---
 
 ## Trigger
 
-- 디자이너로부터 "토큰 바뀌었어, 반영해줘" 요청 받았을 때
-- 새 페이지 구현 시작 전 최신 상태 확인
-- `/sync-figma-tokens` 슬래시 커맨드 (Claude Code 세션에서)
+- When you receive a request from the designer: "the tokens changed, please reflect them"
+- Checking the latest state before starting a new page implementation
+- The `/sync-figma-tokens` slash command (in a Claude Code session)
 
 ---
 
-## 전제 조건
+## Prerequisites
 
-1. **Figma Desktop 실행 중** + 라이브러리 파일(`SmO9fsWrxriuCofc7T3b1S`) 에 access 가능
-2. **Desktop Bridge 플러그인 Run 중** (Plugins → Development → Figma Desktop Bridge)
-3. MCP 연결 OK (`figma_get_status` 로 확인)
+1. **Figma Desktop running** + access to the library file (`SmO9fsWrxriuCofc7T3b1S`)
+2. **Desktop Bridge plugin Running** (Plugins → Development → Figma Desktop Bridge)
+3. MCP connection OK (verify with `figma_get_status`)
 
-## 범위 (권위 경계 명확화)
+## Scope (clarifying the authority boundary)
 
-**Figma Variables 가 권위**:
-- `mode` 컬렉션의 모든 COLOR 타입 semantic 토큰
-- 매핑: Figma 에 값이 있으면 그 값을 사용. drift 감지 시 Figma 우선
+**Figma Variables are authoritative**:
+- All COLOR-type semantic tokens in the `mode` collection
+- Mapping: if Figma has a value, use that value. On drift detection, Figma wins.
 
-**Figma Variables 권위 아님 (수동 유지)**:
-- `destructive-foreground` — Figma 에 없지만 shadcn 호환성 때문에 유지. sync 대상 제외.
-- `overlay` — Figma `background-color` 를 reference 로 보되 이름만 우리가 리네이밍. alpha 0.3 유지.
-- `palette` 섹션 — Tailwind 기본 팔레트. Figma `tw/colors` 와 1:1 이라 가정. 변경 있으면 별도 협의.
-- `misc.json` — radius.base 외에 지금은 sync 대상 아님.
+**Not authoritative from Figma Variables (maintained manually)**:
+- `destructive-foreground` — not in Figma but kept for shadcn compatibility. Excluded from sync.
+- `overlay` — treats Figma `background-color` as a reference but we rename it. Keeps alpha 0.3.
+- `palette` section — Tailwind default palette. Assumed 1:1 with Figma `tw/colors`. If it changes, discuss separately.
+- `misc.json` — currently not a sync target except radius.base.
 
 ---
 
-## 절차 (Claude Code 실행)
+## Procedure (run by Claude Code)
 
-### STEP 1 — 연결 확인
+### STEP 1 — Verify connection
 
 ```
-figma_get_status (probe:true) → websocket 연결 확인
+figma_get_status (probe:true) → verify websocket connection
 ```
 
-실패 시: 사용자에게 "Figma Desktop + Desktop Bridge 실행" 안내 후 `figma_reconnect`.
+On failure: guide the user to "run Figma Desktop + Desktop Bridge", then `figma_reconnect`.
 
-### STEP 2 — mode 컬렉션 읽기
+### STEP 2 — Read the mode collection
 
 ```js
-// 라이브러리 subscriptions 에서 mode 컬렉션 찾기
+// Find the mode collection in the library subscriptions
 const libs = await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync();
 const modeCollection = libs.find(c => c.libraryName.includes("Design System API") && c.name === "mode");
-const modeKey = modeCollection.key;   // 현재: 7070bf9909f47cf6901d8216ea6ec4c429b09f00
+const modeKey = modeCollection.key;   // currently: 7070bf9909f47cf6901d8216ea6ec4c429b09f00
 
-// 컬렉션 내 모든 variable 메타데이터
+// Metadata for all variables in the collection
 const metaList = await figma.teamLibrary.getVariablesInLibraryCollectionAsync(modeKey);
-// 반환: [{ name, key, resolvedType }, ...] — 현재 총 59개
+// returns: [{ name, key, resolvedType }, ...] — currently 59 total
 ```
 
-### STEP 3 — 각 변수 resolve
+### STEP 3 — Resolve each variable
 
 ```js
 for (const meta of metaList) {
-  if (meta.resolvedType !== "COLOR") continue;   // FLOAT 는 skip (misc.json 범위 아님)
+  if (meta.resolvedType !== "COLOR") continue;   // skip FLOAT (out of misc.json scope)
 
   const imported = await figma.variables.importVariableByKeyAsync(meta.key);
   const collection = await figma.variables.getVariableCollectionByIdAsync(imported.variableCollectionId);
@@ -92,28 +92,28 @@ for (const meta of metaList) {
     const raw = imported.valuesByMode[mode.modeId];
 
     if (raw?.type === "VARIABLE_ALIAS") {
-      // alias 해결 → 실제 variable (보통 tw/colors 팔레트)
+      // resolve alias → actual variable (usually the tw/colors palette)
       const aliased = await figma.variables.getVariableByIdAsync(raw.id);
-      // aliased.name: "red/600", "neutral/950", "white" 등
-      // aliased.variableCollectionId 로 tw/colors 여부 확인
+      // aliased.name: "red/600", "neutral/950", "white", etc.
+      // check whether it's tw/colors via aliased.variableCollectionId
     } else {
-      // raw RGB — 팔레트 alias 로 표현 불가. alpha 있으면 hsla 허용.
+      // raw RGB — can't be expressed as a palette alias. hsla allowed if it has alpha.
     }
   }
 }
 ```
 
-### STEP 4 — 이름 매핑 (slash prefix 자동 제거)
+### STEP 4 — Name mapping (auto-strip the slash prefix)
 
-STEP 3 루프 안에서 아래 함수로 이름을 정규화한다. 별도 수작업 불필요.
+Inside the STEP 3 loop, normalize the name with the function below. No separate manual work needed.
 
 ```js
 /**
- * Figma variable 이름에서 group prefix 를 자동 제거한다.
+ * Auto-strips the group prefix from a Figma variable name.
  *   "success/success"        → "success"
  *   "success/success-border" → "success-border"
  *   "warning/warning-subtle" → "warning-subtle"
- *   "background"             → "background"  (slash 없으면 그대로)
+ *   "background"             → "background"  (kept as-is if no slash)
  */
 function normalizeTokenName(figmaName) {
   const slashIdx = figmaName.indexOf("/");
@@ -122,102 +122,102 @@ function normalizeTokenName(figmaName) {
 }
 ```
 
-STEP 3 루프에서 적용:
+Applied in the STEP 3 loop:
 
 ```js
 for (const meta of metaList) {
   if (meta.resolvedType !== "COLOR") continue;
 
-  const tokenName = normalizeTokenName(meta.name);   // ← 여기서 자동 변환
-  if (EXCLUDE.has(meta.name)) continue;              // STEP 5 제외 목록
+  const tokenName = normalizeTokenName(meta.name);   // ← auto-converted here
+  if (EXCLUDE.has(meta.name)) continue;              // STEP 5 exclude list
 
   // ... resolve & compare
 }
 ```
 
-### STEP 5 — 제외 목록
+### STEP 5 — Exclude list
 
-현재 tokens/colors.json 에 반영하지 않을 Figma 변수:
+Figma variables currently not reflected into tokens/colors.json:
 
-| Figma 이름 | 이유 |
+| Figma name | Reason |
 |---|---|
-| `semantic-foreground` | 용도 확인 전까지 skip |
-| `semantic-background` | 용도 확인 전까지 skip |
-| `semantic-border` | 용도 확인 전까지 skip |
-| `background-color` | `overlay` 로 리네이밍되어 이미 tokens/colors.json 에 있음. alpha 값만 확인 |
-| `radius-*`, `border-width`, `stroke-width` | FLOAT. misc.json 범위 — 현재 scope 아님 |
+| `semantic-foreground` | skip until the purpose is confirmed |
+| `semantic-background` | skip until the purpose is confirmed |
+| `semantic-border` | skip until the purpose is confirmed |
+| `background-color` | renamed to `overlay`, already in tokens/colors.json. Just check the alpha value |
+| `radius-*`, `border-width`, `stroke-width` | FLOAT. misc.json scope — out of current scope |
 
-### STEP 6 — 값을 colors.json 스키마로 변환
+### STEP 6 — Convert values to the colors.json schema
 
-**alias → palette ref 문자열**:
+**alias → palette ref string**:
 - Figma `aliased.name = "red/600"` + `aliased.collection = "tw/colors"` → `"palette/red/600"`
 - Figma `aliased.name = "white"` + `aliased.collection = "tw/colors"` → `"palette/white"`
 
-**raw RGB → HSL 또는 hex 직접**:
-- alpha == 1 인 raw 는 palette 에 없는 커스텀 컬러 → 경고 로그 + 디자이너 확인 요청
-- alpha < 1 인 raw (예: `overlay`) 는 `"palette/black@0.3"` 같은 기존 alpha 문법 사용
+**raw RGB → HSL or hex directly**:
+- raw with alpha == 1 is a custom color not in the palette → warning log + request designer confirmation
+- raw with alpha < 1 (e.g. `overlay`) uses the existing alpha syntax like `"palette/black@0.3"`
 
-### STEP 7 — Drift 리포트
+### STEP 7 — Drift report
 
-현재 colors.json 과 Figma 결과를 비교하여:
+Compare the current colors.json with the Figma results:
 
 ```
-✓ 일치 토큰: N 개
-⚠ 변경된 토큰:
+✓ Matching tokens: N
+⚠ Changed tokens:
   - destructive (light): palette/red/600 → palette/red/700
   - muted (dark): palette/neutral/800 → palette/neutral/700
-➕ Figma 에만 있는 새 토큰: ...
-➖ colors.json 에만 있는 토큰: ...
+➕ New tokens only in Figma: ...
+➖ Tokens only in colors.json: ...
 ```
 
-변경 있으면 **사용자에게 확인 요청**. 자동 덮어쓰기 금지.
+If there are changes, **request user confirmation**. No automatic overwrite.
 
-### STEP 8 — 반영 + generated CSS 갱신
+### STEP 8 — Apply + regenerate the generated CSS
 
-사용자 승인 후:
+After user approval:
 
-1. `tokens/colors.json` 의 `semantic` 섹션을 새 값으로 업데이트 (수동 Edit 또는 스크립트)
-2. `npm run sync-tokens` 실행 → `tokens.generated.css` 재생성
-3. `npm run sync-tokens:check` 로 일관성 확인
-4. 브라우저에서 `/users`, `/api-keys` 렌더 확인 (육안)
-5. 변경 요약 메시지 사용자에게 출력
+1. Update the `semantic` section of `tokens/colors.json` with the new values (manual Edit or script)
+2. Run `npm run sync-tokens` → regenerate `tokens.generated.css`
+3. Verify consistency with `npm run sync-tokens:check`
+4. Confirm `/users`, `/api-keys` render in the browser (visual)
+5. Print a change summary message to the user
 
-### STEP 9 — PR 전 체크리스트
+### STEP 9 — Pre-PR checklist
 
-- [ ] `git diff design-system/tokens/colors.json` 가 의도한 변경만 포함
-- [ ] `src/styles/tokens.generated.css` 도 함께 업데이트 (차이 있으면 반드시 포함)
+- [ ] `git diff design-system/tokens/colors.json` contains only the intended changes
+- [ ] `src/styles/tokens.generated.css` is updated too (must be included if there's a difference)
 - [ ] `npm run sync-tokens:check` exit 0
-- [ ] 시각 회귀 확인 (특히 destructive, status badge, dialog overlay)
+- [ ] Visual regression check (especially destructive, status badge, dialog overlay)
 
 ---
 
-## 알려진 한계
+## Known limitations
 
-1. **디자이너가 직접 실행 불가**. Claude Code 가 필요. 디자이너가 셀프서비스하려면 Figma Plugin 형태 재구성 필요.
-2. **Desktop Bridge 연결 끊김**. Figma Desktop 종료/재시작 시 재연결 필요.
-3. **FLOAT 타입 미지원**. radius scale 같은 수치 토큰은 현재 sync 대상 아님.
-4. **Palette drift 미감지**. `tw/colors` 팔레트 자체가 바뀌면 tokens/colors.json.palette 와 어긋나지만 본 워크플로우는 감지 못 함.
+1. **The designer cannot run it directly**. Claude Code is required. For designer self-service, the workflow would need to be reorganized into a Figma Plugin.
+2. **Desktop Bridge disconnects**. Reconnection is needed when Figma Desktop is quit/restarted.
+3. **FLOAT type unsupported**. Numeric tokens like the radius scale are not currently a sync target.
+4. **Palette drift not detected**. If the `tw/colors` palette itself changes, it diverges from tokens/colors.json.palette, but this workflow can't detect it.
 
-## 향후 개선 후보
+## Candidates for future improvement
 
-- `semantic-*` 3개 용도 파악 후 sync 대상 포함 결정
-- FLOAT 토큰(radius-*, border-width, stroke-width) → misc.json 확장
-- `tw/colors` 팔레트 자체의 drift 감지 (추가 STEP)
-- Enterprise 플랜 확보 시 REST API 기반 CI 자동화로 승격
+- Decide whether to include the 3 `semantic-*` in sync after determining their purpose
+- FLOAT tokens (radius-*, border-width, stroke-width) → expand misc.json
+- Detect drift of the `tw/colors` palette itself (additional STEP)
+- Promote to REST API-based CI automation once an Enterprise plan is secured
 
 ---
 
-## 토큰 sync 방향 (2026-06-02 추가)
+## Token sync directions (added 2026-06-02)
 
-토큰 그룹별로 Figma 라이브러리 ↔ 코드 sync 방식이 다름. P3-8 합의:
+The Figma library ↔ code sync method differs per token group. Agreed in P3-8:
 
-| 토큰 그룹 | sync 방향 | 비고 |
+| Token group | Sync direction | Note |
 |---|---|---|
-| colors | Figma → 코드 (양방향) | `colors.json` 가 mirror. Figma `tw/colors` + mode collection 이 source. |
-| radius | Figma → 코드 (양방향) | `misc.json#radius`. Figma `radius-*` variables (2026-05-08 정합). |
-| shadow | 코드 truth (예정 정합) | 현재 `globals.css` 의 `@theme inline` 에 직접 정의. Figma 라이브러리에 effect style 있으나 sync 워크플로우 미정의. |
-| ring-width | Figma → 코드 (양방향, 디자이너 작업 예정) | `misc.json#ring.width = 3px`. Figma 라이브러리 `ring/width` Number variable 신설 예정 (P3-8 designer handoff). |
-| motion | 코드 truth (one-way) | `misc.json#motion`. Figma 라이브러리에는 spec 페이지만 (디자이너 참조용). |
-| z-index | 코드 only | Figma 모델링 안 함. 라이브러리에 메모 페이지만 합의 (P3-8 designer handoff). |
+| colors | Figma → code (bidirectional) | `colors.json` is the mirror. Figma `tw/colors` + mode collection is the source. |
+| radius | Figma → code (bidirectional) | `misc.json#radius`. Figma `radius-*` variables (aligned 2026-05-08). |
+| shadow | code is truth (alignment planned) | Currently defined directly in `globals.css`'s `@theme inline`. Effect styles exist in the Figma library but the sync workflow is undefined. |
+| ring-width | Figma → code (bidirectional, designer work pending) | `misc.json#ring.width = 3px`. A `ring/width` Number variable to be newly created in the Figma library (P3-8 designer handoff). |
+| motion | code is truth (one-way) | `misc.json#motion`. The Figma library only has a spec page (for designer reference). |
+| z-index | code only | Not modeled in Figma. Agreed to keep only a memo page in the library (P3-8 designer handoff). |
 
-> Designer handoff 세부 사항은 `docs/superpowers/specs/2026-06-02-p3-8-token-gaps-design.md` §6 참조.
+> For designer handoff details, see `docs/superpowers/specs/2026-06-02-p3-8-token-gaps-design.md` §6.

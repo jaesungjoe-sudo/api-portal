@@ -1,6 +1,6 @@
 # Badge
 
-> Figma 라이브러리 컴포넌트 set 정합 (`1603:86622` / Library file `SmO9fsWrxriuCofc7T3b1S` node `665:2024`).
+> Matches the Figma library component set (`1603:86622` / Library file `SmO9fsWrxriuCofc7T3b1S` node `665:2024`).
 
 ## Import
 
@@ -10,37 +10,37 @@ import { Badge } from "@/components/ui/badge"
 
 ## Variants
 
-`Badge` primitive 의 `variant` prop 으로 색을 결정. 색 className 직접 주입 금지.
+Color is determined by the `Badge` primitive's `variant` prop. Don't inject a color className directly.
 
-| `variant` | 배경 | 텍스트 | 용도 |
+| `variant` | Background | Text | Usage |
 |---|---|---|---|
-| `default` | `bg-primary` | `text-primary-foreground` | 기본 솔리드 (Type=primary 정합) |
+| `default` | `bg-primary` | `text-primary-foreground` | Default solid (matches Type=primary) |
 | `secondary` | `bg-secondary` | `text-secondary-foreground` | Type=secondary, Property=default |
-| `destructive` | `bg-destructive-subtle` | `text-destructive` | Revoked / 위험 상태 라벨 (Type=secondary, Property=destructive) |
-| `outline` | 없음 (border) | `text-foreground` | 윤곽선만 |
-| `success` | `bg-success-subtle` | `text-success` | Active 등 양호 상태 |
-| `warning` | `bg-warning-subtle` | `text-warning` | Verified 등 주의 상태 |
-| `info` | `bg-info-subtle` | `text-info` | Invited 등 정보 상태 |
-| `highlight` | `bg-highlight-subtle` | `text-highlight` | PATCH 메서드, 보라색 강조 (Figma `Property=highlight`) |
-| `muted` | `bg-muted` | `text-muted-foreground` | Deactivated / Expired 등 비활성 상태 |
-| `ghost` / `link` | — | — | 특수 (shadcn 잔존) |
+| `destructive` | `bg-destructive-subtle` | `text-destructive` | Revoked / danger-state label (Type=secondary, Property=destructive) |
+| `outline` | none (border) | `text-foreground` | Outline only |
+| `success` | `bg-success-subtle` | `text-success` | Healthy states such as Active |
+| `warning` | `bg-warning-subtle` | `text-warning` | Caution states such as Verified |
+| `info` | `bg-info-subtle` | `text-info` | Info states such as Invited |
+| `highlight` | `bg-highlight-subtle` | `text-highlight` | PATCH method, purple emphasis (Figma `Property=highlight`) |
+| `muted` | `bg-muted` | `text-muted-foreground` | Inactive states such as Deactivated / Expired |
+| `ghost` / `link` | — | — | Special (shadcn leftovers) |
 
-기본 모양: `h-5`, `rounded-lg` (10px — Figma 라이브러리 cornerRadius), `px-2 py-0.5`, `text-xs font-medium`.
+Default shape: `h-5`, `rounded-lg` (10px — Figma library cornerRadius), `px-2 py-0.5`, `text-xs font-medium`.
 
-## 4개 wrapper — Badge primitive 의 thin wrapper
+## 4 wrappers — thin wrappers over the Badge primitive
 
 ```
 StatusBadge       → User Status (Active/Verified/Invited/Deactivated)
 ApiKeyStatusBadge → API Key Status (Active/Expired/Revoked)
 MethodBadge       → HTTP Method (GET/POST/PATCH/PUT/DELETE)
-CodeBadge         → 코드/식별자 강조 (destructive variant + font-mono)
+CodeBadge         → code/identifier emphasis (destructive variant + font-mono)
 ```
 
-모두 `<Badge variant={...}>` 호출. 색 className 직접 주입 안 함.
+All call `<Badge variant={...}>`. They don't inject a color className directly.
 
-### 상태 ↔ variant 매핑
+### State ↔ variant mapping
 
-| Wrapper | 값 | variant |
+| Wrapper | Value | variant |
 |---|---|---|
 | `StatusBadge` | `Active` | `success` |
 | 〃 | `Verified` | `warning` |
@@ -55,9 +55,9 @@ CodeBadge         → 코드/식별자 강조 (destructive variant + font-mono)
 | 〃 | `PUT` | `warning` |
 | 〃 | `DELETE` | `destructive` |
 
-### Wrapper 의 className 오버라이드
+### Wrapper className overrides
 
-`StatusBadge` / `ApiKeyStatusBadge` 는 페이지 컨벤션상 pill 모양:
+`StatusBadge` / `ApiKeyStatusBadge` use a pill shape per page convention:
 
 ```tsx
 <Badge variant={STATUS_VARIANT[status]} className="border-0 font-medium rounded-full px-2.5">
@@ -65,12 +65,12 @@ CodeBadge         → 코드/식별자 강조 (destructive variant + font-mono)
 </Badge>
 ```
 
-`MethodBadge` / `CodeBadge` 는 Badge primitive 의 기본 `rounded-lg` 그대로.
-`CodeBadge` 는 `font-mono` 만 className 으로 추가.
+`MethodBadge` / `CodeBadge` keep the Badge primitive's default `rounded-lg`.
+`CodeBadge` adds only `font-mono` as a className.
 
-## Count Badge (탭 카운트)
+## Count Badge (tab count)
 
-탭 옆 카운트 표시는 별도 컴포넌트 — Figma 라이브러리에서 `Type=*_number` variant. 현재 코드는 인라인 `<span>`:
+The count shown next to a tab is a separate component — `Type=*_number` variant in the Figma library. The current code uses an inline `<span>`:
 
 ```tsx
 <span className="inline-flex items-center justify-center rounded-full bg-foreground text-background text-xs font-medium min-w-[18px] h-[18px] px-1">
@@ -78,19 +78,19 @@ CodeBadge         → 코드/식별자 강조 (destructive variant + font-mono)
 </span>
 ```
 
-(향후 `<Badge variant="default" />` 의 number variant 분기로 통합 가능.)
+(Could later be consolidated into a number-variant branch of `<Badge variant="default" />`.)
 
-## Figma 판별 기준
+## How to identify in Figma
 
 - `mainComponent.parent.name` === `"Badge"` (componentSet id `665:2024`)
 - `componentProperties.Type.value` ∈ `primary | secondary | destructive | outline | default_number | destructive_number | secondary_number`
 - `componentProperties.Property.value` ∈ `default | success | info | warning | destructive | muted | highlight`
 
-→ 위 표 매핑으로 `variant` 결정.
+→ Determine the `variant` from the mapping table above.
 
-## 주의사항
+## Notes
 
-- **색상 className 직접 주입 금지** — variant 만 사용. `bg-green-100` / `bg-blue-100` 같은 Tailwind 팔레트 색은 금지 (Phase1 초기 코드 잔존시 발견되면 마이그레이션).
-- 새 상태 추가 시: Figma 인스턴스의 `Property` variant 확인 → 위 매핑 표에 맞춰 `variant` 선택 → 신규 wrapper 추가 또는 기존 wrapper 의 매핑 객체 확장.
-- 새 wrapper 도 반드시 shadcn `<Badge>` 거침. raw `<span>` + 색 className 패턴 다시 만들지 말 것.
-- `rounded-lg` 가 Figma 정합 (cornerRadius=10). 임의의 `rounded-4xl` / `rounded-full` 오버라이드 전에 디자인 확인.
+- **Don't inject a color className directly** — use only `variant`. Tailwind palette colors like `bg-green-100` / `bg-blue-100` are forbidden (migrate any found leftover from early Phase1 code).
+- When adding a new state: check the Figma instance's `Property` variant → pick the `variant` per the mapping table above → add a new wrapper or extend an existing wrapper's mapping object.
+- New wrappers must also go through shadcn `<Badge>`. Don't recreate the raw `<span>` + color className pattern.
+- `rounded-lg` matches Figma (cornerRadius=10). Check the design before any arbitrary `rounded-4xl` / `rounded-full` override.

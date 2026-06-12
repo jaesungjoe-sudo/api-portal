@@ -111,7 +111,7 @@ Parent link should point back to the *tab* (`?tab=team`) so the user lands where
 
 ## Anti-patterns
 
-| ❌ | 이유 |
+| ❌ | Reason |
 |---|---|
 | Last item rendered as `BreadcrumbLink` to the current page | a11y / convention — current page is not a link. Use `BreadcrumbPage`. |
 | Custom `<nav>` + `<ol>` wrappers instead of `Breadcrumb` + `BreadcrumbList` | Skip primitive's a11y wiring + standardized typography. |
@@ -119,14 +119,14 @@ Parent link should point back to the *tab* (`?tab=team`) so the user lands where
 | Detail page parent link pointing to wrong tab | e.g. `/users` (User tab) when the user came from `/users?tab=team` — they get disoriented. Match the tab they came from. |
 | 4+ levels deep | Phase1 keeps to 3 levels max. If hierarchy is deeper, consider whether the page structure is right. |
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Breadcrumb"
-- `componentProperties.Property` (있는 경우): item count
-- 시각 spec: text-sm muted-foreground, ChevronRight separator (h-3.5 w-3.5)
+- `mainComponent` name: "Breadcrumb"
+- `componentProperties.Property` (if present): item count
+- Visual spec: text-sm muted-foreground, ChevronRight separator (h-3.5 w-3.5)
 
-## 주의사항
+## Notes
 
-- shadcn 기본 `BreadcrumbList` 의 gap (`gap-1.5 sm:gap-2.5`) Figma 정합. 별도 override X.
-- 모바일에서 wrap 가능 (`flex-wrap` 기본). 단 wrap 가 자주 일어나면 페이지 제목 길이를 재검토.
-- 동적 라우트 segment 는 `encodeURIComponent` / `decodeURIComponent` 한 쌍으로 처리 (예: 팀 이름).
+- The default shadcn `BreadcrumbList` gap (`gap-1.5 sm:gap-2.5`) matches Figma. Don't override it.
+- Wrapping is allowed on mobile (`flex-wrap` by default). But if wrapping happens often, reconsider the page title length.
+- Handle dynamic route segments with a matched `encodeURIComponent` / `decodeURIComponent` pair (e.g. team names).

@@ -1,28 +1,28 @@
-# 레이아웃 규칙
+# Layout rules
 
-> 반복적으로 발생한 버그에서 도출한 규칙. 새 레이아웃 작성 전 반드시 확인.
+> Rules derived from recurring bugs. Always check before writing a new layout.
 
 ---
 
-## 1. `h-screen` vs `min-h-screen` — flex 레이아웃에서 높이 전파
+## 1. `h-screen` vs `min-h-screen` — height propagation in flex layouts
 
-### 규칙
-자식이 `h-full`을 쓰는 flex 레이아웃은 루트 컨테이너에 **`h-screen`** 을 써야 한다. `min-h-screen`은 안 된다.
+### Rule
+A flex layout whose children use `h-full` must use **`h-screen`** on the root container. `min-h-screen` does not work.
 
-### 이유
-`min-h-screen`은 최소 높이만 보장하고 확정 높이를 주지 않는다. 자식의 `h-full`은 부모의 확정 높이를 참조하므로, `min-h-*` 부모에서는 0 또는 콘텐츠 크기로 무너진다.
+### Why
+`min-h-screen` only guarantees a minimum height and does not provide a definite height. A child's `h-full` references the parent's definite height, so under a `min-h-*` parent it collapses to 0 or the content size.
 
 ```tsx
-// ❌ 사이드바 h-full이 무너짐
+// ❌ Sidebar h-full collapses
 <div className="flex min-h-screen flex-col">
   <TopNav />                        {/* 69px */}
   <SidebarProvider className="flex-1">
-    <Sidebar collapsible="none" />  {/* h-full → 0으로 무너짐 */}
+    <Sidebar collapsible="none" />  {/* h-full → collapses to 0 */}
     <main>...</main>
   </SidebarProvider>
 </div>
 
-// ✅ 사이드바 h-full이 정상 동작
+// ✅ Sidebar h-full works correctly
 <div className="flex h-screen flex-col">
   <TopNav />                        {/* 69px */}
   <SidebarProvider className="min-h-0 flex-1">
@@ -32,60 +32,60 @@
 </div>
 ```
 
-### 적용 기준
-- 고정 헤더 + 사이드바 + 스크롤 콘텐츠 구조 → 항상 `h-screen`
-- 단순 페이지 (헤더 없음, 자연 스크롤) → `min-h-screen` 무방
+### When to apply
+- Fixed header + sidebar + scrolling content structure → always `h-screen`
+- Simple page (no header, natural scroll) → `min-h-screen` is fine
 
 ---
 
-## 2. flex 자식의 `overflow-auto` — `min-h-0` 필수
+## 2. `overflow-auto` on a flex child — `min-h-0` required
 
-### 규칙
-flex 자식에서 `overflow-auto` (또는 `overflow-scroll`)를 쓰려면 반드시 **`min-h-0`** 을 함께 써야 한다.
+### Rule
+To use `overflow-auto` (or `overflow-scroll`) on a flex child, you must also use **`min-h-0`**.
 
-### 이유
-flex 자식의 기본 `min-height`는 `auto` (콘텐츠 크기). 이 상태에서는 flex가 자식을 콘텐츠 크기 이하로 줄이지 않아 `overflow-auto`가 트리거되지 않는다. `min-h-0`으로 최솟값을 0으로 내려야 flex 알고리즘이 자식 높이를 제한하고 overflow가 발동된다.
+### Why
+A flex child's default `min-height` is `auto` (content size). In that state flex won't shrink the child below its content size, so `overflow-auto` is never triggered. You must lower the minimum to 0 with `min-h-0` so the flex algorithm constrains the child's height and overflow kicks in.
 
 ```tsx
-// ❌ 콘텐츠가 viewport 밖으로 overflow, 스크롤 안 됨
+// ❌ Content overflows the viewport, no scroll
 <main className="flex-1 overflow-auto">...</main>
 
-// ✅ flex 컨텍스트에서 정상 스크롤
+// ✅ Scrolls correctly in a flex context
 <main className="min-h-0 flex-1 overflow-auto">...</main>
 ```
 
-flex-col에서 가로 스크롤도 동일: `min-w-0 overflow-x-auto`.
+Horizontal scroll in flex-col is the same: `min-w-0 overflow-x-auto`.
 
 ---
 
-## 3. shadcn 컴포넌트 기본 사이즈 — Figma 수치와 반드시 대조
+## 3. shadcn component default sizes — always check against Figma values
 
-### 규칙
-shadcn 컴포넌트는 내부 padding/height가 Figma 스펙과 다를 수 있다. 레이아웃·사이드바·네비게이션처럼 높이·간격이 중요한 컴포넌트는 **코드 작성 직후 브라우저에서 시각 확인**한다.
+### Rule
+shadcn components may have internal padding/height that differs from the Figma spec. For components where height/spacing matters — layout, sidebar, navigation — **visually verify in the browser right after writing the code**.
 
-### 알려진 기본값
+### Known defaults
 
-| 컴포넌트 | shadcn 기본 | Figma 스펙 | 재정의 |
+| Component | shadcn default | Figma spec | Override |
 |---|---|---|---|
 | `SidebarMenuButton` | `p-2` → ~36px | 44px | `h-11 py-0` |
 | `SidebarHeader` | `flex-col p-2` | 44px | `h-11 justify-center py-0` |
-| `SidebarContent` | `py-2` 여백 포함 | 0px 여백 | `py-0` |
+| `SidebarContent` | `py-2` includes margin | 0px margin | `py-0` |
 
-### flex 축 방향 주의
-`SidebarHeader`는 `flex-col`이다.
-- `items-center` → **수평** 중앙 정렬 (콘텐츠가 사이드바 너비 중앙으로 쏠림) ← 틀림
-- `justify-center` → **수직** 중앙 정렬 ← 올바름
+### Beware of the flex axis direction
+`SidebarHeader` is `flex-col`.
+- `items-center` → **horizontal** center (content drifts to the center of the sidebar width) ← wrong
+- `justify-center` → **vertical** center ← correct
 
 ---
 
-## 4. 전체 대시보드 레이아웃 패턴 (참고)
+## 4. Full dashboard layout pattern (reference)
 
 ```tsx
-// 고정 헤더 + 인라인 사이드바 + 스크롤 메인 구조
+// Fixed header + inline sidebar + scrolling main structure
 <div className="flex h-screen flex-col">
-  <Header className="shrink-0" />          {/* 고정 높이 */}
+  <Header className="shrink-0" />          {/* fixed height */}
   <SidebarProvider className="min-h-0 flex-1" style={{ minHeight: 0 }}>
-    <Sidebar collapsible="none" />          {/* h-full 동작 */}
+    <Sidebar collapsible="none" />          {/* h-full works */}
     <main className="min-h-0 flex-1 overflow-auto">
       {children}
     </main>

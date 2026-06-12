@@ -11,13 +11,13 @@ import {
 } from "@/components/ui/select"
 ```
 
-## 기본 스펙
+## Default spec
 
-- `SelectTrigger` 기본 폭: **`w-full`** (폼 안에서 자동 fill)
+- `SelectTrigger` default width: **`w-full`** (auto-fills within forms)
 - Shadow: `shadow-xs`
-- 툴바·인라인 드롭다운처럼 콘텐츠 폭이 필요할 때만 `className="w-fit"` 오버라이드
+- Override with `className="w-fit"` only when content width is needed, like toolbar / inline dropdowns
 
-## 폼 필드 + 에러 상태
+## Form field + error state
 
 ```tsx
 <div className="flex flex-col gap-2">
@@ -43,18 +43,18 @@ import {
 
 ## Disabled State
 
-Figma 라이브러리의 Select에는 `State=disabled` variant가 없음.
-Input disabled 스펙과 동일하게 통일 적용:
+The Figma library Select has no `State=disabled` variant.
+Apply uniformly, identical to the Input disabled spec:
 
-| 속성 | 값 | Tailwind |
+| Property | Value | Tailwind |
 |---|---|---|
-| fill | `muted` 토큰 | `bg-muted` |
+| fill | `muted` token | `bg-muted` |
 | opacity | 0.5 | `opacity-50` |
 
-`select.tsx` SelectTrigger에 이미 반영됨: `disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed`
+Already reflected on the `select.tsx` SelectTrigger: `disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed`
 
 ```tsx
-{/* 본인 Role은 수정 불가 → Select에 disabled */}
+{/* The user's own Role can't be edited → disable the Select */}
 <Select value={user.role} disabled>
   <SelectTrigger id="profile-role">
     <SelectValue />
@@ -65,22 +65,22 @@ Input disabled 스펙과 동일하게 통일 적용:
 </Select>
 ```
 
-## SelectContent (Menulist) 스펙
+## SelectContent (Menulist) spec
 
-팝오버 스펙은 `design-system/components/popover.md` 의 Menulist 섹션을 따름.
+Follows the popover spec in the Menulist section of `design-system/components/popover.md`.
 
-## 유효성 검사 규칙
+## Validation rules
 
-- `aria-invalid={errors.field}` 를 SelectTrigger 에 적용.
-- 값 변경 시 해당 필드의 에러 즉시 해제.
+- Apply `aria-invalid={errors.field}` to the SelectTrigger.
+- Clear that field's error immediately on value change.
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Select", "Dropdown", "Menulist"
+- `mainComponent` name: "Select", "Dropdown", "Menulist"
 - `componentProperties.State.value`: `default` / `open` / `error` / `disabled`
-- fill container 속성이면 `w-full` (기본값 유지), hug contents 면 `className="w-fit"`
+- If fill container, use `w-full` (keep the default); if hug contents, use `className="w-fit"`
 
-## 주의사항
+## Notes
 
-- `w-full` 은 SelectTrigger 의 기본값이므로 별도 지정 불필요.
-- 고정 폭 강제가 필요하면 부모 래퍼에서 조정.
+- `w-full` is the SelectTrigger default, so no need to set it explicitly.
+- If a fixed width must be enforced, adjust it on the parent wrapper.

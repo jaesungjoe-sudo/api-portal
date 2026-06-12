@@ -1,6 +1,6 @@
 # Tabs
 
-Underline-less text-only tab switcher. Base UI `@base-ui/react/tabs` wrapping.
+Underline-less text-only tab switcher. Wraps Base UI `@base-ui/react/tabs`.
 
 ## Import
 
@@ -22,32 +22,32 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 </Tabs>
 ```
 
-Base UI 의 `TabsTab.value`는 `any` 라서 string 외 값도 받지만, 본 프로젝트는 string 으로 통일.
+Base UI's `TabsTab.value` is `any`, so it accepts non-string values too, but this project standardizes on string.
 
-## 시각 스펙 (variant: `text` — 기본)
+## Visual spec (variant: `text` — default)
 
 - inactive: `text-muted-foreground`
 - hover: `text-foreground`
 - active: `text-foreground` (`data-[active]`)
 - padding: `px-4 py-2`
-- 사이즈: `text-sm font-medium`
-- 갭: `TabsList` 자식 간 `gap-1`
+- Size: `text-sm font-medium`
+- Gap: `gap-1` between `TabsList` children
 - focus ring: `focus-visible:ring-3 focus-visible:ring-ring/50`
 
-Figma 가 향후 underline 인디케이터를 명시하면 `TabsPrimitive.Indicator`를 활용한 `variant="underline"` 추가 검토.
+If Figma later specifies an underline indicator, consider adding `variant="underline"` using `TabsPrimitive.Indicator`.
 
-## 자동 부수효과 (Base UI)
+## Automatic side effects (Base UI)
 
-- 키보드 화살표 / Home / End 내비게이션
-- 활성 탭에 `data-active` + `aria-selected`
-- `disabled` prop 표준 처리
-- TabsContent ↔ TabsTrigger `aria-controls` / `aria-labelledby` 자동 연결
+- Keyboard arrow / Home / End navigation
+- `data-active` + `aria-selected` on the active tab
+- Standard handling of the `disabled` prop
+- Automatic `aria-controls` / `aria-labelledby` wiring between TabsContent ↔ TabsTrigger
 
-## TabsContent 사용 여부
+## Whether to use TabsContent
 
-각 탭이 완전히 다른 콘텐츠/툴바를 가지면 TabsContent 로 감싸 a11y 향상. 툴바·검색을 공유하고 테이블만 분기되는 경우는 외부에서 `value` 기반 conditional render 유지해도 무방 (a11y 손실은 panel role 뿐).
+If each tab has entirely different content/toolbar, wrap it in TabsContent for better a11y. If the toolbar/search is shared and only the table branches, keeping a `value`-based conditional render outside is fine (the only a11y loss is the panel role).
 
-## URL 동기화 패턴
+## URL sync pattern
 
 ```tsx
 function handleTabChange(next: MyTab) {
@@ -57,8 +57,8 @@ function handleTabChange(next: MyTab) {
 }
 ```
 
-`router.replace` 로 히스토리 오염 방지. 기본 탭일 때는 `?tab=` 제거.
+`router.replace` prevents history pollution. Drop `?tab=` for the default tab.
 
-## 사용처
+## Where used
 
 - `src/app/(dashboard)/users/page.tsx` — User / Team / Pending Approvals (text variant + `?tab=` sync)

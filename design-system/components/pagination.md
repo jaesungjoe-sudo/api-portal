@@ -1,8 +1,8 @@
 # Pagination
 
-## 기본 사용 — TablePagination (공용 컴포넌트, 권장)
+## Basic usage — TablePagination (shared component, recommended)
 
-테이블 목록 페이지에서는 아래 공용 컴포넌트만 사용한다. ellipsis 로직, `grid grid-cols-3` 래퍼, 경계 비활성화 스타일 전부 내장.
+Table list pages use only the shared component below. The ellipsis logic, `grid grid-cols-3` wrapper, and boundary-disabled styling are all built in.
 
 ```tsx
 import { TablePagination } from "@/components/api-portal/table-pagination"
@@ -10,17 +10,17 @@ import { TablePagination } from "@/components/api-portal/table-pagination"
 <TablePagination page={page} totalPages={totalPages} onPageChange={setPage} />
 ```
 
-구현 위치: `src/components/api-portal/table-pagination.tsx`
+Implementation: `src/components/api-portal/table-pagination.tsx`
 
-- `page: number` — 현재 페이지 (1-based)
-- `totalPages: number` — 전체 페이지 수
-- `onPageChange: (page: number) => void` — 페이지 변경 핸들러
+- `page: number` — current page (1-based)
+- `totalPages: number` — total page count
+- `onPageChange: (page: number) => void` — page-change handler
 
-페이지 내에서 shadcn `Pagination` 을 직접 조합하지 말 것. 레이아웃이나 ellipsis 규칙이 바뀌면 공용 컴포넌트 한 곳만 수정.
+Don't assemble the shadcn `Pagination` directly within a page. If the layout or ellipsis rules change, edit the shared component in one place.
 
-## 내부 구현 참고
+## Internal implementation reference
 
-공용 컴포넌트가 감싸고 있는 shadcn 원시 컴포넌트:
+The shadcn primitives the shared component wraps:
 
 ```tsx
 import {
@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/pagination"
 ```
 
-ellipsis 로직:
+ellipsis logic:
 
 ```ts
 function pageNumbers(page: number, totalPages: number) {
@@ -45,16 +45,16 @@ function pageNumbers(page: number, totalPages: number) {
 }
 ```
 
-## 페이지 크기
+## Page size
 
-**모든 테이블 공통: PAGE_SIZE = 10**
+**Common to all tables: PAGE_SIZE = 10**
 
-## 비활성 상태 스타일
+## Disabled state styling
 
-- Previous / Next 가 경계에 닿으면 `pointer-events-none opacity-50` 로 비활성화.
-- 개별 `PaginationLink` 의 활성 표시는 `isActive={p === page}` prop.
+- When Previous / Next reaches a boundary, disable it with `pointer-events-none opacity-50`.
+- The active indication for each `PaginationLink` is the `isActive={p === page}` prop.
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Pagination"
-- ellipsis 는 ` … ` 문자열 노드로 등장, 구현에서는 `PaginationEllipsis` 로 매핑.
+- `mainComponent` name: "Pagination"
+- The ellipsis appears as a ` … ` string node; map it to `PaginationEllipsis` in the implementation.

@@ -1,6 +1,6 @@
 # ToggleGroup
 
-단일 선택 segmented control 용 primitive. Base UI `@base-ui/react/toggle-group` + `@base-ui/react/toggle` wrapping.
+A primitive for a single-select segmented control. Wraps Base UI `@base-ui/react/toggle-group` + `@base-ui/react/toggle`.
 
 ## Import
 
@@ -10,19 +10,19 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 ## Variants
 
-| variant | 형태 | 용도 |
+| variant | Shape | Usage |
 |---|---|---|
-| `outlined` | border-joined segmented (`first:rounded-l-md` / `last:rounded-r-md` / `-ml-px`) | Analytics 페이지 기간 탭 |
-| `pill` | border wrapper + `p-0.5` + 각 item `rounded-sm` | Home Metrics 등 카드 내부 토글 |
+| `outlined` | border-joined segmented (`first:rounded-l-md` / `last:rounded-r-md` / `-ml-px`) | Analytics page period tabs |
+| `pill` | border wrapper + `p-0.5` + each item `rounded-sm` | In-card toggles like Home Metrics |
 
 ## Size
 
-| size | 적용 위치 | 값 |
+| size | Applied to | Value |
 |---|---|---|
 | `default` | outlined | item h-9 / px-4 / text-sm |
 | `sm` | pill | item h-8 / px-3 / text-xs |
 
-(variant 마다 기본 height 가 다르므로 size 는 보조 조절용)
+(Each variant has a different default height, so size is for secondary adjustment)
 
 ## API
 
@@ -38,24 +38,24 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 </ToggleGroup>
 ```
 
-내부적으로 Base UI 의 `value: string[]` 배열을 single value 로 wrapping. 다중 선택은 별도 wrapper 가 필요.
+Internally wraps Base UI's `value: string[]` array as a single value. Multi-select needs a separate wrapper.
 
-## 자동 부수효과 (Base UI)
+## Automatic side effects (Base UI)
 
-- 키보드 화살표 / Home / End 키 내비게이션
-- 활성 항목 `data-pressed` + `aria-pressed="true"`
-- `disabled` 속성 표준 처리
+- Keyboard arrow / Home / End key navigation
+- `data-pressed` + `aria-pressed="true"` on the active item
+- Standard handling of the `disabled` attribute
 - focus ring (`focus-visible:ring-3 focus-visible:ring-ring/50`)
 
 ## Button vs ToggleGroup
 
-| 항목 | Button | ToggleGroup |
+| Item | Button | ToggleGroup |
 |---|---|---|
-| 역할 | 단일 액션 (Save / Cancel) | 옵션 선택 (Last 6 months 등) |
-| 활성 상태 | 없음 (클릭 시 액션 실행) | 한 항목 `data-pressed` 유지 |
+| Role | Single action (Save / Cancel) | Option selection (Last 6 months, etc.) |
+| Active state | None (runs an action on click) | Keeps `data-pressed` on one item |
 | A11y | `<button>` | `<button aria-pressed>` |
 
-## 사용처
+## Where used
 
 - `src/components/api-portal/AnalyticsTabs.tsx` — outlined
 - `src/components/api-portal/HomeMetricsChart.tsx` — pill, sm

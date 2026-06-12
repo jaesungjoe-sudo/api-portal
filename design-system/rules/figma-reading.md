@@ -1,60 +1,60 @@
-# Figma 노드 읽기 규칙
+# Figma node reading rules
 
-## Figma MCP 사용 규칙
+## Figma MCP usage rules
 
-### 기본 원칙
-- 모든 Figma 작업은 Console MCP 우선 사용
-- 공식 MCP는 사용하지 않음
+### Basic principles
+- Use Console MCP first for all Figma work
+- Don't use the official MCP
 
-### Console MCP 사용법
-- 화면 구현: Figma 링크에서 node-id 추출해서 직접 읽기
-- 토큰 추출: 파일 키로 변수 전체 읽기
-- 컴포넌트 탐색: 파일 키로 직접 탐색
+### Console MCP usage
+- Screen implementation: extract the node-id from the Figma link and read directly
+- Token extraction: read all variables by file key
+- Component exploration: explore directly by file key
 
-### Figma 파일 정보
-- 라이브러리 파일 키: SmO9fsWrxriuCofc7T3b1S
-- 디자인 파일 키: F2lkYCId2xMqcd9RuXL20B
+### Figma file info
+- Library file key: SmO9fsWrxriuCofc7T3b1S
+- Design file key: F2lkYCId2xMqcd9RuXL20B
 
-### 작업 순서 (토큰 절약 필수)
+### Work order (token saving required)
 
-**STEP 1 — design-system/ 캐시 먼저 확인 (Figma 읽기 전 필수)**
-- `design-system/pages/<page>.md` 존재하면 → Figma 읽지 않고 그 파일 사용
-- 필요한 정보가 캐시에 있으면 figma_execute 호출 금지
+**STEP 1 — Check the design-system/ cache first (required before reading Figma)**
+- If `design-system/pages/<page>.md` exists → use that file without reading Figma
+- If the needed info is in the cache, don't call figma_execute
 
-**STEP 2 — 캐시에 없는 정보만 Figma에서 읽기**
-- 부모 프레임 전체 읽기 금지 → 필요한 섹션의 노드 ID만 핀포인트로 읽기
-- figma_execute 읽기 순서:
-  1. depth=1~2로 children ID 목록만 먼저 파악
-  2. 필요한 노드 ID만 depth=3~4로 읽기
-- 이미 구현된 컴포넌트(Navigation, Sidebar, Table, Dialog 등)는 Figma 재확인 금지
+**STEP 2 — Read only the info not in the cache from Figma**
+- Don't read the whole parent frame → pinpoint-read only the node IDs of the needed section
+- figma_execute reading order:
+  1. First grasp only the children ID list with depth=1~2
+  2. Read only the needed node IDs with depth=3~4
+- Don't re-check already-implemented components (Navigation, Sidebar, Table, Dialog, etc.) in Figma
 
-**STEP 3 — 읽은 결과 즉시 저장 (세션 종료 전 필수)**
-- 새 화면 구현 완료 시 반드시 `design-system/pages/<page>.md`에 저장
-- 저장 내용: 노드 ID, 컬럼 구조, 간격, 색상, hidden 노드 목록
-- 저장하지 않으면 다음 세션에서 동일한 Figma 읽기가 반복되어 토큰 낭비 발생
+**STEP 3 — Save the read results immediately (required before ending the session)**
+- When a new screen implementation is complete, always save to `design-system/pages/<page>.md`
+- What to save: node IDs, column structure, spacing, colors, hidden node list
+- If not saved, the same Figma reading repeats in the next session and wastes tokens
 
-**STEP 4 — 공식 MCP(get_design_context) 사용 금지**
+**STEP 4 — Don't use the official MCP (get_design_context)**
 
-### 라이브러리 Variables 읽기 (토큰명/alias/다크모드)
+### Reading library Variables (token names/alias/dark mode)
 
-라이브러리 파일의 **Variables 정의**(`success-chart` 같은 토큰 이름, palette alias, light/dark 매핑)는 노드 인스펙트로 못 읽음. 디자인 파일 노드는 `boundVariables.id` (예: `VariableID:.../3299:109`)만 노출하고, 그 ID가 어떤 이름의 변수인지는 별도 API가 필요함.
+The **Variables definitions** of a library file (token names like `success-chart`, palette aliases, light/dark mappings) can't be read via node inspection. Design file nodes only expose `boundVariables.id` (e.g. `VariableID:.../3299:109`), and a separate API is needed to know which named variable that ID is.
 
-**REST API는 막힘** (`file_variables:read` scope 부재 → 403). 대신 Desktop Bridge 우회 사용:
+**The REST API is blocked** (no `file_variables:read` scope → 403). Use the Desktop Bridge workaround instead:
 
 ```
 figma_get_variables({
   fileUrl: "<library file URL>",
   format: "filtered",
-  namePattern: "<keyword>",      // 예: "chart"
-  useConsoleFallback: true,      // ← Desktop Bridge 활성화
-  resolveAliases: true,          // alias 체인 자동 해석
+  namePattern: "<keyword>",      // e.g. "chart"
+  useConsoleFallback: true,      // ← activate Desktop Bridge
+  resolveAliases: true,          // auto-resolve the alias chain
   verbosity: "standard",
 })
 ```
 
-**전제 조건**: Figma Desktop 앱에서 **해당 라이브러리 파일이 열려 있어야 함** (Bridge가 현재 활성 파일의 데이터에 접근). 안 열려 있으면 "Desktop Bridge failed" 에러.
+**Prerequisite**: **the library file must be open in the Figma Desktop app** (the Bridge accesses the currently active file's data). If it's not open, you get a "Desktop Bridge failed" error.
 
-**응답 예시**:
+**Response example**:
 ```
 { id: "VariableID:3299:7368",
   name: "success/success-chart",
@@ -62,71 +62,71 @@ figma_get_variables({
                   "<dark-mode-id>":  { type:"VARIABLE_ALIAS", id:"VariableID:90:111" } }, ... }
 ```
 
-→ 토큰 이름(`success-chart`), 라이트/다크 alias ID를 정확히 받음.
+→ You get the token name (`success-chart`) and the light/dark alias IDs exactly.
 
-**금지**: 디자인 파일 노드의 `boundVariables.id`로 토큰 이름을 hex로 추측하는 방식. 추측은 마지막 fallback일 뿐. 매번 위 방법 먼저 시도.
+**Forbidden**: guessing the token name from a design file node's `boundVariables.id` via hex. Guessing is only a last-resort fallback. Always try the method above first.
 
-### design-system/ 폴더 구조
+### design-system/ folder structure
 ```
 design-system/
-  tokens.json          ← Figma 색상/타이포/간격 토큰
+  tokens.json          ← Figma color/typography/spacing tokens
   pages/
-    users.md           ← /users 페이지 디자인 데이터 ✓
-    api-keys.md        ← /api-keys 페이지 (미작성)
-    webhooks.md        ← /webhooks 페이지 (미작성)
-    analytics.md       ← /analytics 페이지 (미작성)
-  components/          ← 공통 컴포넌트 스펙 (필요시 추가)
+    users.md           ← /users page design data ✓
+    api-keys.md        ← /api-keys page (not written)
+    webhooks.md        ← /webhooks page (not written)
+    analytics.md       ← /analytics page (not written)
+  components/          ← common component specs (add as needed)
 ```
 
 ---
 
-## Figma hidden 노드 처리 규칙
+## Figma hidden node handling rules
 
-**Figma에서 숨겨진(hidden) 노드는 절대 구현하지 않는다.**
+**Never implement hidden nodes in Figma.**
 
-hidden 판별 기준 — 아래 중 하나라도 해당하면 구현 제외:
+Hidden identification criteria — exclude from implementation if any of the following applies:
 - `visible === false`
 - opacity === 0
-- 다른 노드와 x/y 좌표가 완전히 겹치면서(bounding box overlap) 실제 row/cell 데이터에 대응하는 셀이 없는 경우
-- `figma_execute`로 읽은 row 셀 좌표 범위에 해당 컬럼 셀이 존재하지 않는 경우
+- Coordinates fully overlap another node (bounding box overlap) with no cell corresponding to actual row/cell data
+- The column cell does not exist within the row cell coordinate range read via `figma_execute`
 
-**검증 방법**: 헤더 노드만 보지 말고 반드시 실제 **row 셀의 x 좌표**와 대조해서 컬럼 존재 여부 확인 후 구현.
+**Verification method**: don't look only at the header node — always compare against the actual **row cell x coordinates** to confirm whether the column exists before implementing.
 
-**figma_execute 읽기 시 필수 체크**: 노드 내용을 추출할 때 텍스트/스타일만 읽지 말고 **반드시 `node.visible` 값을 함께 확인**한다. `visible: false`인 노드는 텍스트가 있어도 구현에서 제외.
+**Required check when reading with figma_execute**: when extracting node content, don't read only the text/style — **always check the `node.visible` value too**. Exclude `visible: false` nodes from implementation even if they have text.
 
 ---
 
-## 컨테이너 children 전체 enumerate 규칙
+## Rule: fully enumerate container children
 
-**Parent 프레임을 구현할 때 `visible: true`인 모든 직접 자식을 순서대로 매핑한다.**
+**When implementing a parent frame, map all direct children with `visible: true` in order.**
 
-### 왜 필요한가
+### Why this is needed
 
-육안으로 "메뉴가 아닌 것처럼 보이는" 구조물(divider, spacer, 장식 Rectangle)을 semantic filtering으로 스킵하면 구현에서 누락됨. 실제 사례:
+If you skip structural elements that "don't look like a menu" to the eye (divider, spacer, decorative Rectangle) via semantic filtering, they get omitted from implementation. Actual cases:
 
-- TopNav의 `Frame 2` (HORIZONTAL, children=3)에서 `Nav1 | Divider(1×20 Rectangle) | Nav2` 중 Divider를 "장식"으로 보고 스킵 → 두 nav 그룹이 붙어서 렌더링.
-- Team 상세 페이지 Header (VERTICAL, children=2)에서 Row 1이 `Title TEXT | Ellipsis INSTANCE` 두 자식을 갖는데, **`getVisibleTexts()`로 텍스트만 추출**하다 보니 옆에 있던 3-dot 메뉴 INSTANCE를 빠뜨림 → 헤더에 Edit/Delete 메뉴가 누락.
+- In TopNav's `Frame 2` (HORIZONTAL, children=3), `Nav1 | Divider(1×20 Rectangle) | Nav2` — treating the Divider as "decoration" and skipping it → the two nav groups render stuck together.
+- In the Team detail page Header (VERTICAL, children=2), Row 1 has two children `Title TEXT | Ellipsis INSTANCE`, but **extracting only text via `getVisibleTexts()`** dropped the 3-dot menu INSTANCE beside it → the Edit/Delete menu was missing from the header.
 
-### 체크리스트
+### Checklist
 
-Parent 프레임 읽을 때 **반드시 수행**:
+**Always do this** when reading a parent frame:
 
-1. **Parent 자체 속성**: `layoutMode`, `itemSpacing`, `primaryAxisAlignItems`, `counterAxisAlignItems`, `visible` 기록
-2. **자식 enumeration**: `children` 배열 전체를 순서대로 나열 (이름·type·width·height·visible)
-3. **visible=false 필터링**: hidden 노드 제외
-4. **남은 visible 자식은 하나도 빠짐없이 구현 항목으로 매핑**
-5. **텍스트·아이콘·배경의 `fills` / `strokes` 토큰명 확인** — `destructive`·`warning`·`success` 같은 의미 토큰이 아닌 경우, 관습으로 해당 색상 추가 금지 (상세: `shadcn.md` "스타일 추가 금지 원칙")
+1. **Parent's own properties**: record `layoutMode`, `itemSpacing`, `primaryAxisAlignItems`, `counterAxisAlignItems`, `visible`
+2. **Child enumeration**: list the entire `children` array in order (name·type·width·height·visible)
+3. **visible=false filtering**: exclude hidden nodes
+4. **Map every remaining visible child to an implementation item, none omitted**
+5. **Check the `fills` / `strokes` token names of text·icon·background** — if it's not a semantic token like `destructive`·`warning`·`success`, don't add that color by convention (details: `shadcn.md` "principle of not adding styles")
 
-### 다층 톤 카드 인스펙트 의무화 (Tutorials BuildOverviewCard 사례)
+### Mandatory inspection of multi-tone layered cards (Tutorials BuildOverviewCard case)
 
-장식 톤이 **2 레이어 이상 중첩**되는 카드 (외곽 패널 / 행/카드 / 행 안의 아이콘 컨테이너 등) 를 구현할 때는, **각 레이어의 `fills[0].boundVariables.color` 와 `strokes[0].boundVariables.color` 를 모두 `figma_execute` 로 인스펙트하고 결과만 보고 코드 작성한다**. 스크린샷만 보고 톤이 "어디에 깔린" 건지 추정 금지.
+When implementing a card where decorative tones are **nested 2+ layers deep** (outer panel / row/card / icon container inside the row, etc.), **inspect every layer's `fills[0].boundVariables.color` and `strokes[0].boundVariables.color` with `figma_execute` and write code from the results only**. Don't infer "where" the tone "sits" from a screenshot alone.
 
-**실제 사례 (2026-05-14)**: Tutorials 페이지 `BuildOverviewCard` 구현 시 스크린샷에서 보라 톤이 전체 영역에 깔려 보여서 "외곽 패널이 보라" 라고 판단했으나, 실제 Figma 는 "흰 외곽 카드 + 보라(`highlight-subtle`) 행 + 행 안에 흰 원 + 검은 아이콘" 구조였음. 보라 위치가 안팎으로 뒤집힌 채로 머지됨.
+**Actual case (2026-05-14)**: when implementing the Tutorials page `BuildOverviewCard`, the purple tone appeared to cover the whole area in the screenshot, so it was judged as "the outer panel is purple", but the actual Figma was a "white outer card + purple (`highlight-subtle`) row + white circle inside the row + black icon" structure. It was merged with the purple location flipped inside-out.
 
-**워크플로우**:
+**Workflow**:
 
 ```js
-// 1. 각 레이어 fill / stroke variable 인스펙트
+// 1. Inspect each layer's fill / stroke variable
 async function inspectLayers(rootNodeId) {
   const root = await figma.getNodeByIdAsync(rootNodeId);
   async function resolveVar(id) {
@@ -147,23 +147,23 @@ async function inspectLayers(rootNodeId) {
 }
 ```
 
-2. 결과 테이블이 외곽→내부 순서로 색 변화를 보여줘야 함. 추측 금지.
-3. 아이콘 컨테이너의 `cornerRadius` 와 `width/height` 까지 같이 확인 (예: `r=16777200` 은 Figma 의 "full pill" → `rounded-full`).
-4. 구현 후 브라우저 스크린샷과 Figma 스크린샷을 1:1 비교 (특히 다층 톤 영역).
+2. The result table should show the color change in outer→inner order. No guessing.
+3. Check the icon container's `cornerRadius` and `width/height` too (e.g. `r=16777200` is Figma's "full pill" → `rounded-full`).
+4. After implementing, compare the browser screenshot and the Figma screenshot 1:1 (especially multi-tone areas).
 
-→ 톤이 "어느 레이어에 깔린지" 시각만으로 헷갈리는 순간, 즉시 `figma_execute` 인스펙트. CLAUDE.md 원칙 1번 "**Figma is truth**" 의 다층 케이스 적용.
+→ The moment a tone is visually confusing about "which layer it sits on", immediately inspect with `figma_execute`. This applies the multi-layer case of CLAUDE.md principle 1 "**Figma is truth**".
 
-### `getVisibleTexts()`만 호출 금지
+### Don't call only `getVisibleTexts()`
 
-자식 enumerate 단계에서 텍스트만 추출하는 헬퍼(`findAll(n => n.type === 'TEXT')` / `getVisibleTexts()`)에 의존하면 INSTANCE/FRAME/RECTANGLE 자식이 통째로 누락됨.
+If, at the child enumeration step, you rely on a helper that extracts only text (`findAll(n => n.type === 'TEXT')` / `getVisibleTexts()`), INSTANCE/FRAME/RECTANGLE children get omitted entirely.
 
-| 헬퍼 종류 | 어디에 쓰나 |
+| Helper type | Where to use |
 |---|---|
-| `getVisibleTexts(n)` | 텍스트 콘텐츠가 정확한지 확인할 때만 (라벨 매칭) |
-| **자식 enumeration**(아래) | **레이아웃 구조 파악 — 항상 먼저 수행** |
+| `getVisibleTexts(n)` | Only when confirming text content is correct (label matching) |
+| **Child enumeration** (below) | **Grasping the layout structure — always do this first** |
 
 ```js
-// ✅ 자식 전체를 type/visible과 함께 enumerate (레이아웃 파악)
+// ✅ Enumerate all children with type/visible (grasp layout)
 return n.children.map(c => ({
   name: c.name, type: c.type, visible: c.visible,
   w: Math.round(c.width), h: Math.round(c.height),
@@ -171,20 +171,20 @@ return n.children.map(c => ({
 }));
 ```
 
-텍스트 매칭은 enumerate 결과로 **레이아웃을 먼저 그린 뒤** 보조적으로 수행.
+Text matching is done **after first drawing the layout** from the enumeration result, as a supplement.
 
-### Rectangle 노드가 수상할 때 — divider 판별 기준
+### When a Rectangle node is suspicious — divider identification criteria
 
-극단적 종횡비의 Rectangle은 대부분 divider. 장식으로 가정 금지.
+A Rectangle with an extreme aspect ratio is mostly a divider. Don't assume it's decoration.
 
-| 힌트 | 해석 |
+| Hint | Interpretation |
 |---|---|
-| width=1 또는 height=1 | 세로선/가로선 divider |
-| 회전(rotation ≠ 0)된 좁은 Rectangle | 회전된 divider (예: 20×1 + rotation=-90 → 1×20 세로선) |
-| 두 그룹 사이에 위치한 작은 Rectangle | 섹션 divider |
-| stroke만 있고 fills=[] | 선형 요소 (divider/border) |
+| width=1 or height=1 | Vertical/horizontal divider |
+| A narrow Rectangle that is rotated (rotation ≠ 0) | Rotated divider (e.g. 20×1 + rotation=-90 → 1×20 vertical line) |
+| A small Rectangle positioned between two groups | Section divider |
+| Only stroke, fills=[] | Linear element (divider/border) |
 
-### 구현 매핑 예시
+### Implementation mapping example
 
 ```
 Frame 2 (HORIZONTAL, gap=12, visible=true, children=3):
@@ -198,24 +198,24 @@ Frame 2 (HORIZONTAL, gap=12, visible=true, children=3):
 ```tsx
 <nav className="flex items-center gap-3">
   <Nav1 />
-  <div className="h-5 w-px bg-sidebar-border" />  {/* ← divider 빠뜨리지 말 것 */}
+  <div className="h-5 w-px bg-sidebar-border" />  {/* ← don't drop the divider */}
   <Nav2 />
 </nav>
 ```
 
 ---
 
-## Figma 레이아웃 방향 읽기 규칙
+## Figma layout direction reading rules
 
-**복수의 자식을 가진 프레임은 반드시 `layoutMode`를 확인한 뒤 구현한다.**
+**Always check `layoutMode` before implementing a frame with multiple children.**
 
-| Figma `layoutMode` | 코드 |
+| Figma `layoutMode` | Code |
 |---|---|
 | `HORIZONTAL` | `flex flex-row` |
 | `VERTICAL` | `flex flex-col` |
-| `NONE` | flex 없음 (absolute 또는 block) |
+| `NONE` | no flex (absolute or block) |
 
-`figma_execute`로 노드를 읽을 때 아래 속성을 반드시 포함해서 추출할 것:
+When reading a node via `figma_execute`, always include the following properties in the extraction:
 
 ```js
 {
@@ -227,4 +227,4 @@ Frame 2 (HORIZONTAL, gap=12, visible=true, children=3):
 }
 ```
 
-레이아웃 방향을 확인하지 않고 임의로 `flex-col` / `flex-row`를 결정하지 않는다.
+Don't arbitrarily decide `flex-col` / `flex-row` without checking the layout direction.

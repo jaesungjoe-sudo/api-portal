@@ -21,39 +21,39 @@
 
 ## Used Patterns
 
-<!-- TODO: table-list, confirm-dialog, form-dialog 패턴 분리 후 참조 추가 -->
+<!-- TODO: add references after splitting out the table-list, confirm-dialog, form-dialog patterns -->
 
 ---
 
 ## Page Structure
 
-### 전체 레이아웃
+### Overall layout
 - Full page: VERTICAL, w=1440
 - Body: HORIZONTAL — Sidebar(255px) + Main-Content(1185px)
 - Main-Content padding: 40px top, 80px bottom, 60px left/right, gap=40
 
-### 탭 구성
+### Tab composition
 - Layout: HORIZONTAL, gap=4px
-- 탭 목록: **User (64px)** | **Team (69px)** | **Pending Approvals (182px)**
-- Active 탭 텍스트: `text-foreground` / Inactive: `text-muted-foreground` (`components/tabs.md` 의 underline tabs 정합)
-- Pending Approvals 탭 옆 count badge: pending 건수 표시 (badge 패턴은 `components/badge.md` 참조)
+- Tab list: **User (64px)** | **Team (69px)** | **Pending Approvals (182px)**
+- Active tab text: `text-foreground` / Inactive: `text-muted-foreground` (matches the underline tabs in `components/tabs.md`)
+- Count badge next to the Pending Approvals tab: shows the pending count (for the badge pattern see `components/badge.md`)
 
-### 툴바 (탭 아래)
-- 왼쪽: Search Input (`w-60`, `h-8`, placeholder `Search User`)
-- 오른쪽: **Invite User** 버튼 (default size = `h-9`, default variant — `patterns/table-list-page.md` §5 toolbar CTA 룰)
-  - **Pending Approvals 탭에선 숨김** — User / Team 탭에서만 표시
+### Toolbar (below the tabs)
+- Left: Search Input (`w-60`, `h-8`, placeholder `Search User`)
+- Right: **Invite User** button (default size = `h-9`, default variant — `patterns/table-list-page.md` §5 toolbar CTA rule)
+  - **Hidden on the Pending Approvals tab** — shown only on the User / Team tabs
 
-### Footer (Pagination 배치)
+### Footer (Pagination placement)
 - `grid grid-cols-3 items-center`
-  - 왼쪽: 빈 div (선택 개수 표시 사용 안 함)
-  - 중앙: Pagination
-  - 오른쪽: 빈 div
+  - Left: empty div (selected-count display not used)
+  - Center: Pagination
+  - Right: empty div
 
 ---
 
 ## Users Tab
 
-### 테이블 컬럼
+### Table columns
 
 | Column | min-width | notes |
 |---|---|---|
@@ -66,14 +66,14 @@
 | Updated | 140px | sortable + Info tooltip |
 | Actions | w-14 | MoreHorizontal → Popover |
 
-**Hidden / excluded columns (의도적으로 구현하지 않음)**
-- **Permission** — Figma 헤더 노드는 존재하나 실제 row cell 이 없음 → 구현 제외
-- **Created** — 이전 버전에 있었으나 현재 구현에서 제거됨 → `createdAt`, `createdAtMs` 필드도 User 타입에서 제거
+**Hidden / excluded columns (intentionally not implemented)**
+- **Permission** — the Figma header node exists but there's no actual row cell → excluded from implementation
+- **Created** — existed in an earlier version but was removed in the current implementation → the `createdAt`, `createdAtMs` fields are also removed from the User type
 
-### Row Action Menu (MoreHorizontal 클릭 시 열림)
+### Row Action Menu (opens on MoreHorizontal click)
 
-- **Edit** → shortcut `⇧⌘P` → Edit User Dialog 열림
-- **Deactivate** → shortcut `⌘B` → Deactivate Confirm Dialog 열림
+- **Edit** → shortcut `⇧⌘P` → opens the Edit User Dialog
+- **Deactivate** → shortcut `⌘B` → opens the Deactivate Confirm Dialog
 - [Separator]
 - **Resend invite mail** → shortcut `⌘S` → toast `Invitation resent to {email}`
 
@@ -81,23 +81,23 @@
 
 Form Dialog (width 423px).
 
-**필드 (gap=16px)**
+**Fields (gap=16px)**
 
 1. **Name** — Input (pre-filled, no autofocus)
 2. **Email** — Input (pre-filled, no autofocus)
 3. **Status** — Label + StatusBadge (HORIZONTAL, justify-between)
-   - 우측: **Invited 상태일 때만** `<Button variant="outline" size="sm">Resend invitation</Button>` 표시
-   - 아래: 상태별 Alert 표시
+   - Right: shows `<Button variant="outline" size="sm">Resend invitation</Button>` **only when in the Invited state**
+   - Below: status-specific Alert
      - **Invited** → `Invitation sent and waiting for acceptance`
-     - **그 외** → `Awaiting administrator approval.`
+     - **Otherwise** → `Awaiting administrator approval.`
 4. **Select Role** — Label + Select
-   - 바로 아래 Info alert 노드: `visible=false → 구현 제외`
+   - The Info alert node right below it: `visible=false → excluded from implementation`
 5. **Team** — Label + Select
 
 **Footer**
 - Cancel (`variant="secondary"`) + Save (`variant="default"`)
 
-**Focus 동작**: Dialog 열릴 때 어떤 필드도 autofocus 되지 않도록 sr-only span 으로 focus 흡수 (상세 `components/dialog.md`).
+**Focus behavior**: When the dialog opens, no field is autofocused — focus is absorbed by an sr-only span (details in `components/dialog.md`).
 
 ### Deactivate Confirm Dialog
 
@@ -106,13 +106,13 @@ Confirm Dialog (width 512px).
 - **Title**: `Deactivate User`
 - **Body**: `Are you sure you want to deactivate this user ({email})?`
 - **Footer**: Cancel (`variant="outline"`) + Deactivate (`variant="destructive"`)
-- **동작**: Deactivate 클릭 시 해당 row의 `status → Deactivated` 로 업데이트 + toast `{name|email} deactivated`
+- **Behavior**: On Deactivate click, update that row's `status → Deactivated` + toast `{name|email} deactivated`
 
 ---
 
 ## Pending Approvals Tab
 
-### 테이블 컬럼
+### Table columns
 
 | Column | x | w | notes |
 |---|---|---|---|
@@ -123,16 +123,16 @@ Confirm Dialog (width 512px).
 | Role | 534 | 120px | |
 | Status | 654 | 120px | Verified StatusBadge |
 | Updated | 774 | 120px | |
-| **HIDDEN** | 845 | 160px | visible=false → 구현 제외 |
-| Action | 894 | 171px | Reject + Approve 버튼 |
+| **HIDDEN** | 845 | 160px | visible=false → excluded from implementation |
+| Action | 894 | 171px | Reject + Approve buttons |
 
-### Approve / Reject 동작
+### Approve / Reject behavior
 
-- **Approve 버튼** (`variant="outline"` + `className="text-success"`, `size="sm"`)
-  - 클릭 시 해당 row의 `status → Active` 로 업데이트 + toast `{name|email} approved`
-  - 확인 다이얼로그 없이 즉시 실행
-- **Reject 버튼** (`variant="outline"`, `size="sm"`)
-  - 클릭 시 **Reject Confirm Dialog** 열림
+- **Approve button** (`variant="outline"` + `className="text-success"`, `size="sm"`)
+  - On click, update that row's `status → Active` + toast `{name|email} approved`
+  - Executes immediately with no confirm dialog
+- **Reject button** (`variant="outline"`, `size="sm"`)
+  - On click, opens the **Reject Confirm Dialog**
 
 ### Reject Confirm Dialog
 
@@ -141,28 +141,28 @@ Confirm Dialog (width 512px).
 - **Title**: `Reject registration request`
 - **Body**: `Are you sure you want to reject this registration ({email}) request?`
 - **Footer**: Cancel (`variant="outline"`) + Reject (`variant="destructive"`)
-- **동작**: Reject 클릭 시 해당 row의 `status → Deactivated` 로 업데이트 + toast `{name|email} rejected`
+- **Behavior**: On Reject click, update that row's `status → Deactivated` + toast `{name|email} rejected`
 
 ---
 
 ## Invite User Dialog
 
-Form Dialog (width 423px). User / Team 탭의 툴바 "Invite User" 버튼 클릭으로 열림.
+Form Dialog (width 423px). Opens via the "Invite User" button in the toolbar of the User / Team tabs.
 
-**필드 (모두 필수)**
+**Fields (all required)**
 
-1. **Email** — Input (빈 필드 + placeholder)
+1. **Email** — Input (empty field + placeholder)
 2. **Select Role** — Select (placeholder `Select role`)
 3. **Team** — Select (placeholder `Select team`)
 
-**유효성 검사**
-- Submit 시 비어있는 필드는 `aria-invalid=true` + Label `text-destructive` + 에러 메시지 `{Field} is required`
-- 값 입력 시 해당 필드의 에러 즉시 해제
+**Validation**
+- On submit, empty fields get `aria-invalid=true` + Label `text-destructive` + error message `{Field} is required`
+- The field's error clears immediately on input
 
 **Footer**
 - Cancel (`variant="secondary"`) + Send Invite (`variant="default"`)
 
-**동작**: Send Invite 클릭 시 `status: Invited` 로 신규 유저가 목록 상단에 추가 + toast `Invitation sent` + dialog 닫힘
+**Behavior**: On Send Invite click, a new user with `status: Invited` is added to the top of the list + toast `Invitation sent` + dialog closes
 
 ---
 

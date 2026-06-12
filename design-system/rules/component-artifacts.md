@@ -1,49 +1,49 @@
-# Component Artifacts — 티어 & 승격 가이드
+# Component Artifacts — Tiers & promotion guide
 
-> 1 컴포넌트가 가져야 할 아티팩트를 "티어"로 정의한다. 모든 컴포넌트에 4개를 강제하지 않는다 — 재사용성이 자라면 아티팩트를 **승격(promote)** 한다. 강제는 **경고(warn)** 수준이며 기존 미커버 컴포넌트는 위반이 아니라 P2-4 backlog.
+> Defines the artifacts one component should have as "tiers". Not all 4 are forced on every component — as reusability grows, artifacts are **promoted**. Enforcement is at the **warn** level, and existing uncovered components are not violations but P2-4 backlog.
 
-## 4 아티팩트 (예: Button)
+## The 4 artifacts (e.g. Button)
 
-| # | 아티팩트 | 경로 | 역할 |
+| # | Artifact | Path | Role |
 |---|---|---|---|
-| ① | 구현 | `src/components/{ui\|api-portal}/<Name>.tsx` | React 컴포넌트. cva variant + 시맨틱 Tailwind. Truth=Figma 컴포넌트 set. |
-| ② | 스펙 | `design-system/components/<name>.md` | variant/size 매핑, Figma 노드 ID, 토큰, 안티패턴, WRONG/CORRECT. |
-| ③ | 카탈로그 | `src/app/(design-system)/design-system/primitives/<name>/page.tsx` | 라이브 시각 데모 (Storybook 대체물). |
-| ④ | nav 등록 | `src/lib/design-system-nav.ts` | ③을 사이드바에 노출 (③과 한 쌍). |
+| ① | Implementation | `src/components/{ui\|api-portal}/<Name>.tsx` | React component. cva variant + semantic Tailwind. Truth = Figma component set. |
+| ② | Spec | `design-system/components/<name>.md` | variant/size mapping, Figma node IDs, tokens, anti-patterns, WRONG/CORRECT. |
+| ③ | Catalog | `src/app/(design-system)/design-system/primitives/<name>/page.tsx` | Live visual demo (Storybook substitute). |
+| ④ | nav registration | `src/lib/design-system-nav.ts` | Exposes ③ in the sidebar (paired with ③). |
 
-## 티어 모델
+## Tier model
 
-| Tier | 요구 | 대상 |
+| Tier | Requires | Target |
 |---|---|---|
-| **Tier 1** | ① | 단일 사용·variant 없는 내부 헬퍼 (대부분 도메인 1회성) |
-| **Tier 2** | ①② | 단순/upstream primitive (separator·skeleton·label) 또는 라이브 데모 불필요 공용 |
-| **Tier 3** | ①②③④ | variant/state 가진 재사용 design-system primitive |
-| **도메인 조합물** | ① + `patterns/<pattern>.md` | 앱 조합물(다이얼로그 등). 개별 카탈로그 X. |
+| **Tier 1** | ① | Single-use internal helpers with no variants (mostly one-off domain) |
+| **Tier 2** | ①② | Simple/upstream primitives (separator·skeleton·label) or shared components that don't need a live demo |
+| **Tier 3** | ①②③④ | Reusable design-system primitives with variants/states |
+| **Domain composites** | ① + `patterns/<pattern>.md` | App composites (dialogs etc.). No individual catalog. |
 
-## 승격(promotion) 트리거 → 액션
+## Promotion triggers → actions
 
-| 트리거 | 액션 |
+| Trigger | Action |
 |---|---|
-| 서로 다른 **2곳 이상**에서 import | ② 스펙 추가 (Tier 1 → 2) |
-| **2번째 variant** 또는 인터랙티브 state 추가 | Tier 3 승격: ③ 카탈로그 + ④ nav 추가 |
-| 1회성이 **복사/포크**되어 퍼짐 | 공용 위치 추출 후 기준 재적용 |
+| Imported from **2 or more** different places | Add ② spec (Tier 1 → 2) |
+| **2nd variant** or an interactive state added | Promote to Tier 3: add ③ catalog + ④ nav |
+| A one-off gets **copied/forked** and spreads | Extract to a shared location, then re-apply the criteria |
 
-## 승격 절차 (체크리스트)
+## Promotion procedure (checklist)
 
-1. `design-system/components/<name>.md` 작성 (기존 spec 구조 따름: variant 표 / Figma 노드 / 토큰 / 안티패턴).
-2. Tier 3 이면 `src/app/(design-system)/design-system/primitives/<name>/page.tsx` 생성 (기존 button/page.tsx 구조 참고, `mx-auto max-w-4xl px-6 py-10 md:px-10` 래퍼).
-3. `src/lib/design-system-nav.ts` Primitives 그룹에 `{label, href, doc}` 추가 (알파벳 순).
-4. `npx tsc --noEmit && npx next build` 통과 확인.
+1. Write `design-system/components/<name>.md` (follow the existing spec structure: variant table / Figma nodes / tokens / anti-patterns).
+2. If Tier 3, create `src/app/(design-system)/design-system/primitives/<name>/page.tsx` (refer to the existing button/page.tsx structure, `mx-auto max-w-4xl px-6 py-10 md:px-10` wrapper).
+3. Add `{label, href, doc}` to the Primitives group in `src/lib/design-system-nav.ts` (alphabetical order).
+4. Confirm `npx tsc --noEmit && npx next build` passes.
 
-## 강제 수준
+## Enforcement level
 
-- 누락 = **경고**, 차단 아님. `check-catalog-exists.mjs`(하네스 hook, Phase B 도입) 는 **git 미추적(신규) ui 파일**에만 경고.
-- 기존 미커버(미커버 primitive 19 / 24 + 도메인 32)는 위반 아님.
+- Missing = **warn**, not blocking. `check-catalog-exists.mjs` (harness hook, introduced in Phase B) warns only on **git-untracked (new) ui files**.
+- Existing uncovered (19 / 24 uncovered primitives + 32 domain) are not violations.
 
-> **하드코딩 탐지의 canonical 출처는 hook `check-design-tokens.mjs`** (per-file, 신규 편집 시). `design-qa`/`design-reviewer` 의 grep 은 advisory 근사치(superset) — Figma 가 지정한 고정폭(`sm:max-w-[423px]`/`512px`, `calc(...)`, 레이아웃 offset)은 원칙 11이 허용하므로 **예상되는 경고**다(수동 triage). 새 위반만 잡으면 됨.
+> **The canonical source for hardcoding detection is the hook `check-design-tokens.mjs`** (per-file, on new edits). The grep in `design-qa`/`design-reviewer` is an advisory approximation (superset) — fixed widths specified by Figma (`sm:max-w-[423px]`/`512px`, `calc(...)`, layout offsets) are allowed by principle 11, so they are **expected warnings** (triage manually). Just catch new violations.
 
 ## Cross-refs
 
-- 토큰 룰: `rules/color.md`, CLAUDE.md 디자인 원칙 3.
-- 패턴(도메인 조합): `patterns/*.md`.
-- 카탈로그 커버리지 로드맵: `PROGRESS.md` P2-4.
+- Token rules: `rules/color.md`, CLAUDE.md design principle 3.
+- Patterns (domain composites): `patterns/*.md`.
+- Catalog coverage roadmap: `PROGRESS.md` P2-4.

@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 ```
 
-## 기본 스펙
+## Default spec
 
-- Height: `h-9` (기본) / `h-8` (툴바의 sm)
+- Height: `h-9` (default) / `h-8` (toolbar sm)
 - Shadow: `shadow-xs`
-- 폭: 기본 `w-full`. 툴바의 검색처럼 고정 폭이 필요하면 래퍼에 `w-60` 등 지정.
+- Width: `w-full` by default. If a fixed width is needed (like toolbar search), set `w-60`, etc. on the wrapper.
 
-## 검색 인풋 패턴
+## Search input pattern
 
 ```tsx
 <div className="relative w-60">
@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label"
 </div>
 ```
 
-## 폼 필드 + 에러 상태
+## Form field + error state
 
 ```tsx
 <div className="flex flex-col gap-2">
@@ -43,23 +43,23 @@ import { Label } from "@/components/ui/label"
 </div>
 ```
 
-## 유효성 검사 규칙
+## Validation rules
 
-- 저장/제출 시 필수 필드 비어있으면 `aria-invalid={true}` + Label `text-destructive` + 에러 메시지.
-- 값이 변경되는 순간 해당 필드의 에러 즉시 해제.
-- Edit 다이얼로그도 동일 규칙 적용.
+- On save/submit, if a required field is empty, show `aria-invalid={true}` + Label `text-destructive` + an error message.
+- The moment the value changes, clear that field's error immediately.
+- The same rule applies to Edit dialogs.
 
 ## Disabled State
 
-Figma `State=disabled` 스펙 (라이브러리 > Input 페이지):
+Figma `State=disabled` spec (library > Input page):
 
-| 속성 | 값 | Tailwind |
+| Property | Value | Tailwind |
 |---|---|---|
-| fill | `muted` 토큰 | `bg-muted` |
-| stroke | `border` 토큰 (불변) | — |
+| fill | `muted` token | `bg-muted` |
+| stroke | `border` token (unchanged) | — |
 | opacity | 0.5 | `opacity-50` |
 
-`input.tsx`에 이미 반영됨: `disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed`
+Already reflected in `input.tsx`: `disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed`
 
 ```tsx
 <Input
@@ -70,14 +70,14 @@ Figma `State=disabled` 스펙 (라이브러리 > Input 페이지):
 />
 ```
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Input", "TextField"
+- `mainComponent` name: "Input", "TextField"
 - `componentProperties.State.value`: `default` / `error` / `disabled` / `focused`
 - Error variant = Label `text-destructive` + Input `aria-invalid`
 
-## Label 관련
+## About Label
 
-shadcn `Label` 은 별도 파일 없음. Input 과 함께 사용:
-- 에러 시: `className={errors.field ? "text-destructive" : ""}`
-- `htmlFor` 로 Input `id` 와 연결
+The shadcn `Label` has no separate file. Use it together with Input:
+- On error: `className={errors.field ? "text-destructive" : ""}`
+- Connect to the Input `id` via `htmlFor`

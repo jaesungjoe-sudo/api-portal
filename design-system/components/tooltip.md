@@ -1,6 +1,6 @@
 # Tooltip
 
-> 짧은 보조 설명을 hover/focus 시 표시. Help icon 옆 설명, disabled 상태 사유 안내 등에 사용. 메뉴 리스트나 일반 popover 콘텐츠는 별도 (DropdownMenu / Popover).
+> Shows a short supplementary explanation on hover/focus. Used for the note next to a help icon, explaining a disabled-state reason, etc. Menu lists and general popover content are separate (DropdownMenu / Popover).
 
 ## Import
 
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 ```
 
-> `TooltipProvider` 는 **루트 layout (`src/app/layout.tsx`) 에 이미 mount 됨**. 페이지/컴포넌트에서 별도 wrapping 불필요.
+> `TooltipProvider` is **already mounted in the root layout (`src/app/layout.tsx`)**. No separate wrapping is needed in pages/components.
 
 ## Anatomy
 
@@ -27,30 +27,30 @@ import {
 </Tooltip>
 ```
 
-- **`Tooltip`**: state root (controlled / uncontrolled 모두 OK).
-- **`TooltipTrigger`**: hover/focus 받는 요소. 보통 아이콘 또는 짧은 텍스트.
-- **`TooltipContent`**: 표시되는 박스. Base UI floating layer.
+- **`Tooltip`**: state root (controlled / uncontrolled both OK).
+- **`TooltipTrigger`**: the element that receives hover/focus. Usually an icon or short text.
+- **`TooltipContent`**: the box that's shown. Base UI floating layer.
 
-## 표준 trigger
+## Standard trigger
 
-| 용도 | 클래스 |
+| Usage | Class |
 |---|---|
-| Info 아이콘 (도움말) | `<Info className="h-3.5 w-3.5 text-muted-foreground cursor-default" />` |
-| 작은 시각 아이콘 (Help / Question) | h-3.5 ~ h-4 lucide 아이콘 + muted-foreground |
-| Disabled 액션 사유 안내 | `<span>` 또는 disabled 된 Button 자체 |
+| Info icon (help) | `<Info className="h-3.5 w-3.5 text-muted-foreground cursor-default" />` |
+| Small visual icon (Help / Question) | h-3.5 to h-4 lucide icon + muted-foreground |
+| Disabled action reason | `<span>` or the disabled Button itself |
 
-`cursor-default` — 클릭 액션이 아니라 hover-only 임을 시각적으로 명시 (pointer 가 아님).
+`cursor-default` — visually signals this is hover-only, not a click action (not a pointer).
 
-## 표준 content
+## Standard content
 
-- 기본 `side="top"` (트리거 위)
-- `sideOffset={4}` (4px) — primitive 기본값
-- 본문: 한 줄 짧은 설명 (`text-xs` 또는 `text-sm`). 너무 길면 본문 인라인으로 옮기는 게 나음.
-- primitive 가 자동으로 `bg-popover` + `text-popover-foreground` + `shadow-md` + `rounded-md` 부여.
+- Default `side="top"` (above the trigger)
+- `sideOffset={4}` (4px) — primitive default
+- Body: a one-line short explanation (`text-xs` or `text-sm`). If too long, better to move it inline into the body.
+- The primitive automatically applies `bg-popover` + `text-popover-foreground` + `shadow-md` + `rounded-md`.
 
-## 사용 예시
+## Examples
 
-### Help icon 옆 설명
+### Note next to a help icon
 
 ```tsx
 <div className="flex items-center gap-1.5">
@@ -59,12 +59,12 @@ import {
     <TooltipTrigger className="flex items-center">
       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-default" />
     </TooltipTrigger>
-    <TooltipContent>{설명}</TooltipContent>
+    <TooltipContent>{description}</TooltipContent>
   </Tooltip>
 </div>
 ```
 
-### Disabled 사유 안내 (권장 패턴, `rules/states.md` §6)
+### Disabled reason (recommended pattern, `rules/states.md` §6)
 
 ```tsx
 <Tooltip>
@@ -73,49 +73,49 @@ import {
       <Button disabled>Delete</Button>
     </span>
   </TooltipTrigger>
-  <TooltipContent>이 항목은 protected 상태라 삭제할 수 없습니다.</TooltipContent>
+  <TooltipContent>This item is protected and can't be deleted.</TooltipContent>
 </Tooltip>
 ```
 
-- disabled Button 은 mouse 이벤트 안 받음 → `<span tabIndex={0}>` 으로 감싸서 hover/focus 받게 함
-- `asChild` — TooltipTrigger 가 자식 element 그대로 trigger 로 사용
+- A disabled Button doesn't receive mouse events → wrap it in `<span tabIndex={0}>` so it receives hover/focus
+- `asChild` — TooltipTrigger uses the child element directly as the trigger
 
-## 사용 표 (Phase1)
+## Usage table (Phase1)
 
-| 위치 | trigger | content |
+| Location | trigger | content |
 |---|---|---|
-| Users 테이블 "Updated" 헤더 옆 | Info icon (h-3.5) | "Last time this user's record was modified" |
-| Sidebar (shadcn 기본) | menu trigger | menu label (모바일에서) |
+| Next to the Users table "Updated" header | Info icon (h-3.5) | "Last time this user's record was modified" |
+| Sidebar (shadcn default) | menu trigger | menu label (on mobile) |
 
-향후 추가 후보:
-- API Keys 의 Status 옆 (Expired/Revoked 사유)
-- form-dialog 의 protected 필드 disabled 사유
+Future candidates:
+- Next to Status on API Keys (Expired/Revoked reason)
+- Disabled reason for protected fields in form-dialog
 
 ## a11y
 
-- `TooltipTrigger` 가 자동으로 `aria-describedby` 로 content 연결
-- 키보드: focus 시에도 content 표시 (mouse hover 와 동일 동작)
-- screen reader: content 가 자동으로 읽힘
+- `TooltipTrigger` automatically links the content via `aria-describedby`
+- Keyboard: content also shows on focus (same behavior as mouse hover)
+- Screen reader: the content is read automatically
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Tooltip"
-- 트리거가 hover 시에만 표시되는 짧은 박스
-- 일반 Popover (지속 표시되는 컨테이너) 와 구분
+- `mainComponent` name: "Tooltip"
+- A short box that appears only on hover of the trigger
+- Distinguish from a general Popover (a persistently shown container)
 
-## 안티패턴
+## Anti-patterns
 
-| ❌ | 이유 |
+| ❌ | Reason |
 |---|---|
-| Tooltip 본문이 2줄 초과 / 50자 초과 | 짧은 보조 정보 전용. 길면 본문에 inline 표시. |
-| 클릭 액션을 Tooltip 으로 우회 (예: tooltip 안에 Button) | 임시 표시 컨테이너 — 클릭 액션은 Popover 또는 다이얼로그. |
-| `TooltipProvider` 를 페이지마다 추가 wrap | 루트 layout 에 이미 있음. 중복 mount 시 delay 등 동작 불안정. |
-| disabled Button 에 trigger 직접 (`<TooltipTrigger asChild><Button disabled />`) — `<span>` wrap 없이 | disabled 요소는 hover 이벤트 못 받음. `<span tabIndex={0}>` 으로 wrap 필수. |
-| `cursor-default` 누락한 Info icon | 클릭 가능해 보이는 cursor (pointer) — UX 혼란. |
-| 메뉴 리스트를 Tooltip 으로 작성 | Tooltip 은 단일 짧은 텍스트. 메뉴는 DropdownMenu. |
+| Tooltip body over 2 lines / over 50 chars | For short supplementary info only. If long, show inline in the body. |
+| Routing a click action through a Tooltip (e.g. a Button inside a tooltip) | A transient display container — click actions go in a Popover or dialog. |
+| Wrapping with an extra `TooltipProvider` on each page | Already in the root layout. Duplicate mounting makes behavior (delay, etc.) unstable. |
+| Putting the trigger directly on a disabled Button (`<TooltipTrigger asChild><Button disabled />`) — without a `<span>` wrap | Disabled elements can't receive hover events. Wrapping in `<span tabIndex={0}>` is required. |
+| Info icon missing `cursor-default` | A clickable-looking cursor (pointer) — UX confusion. |
+| Building a menu list with Tooltip | Tooltip is for a single short text. Menus use DropdownMenu. |
 
-## 주의사항
+## Notes
 
-- `TooltipProvider` 의 `delay={0}` 설정 — 우리 프로젝트는 즉시 표시 (디자이너 의도). 기본 750ms delay 가 아님.
-- `position` / `side` / `align` 은 모두 primitive prop 으로 조정. Custom positioning 불필요.
-- 동시에 여러 tooltip 표시 X — 새 tooltip 열리면 이전 자동 닫힘 (Base UI 기본 동작).
+- `TooltipProvider` uses `delay={0}` — our project shows immediately (designer's intent). Not the default 750ms delay.
+- `position` / `side` / `align` are all adjusted via primitive props. No custom positioning needed.
+- No showing multiple tooltips at once — opening a new tooltip auto-closes the previous one (Base UI default behavior).

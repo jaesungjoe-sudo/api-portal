@@ -1,11 +1,11 @@
 # Popover / Menulist
 
-> 메뉴 리스트 UI는 `DropdownMenu`가 기본. `Popover`는 메뉴가 아닌 일반 포지션 컨테이너용.
+> Menu-list UI defaults to `DropdownMenu`. `Popover` is for general positioning containers, not menus.
 
 ## Import
 
 ```tsx
-// 메뉴 리스트 (Row Action, Account, 드롭다운 선택 등)
+// Menu lists (Row Action, Account, dropdown selection, etc.)
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,47 +14,47 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// 일반 포지션 컨테이너 (tooltip-like custom overlay 등)
+// General positioning container (tooltip-like custom overlay, etc.)
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 ```
 
-## 언제 무엇을 쓰나
+## When to use which
 
-| 용도 | 컴포넌트 | 이유 |
+| Usage | Component | Reason |
 |---|---|---|
-| Row action 3-dot 메뉴 | `DropdownMenu` | 키보드 navigation · ARIA · focus trap 내장 |
-| Account · 계정 드롭다운 | `DropdownMenu` | 동일 |
-| Select 트리거 | `Select` / `SelectTrigger` | 선택형 리스트 전용 |
-| 커스텀 카드·인포 버블 | `Popover` | 일반 콘텐츠 포지셔닝 |
+| Row action 3-dot menu | `DropdownMenu` | Built-in keyboard navigation · ARIA · focus trap |
+| Account dropdown | `DropdownMenu` | Same |
+| Select trigger | `Select` / `SelectTrigger` | For selection lists only |
+| Custom card / info bubble | `Popover` | General content positioning |
 
-**"메뉴처럼 생긴 아무 것"은 항상 `DropdownMenu`를 먼저 선택.** 뭘 쓸지 애매하면 DropdownMenu 기본.
+**For "anything that looks like a menu," always pick `DropdownMenu` first.** When unsure, default to DropdownMenu.
 
-## Menulist 공통 스펙 (Figma 라이브러리 + 디자인 확정값)
+## Menulist common spec (Figma library + finalized design values)
 
-> Figma 라이브러리 노드: `3134:5588` (Menulist)
-> 적용 대상: `DropdownMenuContent`, `SelectContent`, `PopoverContent`
+> Figma library node: `3134:5588` (Menulist)
+> Applies to: `DropdownMenuContent`, `SelectContent`, `PopoverContent`
 
-| 속성 | 값 | Tailwind |
+| Property | Value | Tailwind |
 |---|---|---|
-| 배경 | `popover` 토큰 | `bg-popover` |
-| 테두리 | `border` 1px | `border border-border` |
-| 모서리 | 8px | `rounded-lg` |
-| 그림자 | `shadow-md` | `shadow-md` |
-| 내부 패딩 | 4px | `p-1` |
-| 아이템 높이 | 32px | `h-8` (`px-2 py-1.5` 대체 OK) |
-| 아이템 호버/포커스 | `accent` 토큰 | `focus:bg-accent focus:text-accent-foreground` |
-| 아이템 텍스트 | `popover-foreground` | 기본 상속 (색상 지정 안 함) |
-| 구분선 | `border` 1px | `<DropdownMenuSeparator />` |
+| Background | `popover` token | `bg-popover` |
+| Border | `border` 1px | `border border-border` |
+| Corner | 8px | `rounded-lg` |
+| Shadow | `shadow-md` | `shadow-md` |
+| Inner padding | 4px | `p-1` |
+| Item height | 32px | `h-8` (`px-2 py-1.5` is an OK substitute) |
+| Item hover/focus | `accent` token | `focus:bg-accent focus:text-accent-foreground` |
+| Item text | `popover-foreground` | Inherited by default (don't set the color) |
+| Separator | `border` 1px | `<DropdownMenuSeparator />` |
 
-→ `DropdownMenuContent` / `DropdownMenuItem` 기본값이 이미 위 스펙을 충족. className으로 임의 색 덮어쓰기 금지.
+→ The `DropdownMenuContent` / `DropdownMenuItem` defaults already meet the spec above. Don't override colors arbitrarily via className.
 
-### 파괴적 동작(Delete/Deactivate)에 색상 추가 금지
+### Don't add color to destructive actions (Delete/Deactivate)
 
-Figma는 Delete / Deactivate 텍스트도 `popover-foreground`(일반 색). **"파괴적 action = 빨강" 관습으로 `text-destructive`를 추가하지 않는다.** 상세: `design-system/rules/shadcn.md` "스타일 추가 금지 원칙".
+In Figma, Delete / Deactivate text is also `popover-foreground` (the normal color). **Don't add `text-destructive` based on the "destructive action = red" convention.** Details: `design-system/rules/shadcn.md` "no adding styles" principle.
 
-## Row Action Menu 패턴
+## Row Action Menu pattern
 
-테이블 row의 `MoreHorizontal` 드롭다운:
+The `MoreHorizontal` dropdown in a table row:
 
 ```tsx
 import { MoreHorizontal } from "lucide-react"
@@ -84,28 +84,28 @@ import {
 </DropdownMenu>
 ```
 
-### 스펙 요약
+### Spec summary
 
-| 항목 | 값 |
+| Item | Value |
 |---|---|
-| Dropdown 폭 | `w-56` (224px) |
-| Trigger 크기 | `h-8 w-8` (32×32) |
-| Trigger aria-label | **필수** — row 식별 정보 포함 (`Actions for {name}`) |
-| 아이템 패딩 | `px-2 py-1.5` |
-| 구분선 | `<DropdownMenuSeparator />` (수동 `<hr />` / `<Separator />` 금지) |
+| Dropdown width | `w-56` (224px) |
+| Trigger size | `h-8 w-8` (32×32) |
+| Trigger aria-label | **Required** — include row-identifying info (`Actions for {name}`) |
+| Item padding | `px-2 py-1.5` |
+| Separator | `<DropdownMenuSeparator />` (manual `<hr />` / `<Separator />` forbidden) |
 
-## 키보드 단축키 텍스트(⌘K 등) 처리
+## Handling keyboard shortcut text (⌘K, etc.)
 
-Figma 라이브러리 Menulist에는 `⌘K` 같은 shortcut 필드가 존재하지만, **실제 디자인 인스턴스에서는 대개 `visible=false`**. Figma 실제 인스턴스 기준으로 구현 — 라이브러리에 있다고 단축키를 임의 추가하지 않는다.
+The Figma library Menulist has a shortcut field like `⌘K`, but **on actual design instances it's usually `visible=false`**. Implement based on the actual Figma instance — don't add shortcuts arbitrarily just because the library has them.
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Menulist", "Dropdown", "Popover"
-- Trigger는 대개 별도 icon button (`MoreHorizontal` / avatar / chevron 등)
-- `Edit / Delete / Deactivate` 같은 action 텍스트 색상 = `popover-foreground` (일반)
-- shortcut 필드는 실제 인스턴스의 `visible` 값 확인 후 처리
+- `mainComponent` name: "Menulist", "Dropdown", "Popover"
+- The trigger is usually a separate icon button (`MoreHorizontal` / avatar / chevron, etc.)
+- Action text color like `Edit / Delete / Deactivate` = `popover-foreground` (normal)
+- Handle the shortcut field after checking the actual instance's `visible` value
 
-## 주의사항
+## Notes
 
-- Row-level 조건부 아이템 (예: "Resend invite" 은 status=Invited 일 때만) 은 `{isInvited && <>...</>}` 로 감싼다.
-- `DropdownMenuLabel`은 반드시 `DropdownMenuGroup` 안에서 사용 (Base UI 제약, 상세: `design-system/rules/shadcn.md`).
+- Wrap row-level conditional items (e.g. "Resend invite" only when status=Invited) in `{isInvited && <>...</>}`.
+- `DropdownMenuLabel` must be used inside a `DropdownMenuGroup` (a Base UI constraint, details: `design-system/rules/shadcn.md`).

@@ -1,6 +1,6 @@
 # Skeleton
 
-> 로딩 자리표시(placeholder). 데이터가 도착하기 전, 들어올 콘텐츠의 윤곽을 펄스 애니메이션으로 보여준다. 모든 로딩 placeholder 는 raw `animate-pulse bg-muted` 대신 이 primitive 를 쓴다.
+> A loading placeholder. Before data arrives, it shows the outline of the incoming content with a pulse animation. All loading placeholders use this primitive instead of raw `animate-pulse bg-muted`.
 
 ## Import
 
@@ -14,64 +14,64 @@ import { Skeleton } from "@/components/ui/skeleton";
 <Skeleton className="h-4 w-32" />
 ```
 
-- 단일 `<div>` — `animate-pulse rounded-md bg-muted` + 호출부 `className`.
-- variant/size prop 없음. 크기·모양은 전적으로 `className` (`h-*`/`w-*`/`rounded-*`) 으로 지정.
+- A single `<div>` — `animate-pulse rounded-md bg-muted` + the caller's `className`.
+- No variant/size prop. Size and shape are set entirely via `className` (`h-*`/`w-*`/`rounded-*`).
 
-## 디자인 토큰
+## Design tokens
 
-| 속성 | 값 |
+| Property | Value |
 |---|---|
-| 배경 | `bg-muted` |
-| radius | `rounded-md` (8px) — 호출부에서 `rounded-full`(아바타/배지) 등으로 오버라이드 |
-| 애니메이션 | `animate-pulse` |
+| Background | `bg-muted` |
+| radius | `rounded-md` (8px) — override at the call site with `rounded-full` (avatar/badge), etc. |
+| Animation | `animate-pulse` |
 
-Figma 원본: 라이브러리 `Skeleton` 컴포넌트.
+Figma source: the library `Skeleton` component.
 
-## 티어 / 아티팩트
+## Tier / artifacts
 
-Skeleton 은 **variant 없는 Tier-2 primitive** (`rules/component-artifacts.md`). 원칙상 카탈로그 페이지 불필요하나, **로딩 *합성*(table/dashboard 조합)은 글로 읽는 것보다 라이브로 보는 게 훨씬 명확**하므로 카탈로그 데모 페이지를 두는 **의도적 예외**다. → `/design-system/primitives/skeleton`.
+Skeleton is a **variant-less Tier-2 primitive** (`rules/component-artifacts.md`). In principle a catalog page is unnecessary, but since **loading *compositions* (table/dashboard combinations) are much clearer seen live than read about**, keeping a catalog demo page is a **deliberate exception**. → `/design-system/primitives/skeleton`.
 
-## 사용 룰
+## Usage rules
 
-정책 단일 출처는 **`rules/states.md` §3 (Loading)**. 요약:
+The single source of truth for policy is **`rules/states.md` §3 (Loading)**. Summary:
 
-1. **항상 `<Skeleton />`** — raw `animate-pulse bg-muted` 새로 만들기 금지.
-2. 반복 단위(row/card)는 실 콘텐츠와 **같은 height·radius·간격** → layout shift 최소화.
-3. **테이블**: 헤더는 유지하고 본문만 row skeleton ×N 으로 교체.
-4. **정렬·페이지 전환**(데이터 컨텍스트 유지): row 통째 교체 ❌. 즉시응답이면 인디케이터 불필요, 서버 지연이면 헤더 위 2px indeterminate bar.
-5. **캐시 백그라운드 재검증**(SWR식): 인디케이터 없음.
+1. **Always `<Skeleton />`** — don't create new raw `animate-pulse bg-muted`.
+2. Repeating units (row/card) use the **same height, radius, and spacing** as the real content → minimizes layout shift.
+3. **Tables**: keep the header and replace only the body with row skeletons ×N.
+4. **Sort / page transitions** (data context preserved): don't replace the whole row ❌. If the response is instant, no indicator is needed; if the server is slow, a 2px indeterminate bar above the header.
+5. **Cache background revalidation** (SWR-style): no indicator.
 
-## 표면별 레시피
+## Per-surface recipes
 
 ```tsx
-// 테이블 row (헤더 유지)
+// Table row (keep the header)
 <TableRow>
   <TableCell><Skeleton className="h-4 w-32" /></TableCell>
   <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>  {/* badge */}
 </TableRow>
 
-// 대시보드 summary 카드
+// Dashboard summary card
 <div className="rounded-md border border-border bg-card p-4">
   <Skeleton className="h-3.5 w-24" />     {/* label */}
   <Skeleton className="mt-3 h-7 w-20" />  {/* value */}
 </div>
 
-// 차트 영역
+// Chart area
 <Skeleton className="h-48 w-full rounded-md" />
 
-// 아바타
+// Avatar
 <Skeleton className="size-10 rounded-full" />
 ```
 
-## 안티패턴
+## Anti-patterns
 
-- ❌ raw `<div className="animate-pulse bg-muted h-4 w-32" />` — primitive 우회.
-- ❌ 콘텐츠와 다른 크기의 skeleton → 로드 완료 시 점프(layout shift).
-- ❌ 정렬/페이지네이션 같은 컨텍스트 유지 재요청에서 전체 row skeleton.
-- ❌ 캐시 hit 후 백그라운드 재검증에 skeleton 노출.
+- ❌ raw `<div className="animate-pulse bg-muted h-4 w-32" />` — bypasses the primitive.
+- ❌ A skeleton sized differently from the content → jumps (layout shift) when loading completes.
+- ❌ Full row skeletons on context-preserving refetches like sort/pagination.
+- ❌ Showing a skeleton during background revalidation after a cache hit.
 
 ## Cross-refs
 
-- 룰: `rules/states.md` §3 (Loading)
-- 패턴: `patterns/table-list-page.md` (테이블 페이지 골격)
-- 카탈로그: `/design-system/primitives/skeleton`
+- Rule: `rules/states.md` §3 (Loading)
+- Pattern: `patterns/table-list-page.md` (table page skeleton)
+- Catalog: `/design-system/primitives/skeleton`

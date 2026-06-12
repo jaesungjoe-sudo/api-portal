@@ -1,23 +1,23 @@
-# confirm-dialog 패턴
+# confirm-dialog pattern
 
-> 파괴적·되돌리기 어려운 단일 액션을 확인받는 모달 (Figma 명: "Alert dialog"). Dialog primitive 위에 본 문서의 룰을 얹는다. 입력 폼이 필요한 경우는 별도 패턴 — `patterns/form-dialog.md` 참조.
+> A modal that confirms a single destructive or hard-to-undo action (Figma name: "Alert dialog"). It layers the rules in this doc on top of the Dialog primitive. When an input form is needed, use the separate pattern — see `patterns/form-dialog.md`.
 
-## 적용 범위
+## Where used
 
-본 패턴은 다음 형태의 다이얼로그를 다룬다:
+This pattern covers dialogs of the following kinds:
 
-- Delete-* (예: Delete API Key, Delete Team)
-- Revoke-* (예: Revoke API Key)
-- Deactivate-* (예: Deactivate User)
-- Reject-* (예: Reject Registration)
+- Delete-* (e.g. Delete API Key, Delete Team)
+- Revoke-* (e.g. Revoke API Key)
+- Deactivate-* (e.g. Deactivate User)
+- Reject-* (e.g. Reject Registration)
 
-입력 폼이 있는 다이얼로그(Create / Edit / Invite / View) 는 `form-dialog` 패턴.
+Dialogs with an input form (Create / Edit / Invite / View) use the `form-dialog` pattern.
 
 ---
 
-## 1. 사용 — `ConfirmDialog` 공용 컴포넌트
+## 1. Usage — the `ConfirmDialog` shared component
 
-본 패턴의 모든 다이얼로그는 **`<ConfirmDialog>` 공용 컴포넌트**로 작성한다. 직접 Dialog primitive 를 조립하지 말 것.
+All dialogs in this pattern are built with the **`<ConfirmDialog>` shared component**. Do not assemble the Dialog primitive directly.
 
 ```tsx
 import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
@@ -32,7 +32,7 @@ import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
 />
 ```
 
-엔티티 이름·이메일 등을 본문에 강조해서 넣을 때는 `description` 에 JSX 그대로 전달:
+When emphasizing an entity name, email, etc. in the body, pass JSX directly to `description`:
 
 ```tsx
 <ConfirmDialog
@@ -45,7 +45,7 @@ import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
 
 ---
 
-## 2. 구조 (ConfirmDialog 내부)
+## 2. Anatomy (inside ConfirmDialog)
 
 ```tsx
 <Dialog>
@@ -64,46 +64,46 @@ import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
 
 ---
 
-## 3. Width — 512px (form-dialog 와 차이)
+## 3. Width — 512px (differs from form-dialog)
 
-| 패턴 | width |
+| Pattern | width |
 |---|---|
 | form-dialog | `sm:max-w-[423px]` |
-| **confirm-dialog (본 패턴)** | `sm:max-w-[512px]` |
+| **confirm-dialog (this pattern)** | `sm:max-w-[512px]` |
 
-→ Figma 정합. confirm 은 본문 카피가 길어지는 경향이라 좀 더 넓다.
-
----
-
-## 4. `showCloseButton={false}` — 항상
-
-Dialog primitive 의 우상단 X 버튼을 **숨긴다**. 이는 사용자에게 "명시적으로 Cancel 또는 Confirm 을 누르도록" 강제하기 위함이며, 파괴적 액션의 핵심 안전장치.
-
-→ form-dialog 는 `showCloseButton` 기본 true (X 노출 OK) / confirm-dialog 는 항상 false.
+→ Matches Figma. Confirm dialogs tend to have longer body copy, so they're a bit wider.
 
 ---
 
-## 5. Header / Description 정책
+## 4. `showCloseButton={false}` — always
 
-- **DialogTitle**: 필수. 동사+명사 ("Delete API Key", "Revoke API Key", "Deactivate User", "Reject registration request").
-- **DialogDescription**: **항상 필수** (form-dialog 는 조건부). a11y 정합 + Figma 정합. 단순 텍스트 또는 엔티티 이름이 강조된 JSX 모두 OK.
+**Hide** the top-right X button of the Dialog primitive. This forces the user to "explicitly press either Cancel or Confirm" and is the key safety mechanism for destructive actions.
+
+→ form-dialog defaults `showCloseButton` to true (X may show); confirm-dialog is always false.
+
+---
+
+## 5. Header / Description policy
+
+- **DialogTitle**: Required. Verb + noun ("Delete API Key", "Revoke API Key", "Deactivate User", "Reject registration request").
+- **DialogDescription**: **Always required** (form-dialog is conditional). For a11y and Figma fidelity. Either plain text or JSX with an emphasized entity name is fine.
 
 ---
 
 ## 6. Footer
 
-`DialogFooter` primitive (plain footer 정합) + outline Cancel + destructive Confirm.
+`DialogFooter` primitive (matches the plain footer) + outline Cancel + destructive Confirm.
 
-| 위치 | variant |
+| Position | variant |
 |---|---|
-| Cancel (왼쪽) | `outline` |
-| Confirm (오른쪽) | `destructive` (기본) |
+| Cancel (left) | `outline` |
+| Confirm (right) | `destructive` (default) |
 
-JSX 순서는 Cancel → Confirm (좌→우). 모바일에선 DialogFooter primitive 가 자동 `flex-col-reverse` 로 CTA 가 위로 가게 반전.
+JSX order is Cancel → Confirm (left → right). On mobile, the DialogFooter primitive automatically reverses to `flex-col-reverse` so the CTA moves to the top.
 
-### 비-파괴적 confirm — `confirmVariant="default"`
+### Non-destructive confirm — `confirmVariant="default"`
 
-극히 드문 케이스. Logout 같이 "파괴적이진 않지만 의도 확인이 필요한" 액션 — `confirmVariant="default"` 로 override.
+A very rare case. For an action like Logout that "isn't destructive but still needs intent confirmation" — override with `confirmVariant="default"`.
 
 ```tsx
 <ConfirmDialog
@@ -116,58 +116,58 @@ JSX 순서는 Cancel → Confirm (좌→우). 모바일에선 DialogFooter primi
 />
 ```
 
-현재 Phase1 에서 사용 사례 0건 — `destructive` 가 기본값이므로 명시 안 하면 자동.
+Zero usages in Phase1 so far — since `destructive` is the default, it applies automatically if unspecified.
 
 ---
 
-## 7. form-dialog 와의 차이 (한눈에)
+## 7. Differences from form-dialog (at a glance)
 
 | | form-dialog | confirm-dialog |
 |---|---|---|
-| **목적** | 입력 받기 (Create / Edit / Invite / View) | 단일 액션 확인 (Delete / Revoke / Deactivate / Reject) |
+| **Purpose** | Take input (Create / Edit / Invite / View) | Confirm a single action (Delete / Revoke / Deactivate / Reject) |
 | **Width** | `sm:max-w-[423px]` | `sm:max-w-[512px]` |
-| **showCloseButton** | 기본 true (X 노출) | **`false` (X 숨김)** |
-| **본문** | 다중 필드 (Label + Input/Select + 검증) | **DialogDescription 1개** (필수) |
-| **DialogDescription** | 조건부 권장 | **항상 필수** |
+| **showCloseButton** | default true (X shows) | **`false` (X hidden)** |
+| **Body** | Multiple fields (Label + Input/Select + validation) | **1 DialogDescription** (required) |
+| **DialogDescription** | Conditionally recommended | **Always required** |
 | **Footer** | DialogFooter (outline Cancel + default CTA) | DialogFooter (outline Cancel + **destructive** CTA) |
-| **autoFocus 차단** | sr-only span + autoFocus={false} | 입력 없음 → 불필요 |
-| **공용 컴포넌트** | 없음 (각 다이얼로그가 직접 작성) | **`<ConfirmDialog>` 강제** |
+| **Block autoFocus** | sr-only span + autoFocus={false} | No input → not needed |
+| **Shared component** | None (each dialog written directly) | **`<ConfirmDialog>` enforced** |
 
 ---
 
-## 8. 안티패턴
+## 8. Anti-patterns
 
-| ❌ | 이유 |
+| ❌ | Reason |
 |---|---|
-| Dialog primitive 를 직접 조립해 confirm 만들기 | `<ConfirmDialog>` 강제. 룰 이탈 (showCloseButton, 본문 노드, 풋터) 위험. |
-| `showCloseButton` 미명시 (= true) | confirm 의 핵심 안전장치를 무력화. 본 패턴 §4 위반. |
-| Body 를 `<p>` 또는 `<span>` 으로 직접 작성 | DialogDescription 사용 — a11y 정합. screen reader 가 다이얼로그 본문으로 인식해야 함. |
-| Confirm 버튼이 `default` variant (파괴적 액션인데) | destructive 가 기본. 파괴적 액션의 시각 신호. §6 위반. |
-| Cancel 버튼이 `secondary` 또는 `default` | form-dialog 와 통일 — Cancel 은 항상 `outline`. |
-| Width 임의 변경 (512 외) | Figma 위반. form-dialog 가 필요한 케이스면 패턴 자체를 바꿔야 함. |
-| confirm-dialog 에 입력 필드 추가 | 패턴 위반. 입력이 필요하면 form-dialog 로 전환 또는 두 단계로 분리. |
+| Building a confirm by assembling the Dialog primitive directly | `<ConfirmDialog>` is enforced. Risk of deviating from the rules (showCloseButton, body node, footer). |
+| Not specifying `showCloseButton` (= true) | Defeats the confirm's key safety mechanism. Violates §4 of this pattern. |
+| Writing the body directly as `<p>` or `<span>` | Use DialogDescription — for a11y. The screen reader must recognize it as the dialog body. |
+| Confirm button using `default` variant (for a destructive action) | destructive is the default. It's the visual signal of a destructive action. Violates §6. |
+| Cancel button using `secondary` or `default` | Unified with form-dialog — Cancel is always `outline`. |
+| Arbitrarily changing the width (other than 512) | Violates Figma. If a case needs form-dialog, switch the whole pattern. |
+| Adding an input field to a confirm-dialog | Violates the pattern. If input is needed, switch to form-dialog or split into two steps. |
 
 ---
 
-## 9. 적용 컴포넌트 (Phase1)
+## 9. Components using it (Phase1)
 
-본 패턴(=`ConfirmDialog`)을 사용하는 다이얼로그:
+Dialogs that use this pattern (= `ConfirmDialog`):
 
-| 파일 / 위치 | 액션 | Confirm variant |
+| File / location | Action | Confirm variant |
 |---|---|---|
 | `DeleteApiKeyDialog.tsx` | Delete API Key | destructive |
 | `RevokeApiKeyDialog.tsx` | Revoke API Key | destructive |
-| `users/page.tsx` 인라인 | Deactivate User | destructive |
-| `users/page.tsx` 인라인 | Reject Registration | destructive |
-| `users/page.tsx` 인라인 | **Delete Team** (2026-05-29 추가) | destructive |
+| inline in `users/page.tsx` | Deactivate User | destructive |
+| inline in `users/page.tsx` | Reject Registration | destructive |
+| inline in `users/page.tsx` | **Delete Team** (added 2026-05-29) | destructive |
 
-각 다이얼로그 파일은 `<ConfirmDialog>` 의 thin wrapper — title / description / confirmLabel 만 다름.
+Each dialog file is a thin wrapper over `<ConfirmDialog>` — only title / description / confirmLabel differ.
 
 ---
 
-## 관련 문서
+## Related docs
 
-- `patterns/form-dialog.md` — 입력 폼 다이얼로그 (대조)
-- `components/dialog.md` — Dialog primitive spec (Width, showCloseButton, focus 룰)
-- `components/button.md` — Button variant 정의 (destructive 등)
-- `rules/states.md` §5 — Error 처리 (Optimistic rollback 시 toast)
+- `patterns/form-dialog.md` — input-form dialog (contrast)
+- `components/dialog.md` — Dialog primitive spec (Width, showCloseButton, focus rules)
+- `components/button.md` — Button variant definitions (destructive, etc.)
+- `rules/states.md` §5 — Error handling (toast on optimistic rollback)

@@ -1,9 +1,9 @@
-# shadcn / 디자인 토큰 사용 규칙
+# shadcn / design token usage rules
 
-> 컴포넌트별 variant·size·사용 패턴은 `design-system/components/<컴포넌트>.md` 에 있음.
-> 이 파일은 shadcn 전체에 공통 적용되는 디자인 토큰 규칙만 담는다.
+> Per-component variant·size·usage patterns are in `design-system/components/<component>.md`.
+> This file holds only the design token rules that apply commonly across all of shadcn.
 
-## 컴포넌트별 상세 규칙
+## Per-component detailed rules
 
 - Button: `design-system/components/button.md`
 - Badge: `design-system/components/badge.md`
@@ -12,46 +12,46 @@
 - Table: `design-system/components/table.md`
 - Input / Label: `design-system/components/input.md`
 - Select: `design-system/components/select.md`
-- Popover (Menulist 스펙 포함): `design-system/components/popover.md`
+- Popover (includes Menulist spec): `design-system/components/popover.md`
 - Pagination: `design-system/components/pagination.md`
 - ToggleGroup: `design-system/components/toggle-group.md`
 
 ---
 
-## Base UI 기반 변환 규약
+## Base UI conversion conventions
 
-이 프로젝트의 `src/components/ui/*.tsx` 는 **전부 `@base-ui/react` wrapping**. Radix 의존성 0 건. 새 primitive 도 동일 규칙을 따른다.
+This project's `src/components/ui/*.tsx` are **all `@base-ui/react` wrappings**. Zero Radix dependency. New primitives follow the same rule.
 
-### 원칙
+### Principles
 
-1. **공식 shadcn registry (`npx shadcn add <component>`) 직접 도입 금지** — Radix 의존성 (`@radix-ui/react-*`) 이 끌려와 의존성 family 가 갈라짐.
-2. **shadcn.com 의 코드는 참고용**: variant 구조 / cva 패턴 / className 매핑만 차용. import 와 primitive 호출은 무조건 `@base-ui/react/<subpath>` 로 새로 작성.
-3. **같은 컴포넌트 family 에 두 라이브러리 동시 의존 금지** — Base UI 가 단일 진실.
+1. **Don't adopt the official shadcn registry (`npx shadcn add <component>`) directly** — it pulls in a Radix dependency (`@radix-ui/react-*`) and splits the dependency family.
+2. **shadcn.com code is for reference**: borrow only the variant structure / cva pattern / className mapping. Always rewrite imports and primitive calls to `@base-ui/react/<subpath>`.
+3. **Don't depend on two libraries in the same component family at once** — Base UI is the single truth.
 
-### 변환 체크리스트
+### Conversion checklist
 
-| Radix (shadcn 원본) | Base UI (이 프로젝트) |
+| Radix (shadcn original) | Base UI (this project) |
 |---|---|
 | `import * as X from "@radix-ui/react-x"` | `import { X } from "@base-ui/react/x"` |
-| `<X.Content>` | `<X.Popup>` (Dialog/Popover/Menu 등 일부 컴포넌트) |
+| `<X.Content>` | `<X.Popup>` (some components like Dialog/Popover/Menu) |
 | `data-state="open"` | `data-open` |
-| `data-state="closed"` | (속성 부재) |
+| `data-state="closed"` | (attribute absent) |
 | `data-state="checked"` | `data-checked` |
 | `data-state="on"` (Toggle) | `data-pressed` |
 | Tailwind `data-[state=open]:bg-foo` | `data-[open]:bg-foo` |
-| `forwardRef` 직접 wrapping | `React.RefAttributes<...>` (Base UI 가 자체 처리) |
+| direct `forwardRef` wrapping | `React.RefAttributes<...>` (Base UI handles it itself) |
 
-### 데이터 속성 패턴 차이 (가장 큰 실질 변경)
+### Data attribute pattern difference (the biggest substantive change)
 
-- **Radix**: 한 속성에 enum 값 (`data-state="open" | "closed" | "checked" | ...`)
-- **Base UI**: **bool 속성 분리** (`data-open`, `data-pressed`, `data-checked`, `data-disabled`)
-- Tailwind variant 매핑 시 Base UI 가 훨씬 깔끔. 복수 상태 동시 잡힐 때 (open + disabled 등) selector 결합이 자연스러움.
+- **Radix**: an enum value on one attribute (`data-state="open" | "closed" | "checked" | ...`)
+- **Base UI**: **separate bool attributes** (`data-open`, `data-pressed`, `data-checked`, `data-disabled`)
+- Base UI is much cleaner for Tailwind variant mapping. When multiple states are caught at once (open + disabled etc.), selector combination is natural.
 
-### Controlled API 차이 (컴포넌트별 상이)
+### Controlled API differences (vary per component)
 
-일부 컴포넌트는 prop 시그니처가 다르다. 단일 vs 배열 차이가 있으면 **wrapper 에서 흡수** 한다.
+Some components have different prop signatures. If there's a single vs array difference, **absorb it in the wrapper**.
 
-**예: ToggleGroup** — Base UI 는 `value: string[]` / `onValueChange: (v: string[]) => void` (multi-select 친화). 단일 선택 wrapper 에서 array ↔ single 변환:
+**Example: ToggleGroup** — Base UI is `value: string[]` / `onValueChange: (v: string[]) => void` (multi-select friendly). The single-select wrapper converts array ↔ single:
 
 ```tsx
 <BaseToggleGroup
@@ -62,55 +62,55 @@
 />
 ```
 
-자세한 사례: `src/components/ui/toggle-group.tsx`.
+Detailed case: `src/components/ui/toggle-group.tsx`.
 
-### 새 primitive 추가 워크플로우
+### Workflow for adding a new primitive
 
-1. shadcn.com 에서 컴포넌트 페이지 열고 cva variant / className 패턴 캡처
-2. `node_modules/@base-ui/react/<component>` 에 해당 primitive 가 있는지 확인 (`.d.ts` 인터페이스로 prop 시그니처 파악)
-3. shadcn 식 file 구조 (`src/components/ui/<component>.tsx`) 작성. import 만 `@base-ui/react/*` 로 교체, data attr selector 는 위 표대로 변환
-4. controlled API 차이 있으면 wrapper 에서 흡수
-5. variant 별 사용 사례는 `design-system/components/<component>.md` 로 분리
-6. CLAUDE.md "shadcn primitives" 섹션 에 컴포넌트 이름 / 사용처 추가
+1. Open the component page on shadcn.com and capture the cva variant / className pattern
+2. Check whether `node_modules/@base-ui/react/<component>` has that primitive (grasp the prop signature from the `.d.ts` interface)
+3. Write the shadcn-style file structure (`src/components/ui/<component>.tsx`). Swap only the imports to `@base-ui/react/*`, and convert the data attr selectors per the table above
+4. If there's a controlled API difference, absorb it in the wrapper
+5. Separate per-variant use cases into `design-system/components/<component>.md`
+6. Add the component name / where used to the "shadcn primitives" section of CLAUDE.md
 
 ### Anti-pattern
 
-- `@radix-ui/react-*` import 추가 — 의존성 family 갈라짐
-- `data-state` selector 사용 — Base UI 에서 안 잡힘
-- Base UI 가 제공하지 않는 컴포넌트 (특히 Form 외) → 검토 후 사용자와 결정. 자체 작성이 보통 정답.
+- Adding a `@radix-ui/react-*` import — splits the dependency family
+- Using `data-state` selectors — not caught in Base UI
+- A component Base UI doesn't provide (especially beyond Form) → review and decide with the user. Writing your own is usually the answer.
 
 ---
 
-## Border Radius 규칙
+## Border Radius rules
 
-Figma tw/border-radius 기준:
+Based on Figma tw/border-radius:
 
-| 클래스 | 값 | 용도 |
+| Class | Value | Usage |
 |--------|-----|------|
-| `rounded-none` | 0px | 날카로운 모서리 |
+| `rounded-none` | 0px | Sharp corners |
 | `rounded-xs` | 2px | — |
-| `rounded-sm` | 6px | 사이드바 메뉴, 인풋 |
-| `rounded-md` | 8px | 카드, 패널, 버튼 |
-| `rounded-lg` | 10px | 모달, 드롭다운, **배지** |
-| `rounded-xl` | 14px | 큰 카드 (TeamCard) |
-| `rounded-2xl` | 18px | 섹션 |
+| `rounded-sm` | 6px | Sidebar menu, input |
+| `rounded-md` | 8px | Card, panel, button |
+| `rounded-lg` | 10px | Modal, dropdown, **badge** |
+| `rounded-xl` | 14px | Large card (TeamCard) |
+| `rounded-2xl` | 18px | Section |
 | `rounded-3xl` | 22px | — |
 | `rounded-4xl` | 26px | — |
-| `rounded-full` | 9999px | 아바타, 칩 (number badge / StatusBadge pill 오버라이드) |
+| `rounded-full` | 9999px | Avatar, chip (number badge / StatusBadge pill override) |
 
-> Truth 는 Figma 라이브러리 `radius-*` Variables. `misc.json` → `npm run sync-tokens` 로 자동 반영. 임의값(`rounded-[Npx]`) 사용 전 표준 토큰 먼저 확인.
+> Truth is the Figma library `radius-*` Variables. Auto-reflected via `misc.json` → `npm run sync-tokens`. Check the standard token before using an arbitrary value (`rounded-[Npx]`).
 
 ---
 
-## 폰트 규칙
+## Font rules
 
 ```
-본문:    font-sans     (Inter)
-코드:    font-mono     (Geist Mono / JetBrains Mono)
+Body:    font-sans     (Inter)
+Code:    font-mono     (Geist Mono / JetBrains Mono)
 ```
 
 ```
-❌ 금지                    ✅ 올바른 사용
+❌ Forbidden              ✅ Correct usage
 text-[14px]               text-sm
 font-[600]                font-semibold
 leading-[1.5]             leading-6
@@ -118,125 +118,125 @@ leading-[1.5]             leading-6
 
 ---
 
-## Shadow 규칙
+## Shadow rules
 
-> Effect Style 은 Figma Variables 와 달리 자동 추출 불가. 아래 규칙을 보고 수동 적용.
+> Unlike Figma Variables, Effect Styles can't be auto-extracted. Apply manually using the rules below.
 
-| 컴포넌트 | shadow 클래스 | 이유 |
+| Component | shadow class | Reason |
 |---|---|---|
-| Button (default, secondary, outline, destructive) | `shadow-xs` | 인터랙티브 컨트롤 깊이감 |
-| Button (ghost, link) | 없음 | 배경에 섞이는 플랫 스타일 |
-| Input, SelectTrigger | `shadow-xs` | 폼 필드 깊이감 |
-| Dialog, Modal | `shadow-xl` | 최상위 레이어 |
-| Dropdown, SelectContent, Popover | `shadow-md` | 중간 레이어 팝오버 |
-| Tooltip | `shadow-md` | 팝오버 |
-| Sheet (Drawer) | `shadow-xl` | 사이드 패널 |
-| Card | `shadow-sm` | 콘텐츠 카드 |
+| Button (default, secondary, outline, destructive) | `shadow-xs` | Depth for interactive controls |
+| Button (ghost, link) | none | Flat style that blends into the background |
+| Input, SelectTrigger | `shadow-xs` | Depth for form fields |
+| Dialog, Modal | `shadow-xl` | Topmost layer |
+| Dropdown, SelectContent, Popover | `shadow-md` | Mid-layer popover |
+| Tooltip | `shadow-md` | Popover |
+| Sheet (Drawer) | `shadow-xl` | Side panel |
+| Card | `shadow-sm` | Content card |
 
 ```
-❌ 금지                    ✅ 올바른 사용
+❌ Forbidden              ✅ Correct usage
 shadow-[0_1px_2px_...]    shadow-xs
-직접 box-shadow 작성       shadow-* 유틸리티 사용
-ghost 버튼에 shadow-xs     ghost/link는 shadow 없음
+writing box-shadow directly   use shadow-* utilities
+shadow-xs on a ghost button   ghost/link have no shadow
 ```
 
 ---
 
-## 간격 규칙 (8px 그리드)
+## Spacing rules (8px grid)
 
 ```
-❌ 금지                    ✅ 올바른 사용
+❌ Forbidden              ✅ Correct usage
 p-[13px]                  p-3 (12px)
 mt-[22px]                 mt-6 (24px)
 gap-[7px]                 gap-2 (8px)
 ```
 
-Tailwind 기본 spacing 스케일 사용:
+Use the Tailwind default spacing scale:
 `0, 0.5(2px), 1(4px), 2(8px), 3(12px), 4(16px), 6(24px), 8(32px), 12(48px)`
 
 ---
 
-## 커스텀 컴포넌트 위치
+## Custom component location
 
-shadcn 에 없는 컴포넌트는 `/src/components/api-portal/` 에서 import. 컴포넌트 결정 사항 — 어떤 variant 가 왜 추가/수정됐는지, 어떤 패턴으로 사용하는지 — 은 다음 위치에서 추적:
+Import components not in shadcn from `/src/components/api-portal/`. Component decisions — which variant was added/modified and why, what pattern it's used in — are tracked in the following locations:
 
-- **`design-system/patterns/*.md`** — 조합 패턴 (form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu). 컴포넌트가 *어떻게 합쳐져* 동작하는지 + 결정 배경.
-- **`design-system/components/*.md`** — 개별 컴포넌트 spec. variant·size·props 정의 + Figma 정합 결정.
-- **git commit history** — primitive 변경 (예: `DialogContent.showCloseButton` 기본값을 `true` → `false` 로 변경한 commit 0aad508) 은 commit 메시지에 결정 배경 기록.
+- **`design-system/patterns/*.md`** — composition patterns (form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu). *How* components combine to work + the decision background.
+- **`design-system/components/*.md`** — individual component specs. variant·size·props definitions + Figma alignment decisions.
+- **git commit history** — primitive changes (e.g. commit 0aad508 that changed `DialogContent.showCloseButton` default from `true` → `false`) record the decision background in the commit message.
 
 ---
 
-## 스타일 추가 금지 원칙 (Figma 검증 없이 색·강조 추가 금지)
+## Principle of not adding styles (don't add color·emphasis without Figma verification)
 
-**UX 관습(destructive action은 빨강, 성공은 초록 등)으로 컬러·굵기·배경을 추가하지 않는다. Figma에서 해당 노드의 실제 토큰을 확인한 후에만 적용.**
+**Don't add color·weight·background by UX convention (destructive action is red, success is green, etc.). Apply only after confirming that node's actual token in Figma.**
 
-### 왜 필요한가
+### Why this is needed
 
-관습에 따라 "Delete니까 text-destructive", "Error니까 bold" 같은 스타일을 덧붙이면, 디자이너가 의도적으로 *중립 스타일*을 선택한 경우에도 불필요한 강조가 들어감. 이번 사례:
+If you tack on styles by convention — "it's Delete so text-destructive", "it's Error so bold" — unnecessary emphasis creeps in even when the designer intentionally chose a *neutral style*. This case:
 
-- Figma Row Action 드롭다운의 "Delete API Key" 텍스트 색상 = `popover-foreground` (일반 텍스트)
-- 구현 시 "destructive action = 빨강" 관습으로 `text-destructive` 추가 → Figma와 불일치
+- The "Delete API Key" text color of the Figma Row Action dropdown = `popover-foreground` (normal text)
+- During implementation, the "destructive action = red" convention added `text-destructive` → mismatch with Figma
 
-### 체크리스트
+### Checklist
 
-텍스트 노드·아이콘·배경에 **색상/굵기/강조** 적용 전에:
+Before applying **color/weight/emphasis** to a text node·icon·background:
 
-1. **Figma에서 해당 노드의 `fills` / `strokes` 확인**
-   - 토큰명(`popover-foreground`, `destructive`, `muted-foreground` 등)을 직접 읽기
-2. **토큰이 `destructive`/`warning`/`success` 같은 의미 토큰일 때만** 해당 Tailwind 클래스 적용
-3. **기본 토큰(`foreground`, `popover-foreground` 등)이면 어떤 색상도 추가하지 않음** — 기본 상속
+1. **Check that node's `fills` / `strokes` in Figma**
+   - Read the token name (`popover-foreground`, `destructive`, `muted-foreground`, etc.) directly
+2. **Only when the token is a semantic token** like `destructive`/`warning`/`success`, apply the corresponding Tailwind class
+3. **If it's a base token (`foreground`, `popover-foreground`, etc.), don't add any color** — inherit by default
 
-### 판단 매트릭스
+### Decision matrix
 
-| Figma 텍스트 토큰 | Tailwind | 언제 쓰는가 |
+| Figma text token | Tailwind | When to use |
 |---|---|---|
-| `foreground` / `popover-foreground` | (지정 안 함 — 상속) | 일반 텍스트 |
-| `muted-foreground` | `text-muted-foreground` | 보조 텍스트 |
-| `destructive` | `text-destructive` | Figma가 명시적으로 destructive 색상 지정한 경우 |
-| `success` | `text-success` | Figma가 명시적으로 success 색상 지정한 경우 |
+| `foreground` / `popover-foreground` | (don't specify — inherit) | Normal text |
+| `muted-foreground` | `text-muted-foreground` | Secondary text |
+| `destructive` | `text-destructive` | When Figma explicitly specifies a destructive color |
+| `success` | `text-success` | When Figma explicitly specifies a success color |
 
-**"Delete / Remove 라서 빨강" 은 Figma 확인 없이 적용 금지.**
+**"Red because it's Delete / Remove" must not be applied without Figma verification.**
 
-### 검증 스크립트 예시
+### Verification script example
 
 ```js
-// 텍스트 노드의 실제 fill 토큰 확인
+// Check the text node's actual fill token
 const fill = textNode.fills?.[0];
 const varId = fill?.boundVariables?.color?.id;
 const variable = varId ? await figma.variables.getVariableByIdAsync(varId) : null;
-console.log(textNode.characters, '→', variable?.name); // 예: "Delete API Key" → "popover-foreground"
+console.log(textNode.characters, '→', variable?.name); // e.g. "Delete API Key" → "popover-foreground"
 ```
 
 ---
 
-## shadcn 기본값 수정 원칙 (Figma truth)
+## Principle of editing shadcn defaults (Figma truth)
 
-shadcn 기본 스타일이 Figma 스펙과 다를 때 **`src/components/ui/` 파일을 직접 수정**한다.
-className 오버라이드나 래퍼로 우회하지 않는다.
+When a shadcn default style differs from the Figma spec, **edit the `src/components/ui/` file directly**.
+Don't work around it with a className override or a wrapper.
 
-### 기준
+### Criteria
 
-| 상황 | 처리 |
+| Situation | Handling |
 |---|---|
-| shadcn 기본값 = Figma 스펙 | 그대로 사용 |
-| shadcn 기본값 ≠ Figma 스펙 | `src/components/ui/*.tsx` 직접 수정 |
-| 두 컴포넌트 간 동일 상태 스타일 불일치 | Figma 기준으로 통일 수정 |
+| shadcn default = Figma spec | Use as-is |
+| shadcn default ≠ Figma spec | Edit `src/components/ui/*.tsx` directly |
+| Mismatched same-state style between two components | Unify the edit per Figma |
 
-### 적용 예시 — Input / Select disabled
+### Application example — Input / Select disabled
 
-공식 shadcn은 Input과 Select의 `disabled` 스타일이 다름:
+Official shadcn has different `disabled` styles for Input and Select:
 
 ```
-Input    → disabled:bg-input/50 disabled:opacity-50  (배경 있음)
-Select   → disabled:opacity-50                       (배경 없음)
+Input    → disabled:bg-input/50 disabled:opacity-50  (has background)
+Select   → disabled:opacity-50                       (no background)
 ```
 
-Figma 라이브러리 기준 (Input `State=disabled`):
-- fill: `muted` 토큰 → `bg-muted`
+Per the Figma library (Input `State=disabled`):
+- fill: `muted` token → `bg-muted`
 - opacity: 0.5 → `opacity-50`
-- Select에는 disabled variant 없음 → Input과 동일 패턴 적용
+- Select has no disabled variant → apply the same pattern as Input
 
-**수정 결과 (두 컴포넌트 통일):**
+**Result of the edit (the two components unified):**
 
 ```
 Input    → disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed
@@ -245,38 +245,38 @@ Select   → disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed
 
 ---
 
-## 오버라이드 금지 패턴
+## Override-forbidden patterns
 
-> shadcn 컴포넌트에 className을 추가할 때 "내가 추가하는 것"만 보지 말고
-> **"내가 제거하는 것"** 도 반드시 확인. 제거가 필요하면 래퍼 div로 해결.
+> When adding a className to a shadcn component, don't look only at "what I'm adding" —
+> always check **"what I'm removing"** too. If removal is needed, solve it with a wrapper div.
 
-### 원칙
+### Principles
 
-| 구분 | 설명 |
+| Category | Description |
 |---|---|
-| ✅ 허용 | 기본값보다 크게 변경 (`p-2` → `py-3`, `h-auto` → `h-11`) |
-| ✅ 허용 | 없던 속성 추가 (`border-r`, `text-sm`, `font-medium`) |
-| ❌ 금지 | 기본값을 0으로 제거 (`py-0`, `p-0`, `m-0`, `gap-0`) |
-| ❌ 금지 | 이유 없이 기본 padding을 덮어쓰기 |
+| ✅ Allowed | Changing larger than the default (`p-2` → `py-3`, `h-auto` → `h-11`) |
+| ✅ Allowed | Adding an absent property (`border-r`, `text-sm`, `font-medium`) |
+| ❌ Forbidden | Removing the default to 0 (`py-0`, `p-0`, `m-0`, `gap-0`) |
+| ❌ Forbidden | Overwriting the default padding without reason |
 
-제거가 필요한 경우 → **래퍼 div로 내부 구조 조정**.
+If removal is needed → **adjust the internal structure with a wrapper div**.
 
 ---
 
-### 알려진 금지 패턴
+### Known forbidden patterns
 
-#### SidebarHeader — `py-0` / `p-0` 직접 지정 금지
+#### SidebarHeader — don't set `py-0` / `p-0` directly
 
-`SidebarHeader`의 기본 `p-2`는 상단 breathing room을 제공한다.
-이를 `py-0`으로 제거하면 TopNav 보더와 내용이 붙어 보인다.
+`SidebarHeader`'s default `p-2` provides top breathing room.
+Removing it with `py-0` makes the TopNav border and the content stick together.
 
 ```tsx
-// ❌ SidebarHeader padding 직접 제거
+// ❌ Removing SidebarHeader padding directly
 <SidebarHeader className="h-11 items-center py-0 px-4">
   <div>...</div>
 </SidebarHeader>
 
-// ✅ SidebarHeader 기본 padding 유지 + 래퍼 div로 내부 구조 제어
+// ✅ Keep SidebarHeader default padding + control internal structure with a wrapper div
 <SidebarHeader>
   <div className="flex items-center gap-3">
     ...
@@ -284,33 +284,33 @@ Select   → disabled:bg-muted disabled:opacity-50 disabled:cursor-not-allowed
 </SidebarHeader>
 ```
 
-#### Sidebar `collapsible="none"` — `border-r` 반드시 명시
+#### Sidebar `collapsible="none"` — always specify `border-r`
 
-`collapsible="none"`은 단순 div로 렌더링되어 기본 `border-r`이 사라진다.
-단독 사용 금지. 래퍼 컴포넌트에서 border를 포함하거나 className으로 명시.
+`collapsible="none"` renders as a plain div, so the default `border-r` disappears.
+Don't use it standalone. Include the border in the wrapper component or specify it with className.
 
 ```tsx
-// ❌ border 없이 단독 사용
+// ❌ Standalone use without border
 <Sidebar collapsible="none">
 
-// ✅ border 명시
+// ✅ border specified
 <Sidebar collapsible="none" className="border-r border-sidebar-border">
 ```
 
-#### DropdownMenuLabel — 반드시 `DropdownMenuGroup` 안에 사용
+#### DropdownMenuLabel — always use inside a `DropdownMenuGroup`
 
-Base UI의 `Menu.GroupLabel`은 `Menu.Group` 컨텍스트를 요구한다 (Radix와 다름).
-shadcn 기본 레지스트리는 이 요구를 반영하지 않아, `DropdownMenuLabel`을 단독으로 쓰면
-런타임 에러: `MenuGroupRootContext is missing`.
+Base UI's `Menu.GroupLabel` requires the `Menu.Group` context (unlike Radix).
+The shadcn default registry doesn't reflect this requirement, so using `DropdownMenuLabel` standalone causes a
+runtime error: `MenuGroupRootContext is missing`.
 
 ```tsx
-// ❌ Label 단독 사용 — 런타임 에러
+// ❌ Label used standalone — runtime error
 <DropdownMenuContent>
   <DropdownMenuLabel>Account</DropdownMenuLabel>
   <DropdownMenuItem>Profile</DropdownMenuItem>
 </DropdownMenuContent>
 
-// ✅ Group 으로 감싸기
+// ✅ Wrap with Group
 <DropdownMenuContent>
   <DropdownMenuGroup>
     <DropdownMenuLabel>Account</DropdownMenuLabel>
@@ -319,28 +319,28 @@ shadcn 기본 레지스트리는 이 요구를 반영하지 않아, `DropdownMen
 </DropdownMenuContent>
 ```
 
-#### flex-col 컨텍스트에서 `items-center` vs `justify-center`
+#### `items-center` vs `justify-center` in a flex-col context
 
-`flex-col`에서 두 클래스의 역할이 반대다.
+In `flex-col` the roles of the two classes are reversed.
 
-| 클래스 | flex-col에서 효과 |
+| Class | Effect in flex-col |
 |---|---|
-| `items-center` | 수평(cross-axis) 중앙 → 콘텐츠가 너비 중앙으로 쏠림 |
-| `justify-center` | 수직(main-axis) 중앙 → 원하는 효과 |
+| `items-center` | Horizontal (cross-axis) center → content drifts to the center of the width |
+| `justify-center` | Vertical (main-axis) center → the desired effect |
 
-`SidebarHeader`(`flex-col`)에서 수직 중앙 정렬이 필요하면 `justify-center` 사용.
+In `SidebarHeader` (`flex-col`), use `justify-center` when vertical centering is needed.
 
 ---
 
-### 반복 사용 패턴은 래퍼 컴포넌트로 분리
+### Separate repeated patterns into a wrapper component
 
-사이드바처럼 shadcn 컴포넌트를 조합해 반복 사용하는 패턴은
-`src/components/api-portal/`에 래퍼 컴포넌트로 분리한다.
-border·padding·active 상태 등 프로젝트 규칙을 해당 컴포넌트 안에 캡슐화.
+Patterns that combine shadcn components and are reused repeatedly, like the sidebar,
+are separated into a wrapper component in `src/components/api-portal/`.
+Encapsulate project rules such as border·padding·active state inside that component.
 
 ```
 src/components/api-portal/
-  AppSidebar.tsx   ← Sidebar + border-r + nav items 캡슐화
+  AppSidebar.tsx   ← encapsulates Sidebar + border-r + nav items
 ```
 
-새로운 부작용 패턴 발견 시 → 이 섹션에 즉시 추가.
+When a new side-effect pattern is found → add it to this section immediately.

@@ -1,6 +1,6 @@
 # /analytics — Phase 1 spec
 
-## 노드 ID (디자인 파일 `F2lkYCId2xMqcd9RuXL20B`)
+## Node IDs (design file `F2lkYCId2xMqcd9RuXL20B`)
 
 - Root: `1579:79974` (Analytics frame, 1440×1436)
 - Header (title + tabs): `1579:79981`
@@ -10,7 +10,7 @@
   - Top 5 APIs Container: `1579:80144`
   - Method distribution Container: `1583:80916`
 
-## 페이지 구조
+## Page structure
 
 ```
 Breadcrumb (Home → Dashboard → Analytics)
@@ -24,39 +24,39 @@ Bottom row (gap 20)
   └── Method distribution (420px fixed)
 ```
 
-## 탭 (period)
+## Tabs (period)
 
-3개 segmented tab:
+3 segmented tabs:
 - `Last 6 months` (default active, fill `accent`)
 - `Last 30 days`
 - `Last 7 days`
 
-Phase 1: 6m 만 mock 데이터, 나머지는 동일 데이터 반환 (placeholder).
+Phase 1: only 6m has mock data; the rest return the same data (placeholder).
 
 ## Summary Cards
 
 | # | Label | Value | Chip | Trend text |
 |---|---|---|---|---|
 | 1 | Total Requests | `1,252` | `+12.5%` | `+12.4% vs last 6 months` |
-| 2 | Active APIs | `14` | — (chip 없음) | `APIs with traffic` |
+| 2 | Active APIs | `14` | — (no chip) | `APIs with traffic` |
 | 3 | Active API keys | `135` | `+8` | `+8 new` |
-| 4 | Unused APIs | `8` | — (chip 없음) | `Oldest: 12 days ago` |
+| 4 | Unused APIs | `8` | — (no chip) | `Oldest: 12 days ago` |
 
-- 카드: `rounded-xl` (14), `bg-card`, `shadow-sm`, padding 24/24, gap 24
-- 1·3 카드: 우상단 chip (rounded-md border + TrendingUp 아이콘 + 텍스트)
-- 2·4 카드: chip 없음, trend 텍스트만
+- Card: `rounded-xl` (14), `bg-card`, `shadow-sm`, padding 24/24, gap 24
+- Cards 1 & 3: top-right chip (rounded-md border + TrendingUp icon + text)
+- Cards 2 & 4: no chip, trend text only
 
 ## Request Volume Trend (area chart)
 
-- 컨테이너: `rounded-xl`, `bg-card`, `shadow-sm`
-- 제목: `Request volume trend` (16/24 Semibold)
-- 부제: `Total for the last 6 months` (14/20 muted)
-- 차트: **단일 area** (`total` = 모든 메소드 합)
-  - Stroke / fill: `info-chart` (#3b82f6), fill 그라데이션 0.4 → 0
+- Container: `rounded-xl`, `bg-card`, `shadow-sm`
+- Title: `Request volume trend` (16/24 Semibold)
+- Subtitle: `Total for the last 6 months` (14/20 muted)
+- Chart: **single area** (`total` = sum of all methods)
+  - Stroke / fill: `info-chart` (#3b82f6), fill gradient 0.4 → 0
   - type=monotone, strokeWidth=2
-- X축: Jan~Jun (6개월) — period 에 따라 `Week 1-4` (30d), `Mon-Sun` (7d)
-- 범례 없음
-- 호버 tooltip: 월 + total + 메소드별 카운트 5개 (GET / POST / PUT / PATCH / DELETE, 색 swatch 동반). `RequestVolumeTooltip` 커스텀 컴포넌트
+- X axis: Jan–Jun (6 months) — depending on period, `Week 1-4` (30d), `Mon-Sun` (7d)
+- No legend
+- Hover tooltip: month + total + per-method counts for 5 methods (GET / POST / PUT / PATCH / DELETE, each with a color swatch). `RequestVolumeTooltip` custom component
 
 ## Top 5 APIs (horizontal bar)
 
@@ -68,7 +68,7 @@ Phase 1: 6m 만 mock 데이터, 나머지는 동일 데이터 반환 (placeholde
 | 4 | `/projects/{id}/settings` | 75 | GET | `success-chart` |
 | 5 | `/workspaces/{id}/invitations` | 42 | DELETE | `destructive-chart` |
 
-Layout: 3-column Y-axis (endpoint / count / method labels) + bar area (max width-기준 정규화). Bar height 29, rounded-xs.
+Layout: 3-column Y-axis (endpoint / count / method labels) + bar area (normalized to max width). Bar height 29, rounded-xs.
 
 ## Method Distribution (pie + legend)
 
@@ -80,13 +80,13 @@ Layout: 3-column Y-axis (endpoint / count / method labels) + bar area (max width
 | DELETE | 15% | `destructive-chart` |
 | PUT | 5% | `warning-chart` |
 
-- 컨테이너 폭 420px 고정
-- Pie 192×192, innerRadius 0 (full donut 아님)
-- Legend: 8×8 색상 swatch + method label + percentage
+- Container width fixed at 420px
+- Pie 192×192, innerRadius 0 (not a full donut)
+- Legend: 8×8 color swatch + method label + percentage
 
-## 디자인 토큰 (Figma → 코드)
+## Design tokens (Figma → code)
 
-| Figma 토큰 | hex | 코드 토큰 |
+| Figma token | hex | Code token |
 |---|---|---|
 | `success/success-chart` | #22c55e | `success-chart` |
 | `info/info-chart` | #3b82f6 | `info-chart` |
@@ -96,17 +96,17 @@ Layout: 3-column Y-axis (endpoint / count / method labels) + bar area (max width
 
 light: palette/{color}/500, dark: palette/{color}/400.
 
-## Hidden 노드 (구현 제외)
+## Hidden nodes (excluded from implementation)
 
-- Chart 내부 hidden `Tabs` (visible: false)
-- Bar/Pie chart의 hidden `Header` (대신 Wrapper Title 사용)
-- Card 2·4의 `Secondary_icon` chip (visible: false → 완전 제거)
-- Card 2·4의 `lucide/trending-down`, `lucide/trending-up` (hidden)
-- Bar chart "PETCH" / Pie chart "FATCH" 오타는 코드에서 PATCH로 정정 적용
+- The hidden `Tabs` inside the chart (visible: false)
+- The hidden `Header` of the bar/pie chart (uses the Wrapper Title instead)
+- The `Secondary_icon` chip of cards 2 & 4 (visible: false → fully removed)
+- `lucide/trending-down`, `lucide/trending-up` of cards 2 & 4 (hidden)
+- The "PETCH" / "FATCH" typos in the bar chart / pie chart are corrected to PATCH in code
 
-## 파일 위치
+## File locations
 
-- 페이지: `src/app/(dashboard)/analytics/page.tsx`
-- 컴포넌트: `src/components/api-portal/Analytics*.tsx` (Tabs, SummaryCard, CallVolumeChart, TopApisChart, MethodDistribution)
+- Page: `src/app/(dashboard)/analytics/page.tsx`
+- Components: `src/components/api-portal/Analytics*.tsx` (Tabs, SummaryCard, CallVolumeChart, TopApisChart, MethodDistribution)
 - Mock: `src/lib/mock-analytics-data.ts`
-- 메소드 색 매핑: `src/lib/method-colors.ts`
+- Method color mapping: `src/lib/method-colors.ts`

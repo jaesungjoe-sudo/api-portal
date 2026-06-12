@@ -11,21 +11,21 @@ import {
 } from "@/components/ui/dialog"
 ```
 
-## Title 타이포그래피
+## Title typography
 
 - `text-lg font-semibold leading-7` (18px / 28px / 600)
-- `dialog.tsx` 컴포넌트 내부에 기본값으로 적용됨. 페이지에서 별도 override 금지.
+- Applied as a default inside the `dialog.tsx` component. Don't override it from pages.
 
-## Width 두 가지 타입
+## Two width types
 
-| 타입 | width | 용도 |
+| Type | width | Usage |
 |---|---|---|
-| Form Dialog | `sm:max-w-[423px]` | Edit / Invite / Create (입력 폼) |
-| Confirm Dialog | `sm:max-w-[512px]` | Deactivate / Reject (확인 다이얼로그) |
+| Form Dialog | `sm:max-w-[423px]` | Edit / Invite / Create (input forms) |
+| Confirm Dialog | `sm:max-w-[512px]` | Deactivate / Reject (confirm dialogs) |
 
-## Confirm Dialog 공통 구조
+## Confirm Dialog common structure
 
-상세 룰은 `patterns/confirm-dialog.md` 참조. 본 섹션은 골격만 — 모든 confirm 다이얼로그는 **`<ConfirmDialog>` 공용 컴포넌트** 사용 (Dialog primitive 직접 조립 금지).
+For detailed rules, see `patterns/confirm-dialog.md`. This section is the skeleton only — all confirm dialogs use the **shared `<ConfirmDialog>` component** (don't assemble the Dialog primitive directly).
 
 ```tsx
 import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
@@ -40,57 +40,57 @@ import { ConfirmDialog } from "@/components/api-portal/ConfirmDialog";
 />
 ```
 
-내부적으로 `showCloseButton={false}` + `sm:max-w-[512px]` + outline Cancel + destructive Confirm 으로 조립됨. 자세한 변형 (엔티티 이름 강조, 비-파괴적 변형) 은 `patterns/confirm-dialog.md` §1 / §6.
+Internally assembled with `showCloseButton={false}` + `sm:max-w-[512px]` + outline Cancel + destructive Confirm. For detailed variations (entity-name emphasis, non-destructive variant), see `patterns/confirm-dialog.md` §1 / §6.
 
-- 패딩: `24px all` (rounded-lg = 10px, gap 16px)
-- 오버레이: `rgba(0,0,0,0.30)` (기본값 그대로)
+- Padding: `24px all` (rounded-lg = 10px, gap 16px)
+- Overlay: `rgba(0,0,0,0.30)` (keep the default)
 
-## Form Dialog 공통 구조
+## Form Dialog common structure
 
-상세 룰은 `patterns/form-dialog.md` 참조. 본 섹션은 골격만.
+For detailed rules, see `patterns/form-dialog.md`. This section is the skeleton only.
 
 ```tsx
 <Dialog open={editOpen} onOpenChange={handleClose}>
   <DialogContent className="sm:max-w-[423px]">
-    {/* Edit 다이얼로그는 focus 흡수용 sr-only span 필요 */}
+    {/* Edit dialogs need a focus-absorbing sr-only span */}
     <span tabIndex={0} className="sr-only outline-none" aria-hidden="true" />
     <DialogHeader>
-      <DialogTitle>{제목}</DialogTitle>
-      {/* DialogDescription 은 조건부 — form-dialog.md §3 */}
+      <DialogTitle>{title}</DialogTitle>
+      {/* DialogDescription is conditional — form-dialog.md §3 */}
     </DialogHeader>
-    {/* 필드 그룹들: 각자 gap-2, 그룹 사이는 DialogContent 의 gap-4 가 책임 */}
+    {/* Field groups: each gap-2; the DialogContent gap-4 handles spacing between groups */}
     <div className="flex flex-col gap-2">
       <Label .../>
       <Input .../>
     </div>
     <DialogFooter>
       <Button variant="outline" onClick={handleClose}>Cancel</Button>
-      <Button onClick={handleSave}>{액션명}</Button>
+      <Button onClick={handleSave}>{actionLabel}</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
 ```
 
-> **DialogFooter primitive 는 plain** (Figma 정합 — 풋터 위 구분선 / 배경 / 가장자리 확장 / 둥근 모서리 모두 없음). 별도 `mt-2` 등 위쪽 마진 추가 금지. 자세한 인스펙트 결과는 `patterns/form-dialog.md` §6.
+> **The DialogFooter primitive is plain** (matches Figma — no divider above the footer, no background, no edge extension, no rounded corners). Don't add a top margin such as `mt-2`. For detailed inspection results, see `patterns/form-dialog.md` §6.
 
-## Focus 규칙 (Edit 다이얼로그)
+## Focus rules (Edit dialogs)
 
-- **다이얼로그가 열릴 때 어떤 필드도 active(focus) 상태가 되어선 안 됨**.
-- `autoFocus` 금지.
-- DialogContent 바로 아래 **focus 흡수용 sr-only span** 배치:
+- **When the dialog opens, no field may be in the active (focused) state**.
+- `autoFocus` is forbidden.
+- Place a **focus-absorbing sr-only span** directly under DialogContent:
   ```tsx
   <span tabIndex={0} className="sr-only outline-none" aria-hidden="true" />
   ```
-- Create/Invite 다이얼로그는 빈 필드 + placeholder 방식이므로 focus 흡수 불필요.
+- Create/Invite dialogs use empty fields + placeholders, so focus absorption is unnecessary.
 
-## 유효성 검사 규칙
+## Validation rules
 
-- 저장/제출 시 필수 필드가 비어있으면 `aria-invalid` + Label `text-destructive` + 에러 메시지 표시.
-- Edit 다이얼로그도 동일: 기존 값을 지우고 저장하면 invalid.
-- 필드 값이 변경되는 순간 해당 필드의 에러는 즉시 해제.
+- On save/submit, if a required field is empty, show `aria-invalid` + Label `text-destructive` + an error message.
+- Edit dialogs behave the same: clearing an existing value and saving is invalid.
+- The moment a field value changes, that field's error is cleared immediately.
 
-## Figma 판별 기준
+## How to identify in Figma
 
-- `mainComponent` 이름: "Dialog", "Modal"
-- 내부 구조 `DialogHeader` / `DialogTitle` / `DialogDescription` 으로 매핑
-- Close 버튼은 `dialog.tsx` 내장. 수동 추가 금지.
+- `mainComponent` name: "Dialog", "Modal"
+- Map the internal structure to `DialogHeader` / `DialogTitle` / `DialogDescription`
+- The Close button is built into `dialog.tsx`. Don't add it manually.

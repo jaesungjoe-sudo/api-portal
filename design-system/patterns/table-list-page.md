@@ -1,32 +1,32 @@
-# table-list-page 패턴
+# table-list-page pattern
 
-> 엔티티 리스트를 보여주는 대시보드 페이지의 표준 구조. Breadcrumb → Title → (Tabs?) → Toolbar (Search + CTA) → Table → Pagination. 본 패턴이 통일되면 새 리스트 페이지 추가가 "이 골격에 맞추기" 가 된다.
+> The standard structure for dashboard pages that show an entity list. Breadcrumb → Title → (Tabs?) → Toolbar (Search + CTA) → Table → Pagination. Once this pattern is unified, adding a new list page becomes "fit it into this skeleton".
 
-## 적용 범위
+## Where used
 
-- `/api-keys` — API Key 리스트
-- `/users` (User / Team / Pending Approvals 탭) — 멤버 / 팀 / 승인대기 리스트
-- `/users/team/[name]` — 팀별 멤버 리스트
-- 향후 Webhooks 등 동일 구조 적용 예정
+- `/api-keys` — API Key list
+- `/users` (User / Team / Pending Approvals tabs) — member / team / pending-approval lists
+- `/users/team/[name]` — per-team member list
+- Same structure planned for future pages like Webhooks
 
-엔티티 상세 페이지·폼 페이지·랜딩 페이지는 본 패턴 적용 대상 아님.
+Entity detail pages, form pages, and landing pages are not covered by this pattern.
 
 ---
 
-## 1. 페이지 외곽 wrapper
+## 1. Page outer wrapper
 
 ```tsx
 <div className="flex flex-col gap-10">
-  {/* ... 슬롯들 ... */}
+  {/* ... slots ... */}
 </div>
 ```
 
-- `gap-10` (40px) — Breadcrumb · Header · Tabs · Toolbar · Table · Pagination 사이 일관 간격. CLAUDE.md 의 "헤더 영역 gap 통일" (2026-05-14) 룰 정합.
-- 외곽에 `<main>` 또는 `<section>` 별도 추가 X — 라우트 layout (`(dashboard)/layout.tsx`) 가 이미 `<main>` 제공.
+- `gap-10` (40px) — consistent gap between Breadcrumb · Header · Tabs · Toolbar · Table · Pagination. Matches the CLAUDE.md "unify header-area gap" rule (2026-05-14).
+- Don't add a separate `<main>` or `<section>` around it — the route layout (`(dashboard)/layout.tsx`) already provides `<main>`.
 
 ---
 
-## 2. Breadcrumb (필수)
+## 2. Breadcrumb (required)
 
 ```tsx
 <Breadcrumb>
@@ -35,12 +35,12 @@
     <BreadcrumbSeparator />
     <BreadcrumbItem><BreadcrumbLink href="/analytics">Dashboard</BreadcrumbLink></BreadcrumbItem>
     <BreadcrumbSeparator />
-    <BreadcrumbItem><BreadcrumbPage>{현재 페이지}</BreadcrumbPage></BreadcrumbItem>
+    <BreadcrumbItem><BreadcrumbPage>{current page}</BreadcrumbPage></BreadcrumbItem>
   </BreadcrumbList>
 </Breadcrumb>
 ```
 
-마지막 항목은 `BreadcrumbPage` (현재 페이지, 링크 없음). 상세 페이지는 한 단계 추가 (예: Team detail 의 경우 "Users > Default").
+The last item is `BreadcrumbPage` (current page, no link). Detail pages add one more level (e.g. for the Team detail, "Users > Default").
 
 ---
 
@@ -49,29 +49,29 @@
 ### Title
 
 ```tsx
-<h1 className="text-3xl font-semibold text-foreground">{페이지 제목}</h1>
+<h1 className="text-3xl font-semibold text-foreground">{page title}</h1>
 ```
 
-`text-3xl font-semibold` (30px / 600). 모든 table-list-page 공통.
+`text-3xl font-semibold` (30px / 600). Common to all table-list-pages.
 
-### Subtitle (선택)
+### Subtitle (optional)
 
-Title 하단에 카피가 필요할 때:
+When copy is needed below the Title:
 
 ```tsx
 <div className="flex flex-col gap-1">
-  <h1 className="text-3xl font-semibold text-foreground">{제목}</h1>
+  <h1 className="text-3xl font-semibold text-foreground">{title}</h1>
   <p className="text-sm text-muted-foreground">{subtitle}</p>
 </div>
 ```
 
-사용 예: `/api-keys` 의 "Production expires in 5 days". 일반 카탈로그 페이지엔 불필요.
+Example use: "Production expires in 5 days" on `/api-keys`. Not needed for general catalog pages.
 
 ---
 
-## 4. Tabs (선택)
+## 4. Tabs (optional)
 
-`/users` 같이 여러 리스트가 한 페이지에 묶일 때만 사용. shadcn `<Tabs>` primitive — 자세한 룰은 `components/tabs.md`.
+Used only when multiple lists are grouped on one page, like `/users`. shadcn `<Tabs>` primitive — for detailed rules see `components/tabs.md`.
 
 ```tsx
 <Tabs value={activeTab} onValueChange={handleTabChange} className="-mt-2">
@@ -86,8 +86,8 @@ Title 하단에 카피가 필요할 때:
 </Tabs>
 ```
 
-- `-mt-2` — Tab 아래 underline 과 콘텐츠 간격을 자연스럽게.
-- URL 쿼리 (`?tab=team`) 양방향 sync — `useSearchParams` + `router.replace`. Next.js 16+ 에선 `<Suspense>` 경계 필수.
+- `-mt-2` — keeps the gap between the tab underline and the content natural.
+- URL query (`?tab=team`) two-way sync — `useSearchParams` + `router.replace`. On Next.js 16+ a `<Suspense>` boundary is required.
 
 ---
 
@@ -95,32 +95,32 @@ Title 하단에 카피가 필요할 때:
 
 ```tsx
 <div className="flex items-center justify-between gap-4">
-  {/* Search (좌) */}
+  {/* Search (left) */}
   <div className="relative w-60">
     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
     <Input className="pl-8 h-8 text-sm" placeholder={`Search ${Entity}`} />
   </div>
-  {/* Primary CTA (우) */}
+  {/* Primary CTA (right) */}
   <Button onClick={openCreate}>{Create/Invite Action}</Button>
 </div>
 ```
 
-### Search 룰
+### Search rules
 
-- Wrapper: `relative w-60` (240px 고정)
-- Icon: `Search` (lucide), 절대 위치 `left-2.5` (10px), `h-4 w-4`, `text-muted-foreground`
-- Input: `pl-8 h-8 text-sm` (icon 자리 + 32px height + 14px font)
-- Placeholder: **`Search {Entity}`** (entity 명을 단수형으로 명시 — "Search User", "Search API Key", "Search Team"). 단순 `"Search"` 금지.
+- Wrapper: `relative w-60` (240px fixed)
+- Icon: `Search` (lucide), absolute position `left-2.5` (10px), `h-4 w-4`, `text-muted-foreground`
+- Input: `pl-8 h-8 text-sm` (icon space + 32px height + 14px font)
+- Placeholder: **`Search {Entity}`** (state the entity name in singular — "Search User", "Search API Key", "Search Team"). No plain `"Search"`.
 
-### Primary CTA 룰
+### Primary CTA rules
 
 - Default Button (`<Button>`, size=default = `h-9`)
-- 라벨: 동사+명사 ("Create API Key", "Invite User", "Create Team")
-- variant 임의 override 금지 — CLAUDE.md Button 룰
+- Label: verb + noun ("Create API Key", "Invite User", "Create Team")
+- No arbitrary variant override — CLAUDE.md Button rule
 
-### Toolbar 없는 변형
+### Toolbar-less variant
 
-`/users` Pending Approvals 탭 — Search·CTA 둘 다 없음. Toolbar 자체를 생략. 빈 줄을 차지하지 않음.
+`/users` Pending Approvals tab — neither Search nor CTA. The Toolbar itself is omitted. It takes up no empty row.
 
 ---
 
@@ -135,10 +135,10 @@ Title 하단에 카피가 필요할 때:
 </div>
 ```
 
-- 외곽: `rounded-md border border-border` — 카드 같은 외형
-- 스크롤: `overflow-x-auto` — 모바일에서 가로 스크롤. 외곽 wrapper 가 잘림 처리.
+- Outer: `rounded-md border border-border` — card-like appearance
+- Scroll: `overflow-x-auto` — horizontal scroll on mobile. The outer wrapper handles clipping.
 
-### TableHeader 룰
+### TableHeader rules
 
 ```tsx
 <TableHeader>
@@ -148,30 +148,30 @@ Title 하단에 카피가 필요할 때:
     </TableHead>
     <TableHead className="min-w-[160px]">Owner</TableHead>
     {/* ... more cells ... */}
-    <TableHead className="w-14" />  {/* action ⋯ 칸 */}
+    <TableHead className="w-14" />  {/* action ⋯ column */}
   </TableRow>
 </TableHeader>
 ```
 
-- 첫 컬럼: `pl-5` (20px 왼쪽 padding) — CLAUDE.md "첫 컬럼 좌측 padding `pl-5` 통일" 룰
-- 마지막 컬럼: `w-14` (56px) — 행 우측 끝 ⋯ DropdownMenu 자리. 헤더는 라벨 없이 빈 셀.
-- 정렬 가능 컬럼: `<SortableHead col="key" {...sp}>` — `sortable-head.tsx`
-- 컬럼 width: `min-w-[Npx]` (자연 폭 + 최소 보장) 또는 `w-[Npx]` (고정).
+- First column: `pl-5` (20px left padding) — CLAUDE.md "unify first-column left padding `pl-5`" rule
+- Last column: `w-14` (56px) — slot for the row's right-end ⋯ DropdownMenu. Header is an empty cell with no label.
+- Sortable column: `<SortableHead col="key" {...sp}>` — `sortable-head.tsx`
+- Column width: `min-w-[Npx]` (natural width + minimum guaranteed) or `w-[Npx]` (fixed).
 
-### TableBody — 첫 컬럼은 강조
+### TableBody — first column is emphasized
 
 ```tsx
 <TableCell className="pl-5 text-sm font-medium text-foreground">{name}</TableCell>
 <TableCell className="text-sm text-foreground">{value}</TableCell>
-{/* 보조 정보는 text-muted-foreground */}
+{/* secondary info is text-muted-foreground */}
 <TableCell className="text-sm text-muted-foreground">{secondary}</TableCell>
 ```
 
-- 첫 컬럼: `font-medium` (강조)
-- 본문 컬럼: 일반 weight
-- 부가 정보 (날짜·마지막 사용 등): `text-muted-foreground`
+- First column: `font-medium` (emphasis)
+- Body columns: normal weight
+- Supplementary info (date, last used, etc.): `text-muted-foreground`
 
-### Action 컬럼 (⋯ DropdownMenu)
+### Action column (⋯ DropdownMenu)
 
 ```tsx
 <TableCell>
@@ -190,9 +190,9 @@ Title 하단에 카피가 필요할 때:
 </TableCell>
 ```
 
-- `aria-label` 필수 (CLAUDE.md 메뉴 리스트 룰)
-- 트리거 자체는 `h-8 w-8` (32×32). 아이콘은 `h-4 w-4`.
-- `DropdownMenu` 사용. `Popover` 금지 (메뉴 리스트는 DropdownMenu).
+- `aria-label` required (CLAUDE.md menu list rule)
+- The trigger itself is `h-8 w-8` (32×32). The icon is `h-4 w-4`.
+- Use `DropdownMenu`. No `Popover` (menu lists use DropdownMenu).
 
 ---
 
@@ -202,15 +202,15 @@ Title 하단에 카피가 필요할 때:
 <TablePagination page={page} totalPages={totalPages} onPageChange={setPage} />
 ```
 
-- 모든 table-list-page 에 `<TablePagination>` (`src/components/api-portal/table-pagination.tsx`).
-- 페이지 사이즈 표준 = `PAGE_SIZE = 10` (페이지별 상수).
-- `Math.max(1, Math.ceil(items.length / PAGE_SIZE))` — 빈 데이터에도 totalPages = 1 보장.
+- Every table-list-page uses `<TablePagination>` (`src/components/api-portal/table-pagination.tsx`).
+- Standard page size = `PAGE_SIZE = 10` (per-page constant).
+- `Math.max(1, Math.ceil(items.length / PAGE_SIZE))` — guarantees totalPages = 1 even for empty data.
 
 ---
 
 ## 8. Empty state
 
-데이터가 비었을 때는 **table body 자리에 `<EmptyState>`** 컴포넌트 사용 (`rules/states.md` §4 + `components/empty-state.md`).
+When data is empty, use the **`<EmptyState>` component in place of the table body** (`rules/states.md` §4 + `components/empty-state.md`).
 
 ```tsx
 {paged.length === 0 ? (
@@ -218,7 +218,7 @@ Title 하단에 카피가 필요할 때:
     <TableCell colSpan={TOTAL_COLS} className="py-16">
       <EmptyState
         variant="no-data"
-        icon={<UserPlus />}  // Figma 인스펙트 결과 (icons.md 워크플로우)
+        icon={<UserPlus />}  // Figma inspection result (icons.md workflow)
         title="No pending approvals"
         description="New registrations awaiting review will appear here."
       />
@@ -229,15 +229,15 @@ Title 하단에 카피가 필요할 때:
 )}
 ```
 
-- 컨테이너 padding: `py-16` (64px) — `states.md` §4.2 의 테이블 본문 권장값
-- `colSpan` 은 컬럼 총수 (action 칸 포함)
-- variant 선택: `no-data` (아직 데이터 없음) / `no-results` (검색 결과 없음)
-- 아이콘은 **Figma 인스펙트 결과 사용** — 추측 금지 (`icons.md` 워크플로우)
+- Container padding: `py-16` (64px) — the recommended value for table body in `states.md` §4.2
+- `colSpan` is the total number of columns (including the action column)
+- variant choice: `no-data` (no data yet) / `no-results` (no search results)
+- Use the **Figma inspection result** for the icon — no guessing (`icons.md` workflow)
 
-### 단순 텍스트 fallback 금지
+### No plain-text fallback
 
 ```tsx
-// ❌ states.md 위반
+// ❌ violates states.md
 <TableCell colSpan={N} className="text-center text-sm text-muted-foreground py-8">
   No pending approvals
 </TableCell>
@@ -252,45 +252,45 @@ Title 하단에 카피가 필요할 때:
 
 ## 9. Loading / Error state
 
-`rules/states.md` 의 표면×상태 매트릭스 — Loading: row skeleton, Error: 테이블 자리에 Alert. 본 패턴은 cross-ref 만, 별도 재정의 X.
+The surface × state matrix in `rules/states.md` — Loading: row skeleton, Error: Alert in place of the table. This pattern only cross-refs it; no separate redefinition.
 
 ---
 
-## 10. 안티패턴
+## 10. Anti-patterns
 
-| ❌ | 이유 |
+| ❌ | Reason |
 |---|---|
-| 페이지 wrapper 의 `gap-*` 가 `gap-10` 외 값 | 헤더 영역 정합 룰 위반. 4 페이지 일관성 깨짐. |
-| 첫 컬럼 `pl-5` 누락 | CLAUDE.md "첫 컬럼 좌측 padding pl-5 통일" 위반. |
-| Action 컬럼 (`w-14`) 의 헤더에 라벨 텍스트 ("Action") 명시 | Figma 정합 — 헤더는 빈 셀. 라벨은 ⋯ 의 `aria-label` 으로 충분. |
-| Search placeholder 가 `"Search"` 단순 텍스트 | Entity 명 누락. `"Search {Entity}"` 형태로. |
-| Primary CTA 가 `size="sm"` 등 임의 사이즈 | Button 룰 1:1 Figma 위반. Toolbar CTA 는 default size (`h-9`). |
-| 빈 데이터에 `<p>No data</p>` 같은 단순 텍스트 | `states.md` §4 / `empty-state.md` 안티패턴. `<EmptyState>` 사용. |
-| Action 메뉴를 `<Popover>` 로 작성 | 메뉴 리스트는 DropdownMenu (CLAUDE.md). |
-| `<TablePagination>` 미사용 — 직접 페이지 버튼 작성 | 공용 컴포넌트 우회. |
+| Page wrapper `gap-*` other than `gap-10` | Violates the header-area consistency rule. Breaks consistency across the 4 pages. |
+| Missing first-column `pl-5` | Violates the CLAUDE.md "unify first-column left padding pl-5" rule. |
+| Putting a label text ("Action") in the header of the action column (`w-14`) | Matches Figma — the header is an empty cell. The label is sufficiently provided by the ⋯ `aria-label`. |
+| Search placeholder is plain text `"Search"` | Missing the Entity name. Use the `"Search {Entity}"` form. |
+| Primary CTA using an arbitrary size like `size="sm"` | Violates the 1:1 Figma Button rule. Toolbar CTA is default size (`h-9`). |
+| Plain text like `<p>No data</p>` for empty data | Anti-pattern in `states.md` §4 / `empty-state.md`. Use `<EmptyState>`. |
+| Writing the action menu as a `<Popover>` | Menu lists use DropdownMenu (CLAUDE.md). |
+| Not using `<TablePagination>` — writing page buttons directly | Bypasses the shared component. |
 
 ---
 
-## 11. 적용 페이지 (Phase1)
+## 11. Pages using it (Phase1)
 
-| 페이지 | Tabs | Toolbar | 본문 |
+| Page | Tabs | Toolbar | Body |
 |---|---|---|---|
 | `/api-keys` | — | Search "Search API Key" + Create API Key | 7-col table |
-| `/users` User 탭 | ✅ | Search "Search User" + Invite User | 6-col table |
-| `/users` Team 탭 | ✅ | Search "Search Team" + Create Team | 카드 그리드 (테이블 아님) |
-| `/users` Pending 탭 | ✅ | — | 7-col table + EmptyState |
+| `/users` User tab | ✅ | Search "Search User" + Invite User | 6-col table |
+| `/users` Team tab | ✅ | Search "Search Team" + Create Team | card grid (not a table) |
+| `/users` Pending tab | ✅ | — | 7-col table + EmptyState |
 | `/users/team/[name]` | — | Search "Search User" + Invite User | 6-col table |
 
-Team 탭은 카드 그리드라 일부 예외 (테이블 wrapper 대신 grid). 헤더·toolbar·페이지 wrapper 룰은 동일 적용.
+The Team tab is a card grid, so it's a partial exception (grid instead of the table wrapper). The header / toolbar / page wrapper rules apply identically.
 
 ---
 
-## 관련 문서
+## Related docs
 
 - `components/table.md` — Table primitive spec
 - `components/pagination.md` — TablePagination component spec
-- `components/empty-state.md` — EmptyState 컴포넌트 spec
-- `components/button.md` — Button variant / size 룰 (Toolbar CTA)
-- `rules/states.md` — 상태 (Loading / Empty / Error) 패턴
-- `patterns/form-dialog.md` — Toolbar CTA 가 여는 다이얼로그 패턴
-- `patterns/confirm-dialog.md` — Action 메뉴 의 Delete / Revoke 가 여는 패턴
+- `components/empty-state.md` — EmptyState component spec
+- `components/button.md` — Button variant / size rules (Toolbar CTA)
+- `rules/states.md` — state (Loading / Empty / Error) patterns
+- `patterns/form-dialog.md` — the dialog pattern opened by the Toolbar CTA
+- `patterns/confirm-dialog.md` — the pattern opened by the action menu's Delete / Revoke

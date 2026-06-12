@@ -81,10 +81,10 @@ export default function DocsPageShellPage() {
             <AnatomyRow label="tag (optional)" note="mb-3 after — only renders when prop is provided." />
             <AnatomyRow label="<h1>" note="text-4xl font-semibold text-foreground, mb-4. Bigger than table-list-page's text-3xl." />
             <AnatomyRow label="Description (optional)" note="text-base text-muted-foreground, mb-10." />
-            <AnatomyRow label="MobileToc (xl 미만 only)" note="<details> collapsible — same TocItems as the right sidebar." />
+            <AnatomyRow label="MobileToc (below xl only)" note="<details> collapsible — same TocItems as the right sidebar." />
             <AnatomyRow label="Sections wrapper" note="flex flex-col gap-10 — 40px between each <DocsSection>." />
             <AnatomyRow label="Bottom nav (optional)" note="mt-12 + pt-10 + border-t. Prev (left) / Next (right) outline-button-styled anchors." />
-            <AnatomyRow label="TocSidebar (xl 이상 only)" note="sticky top-[89px], w-[265px], scroll-spy via useScrollSpy." />
+            <AnatomyRow label="TocSidebar (xl and up only)" note="sticky top-[89px], w-[265px], scroll-spy via useScrollSpy." />
           </div>
         </div>
       </Section>
@@ -158,7 +158,7 @@ export default function DocsPageShellPage() {
             components/badge.md — Badge / MethodBadge often used in the tag prop
           </CrossRef>
           <CrossRef href="https://github.com/jaesungjoe-sudo/api-portal/blob/main/design-system/components/breadcrumb.md">
-            components/breadcrumb.md — Breadcrumb primitive (작성 예정)
+            components/breadcrumb.md — Breadcrumb primitive (planned)
           </CrossRef>
         </ul>
       </Section>

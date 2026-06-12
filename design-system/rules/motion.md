@@ -1,36 +1,36 @@
 # Motion — Duration & easing
 
-> **코드 truth.** Figma 라이브러리에는 spec 페이지(one-way 참조)만 둔다 — 자동 sync 안 함. 새 컴포넌트의 transition 은 아래 3 duration × 1 easing 어휘 안에서 결정한다.
+> **Code is truth.** The Figma library only keeps a spec page (one-way reference) — no automatic sync. Determine the transition of new components within the vocabulary of the 3 durations × 1 easing below.
 
 ---
 
-## 1. Duration 매트릭스
+## 1. Duration matrix
 
-| 토큰 | 값 | Tailwind | 사용처 |
+| Token | Value | Tailwind | Where used |
 |---|---|---|---|
 | `--duration-fast` | 100ms | `duration-100` | Popover / Dropdown / Select / Dialog / Tooltip open·close |
-| `--duration-base` | 200ms | `duration-200` | Sheet, Sidebar 접힘·펼침, Accordion |
-| `--duration-slow` | 300ms | `duration-300` | NavigationMenu 큰 전환, hero motion |
+| `--duration-base` | 200ms | `duration-200` | Sheet, Sidebar collapse·expand, Accordion |
+| `--duration-slow` | 300ms | `duration-300` | NavigationMenu large transitions, hero motion |
 
-> **150ms 흡수 결정**: 일부 backdrop / Accordion 에 남아있던 150ms 는 `--duration-base` (200ms) 로 흡수한다. 시각 차이 사실상 없음 — 단일 소스 유지가 우선.
+> **150ms absorption decision**: the 150ms remaining in some backdrops / Accordions is absorbed into `--duration-base` (200ms). The visual difference is effectively none — keeping a single source takes priority.
 
 ---
 
-## 2. Easing 매트릭스
+## 2. Easing matrix
 
-| 토큰 | 값 | Tailwind | 사용처 |
+| Token | Value | Tailwind | Where used |
 |---|---|---|---|
-| (default) | `linear` | `ease-linear` | Sidebar 등 단순 사이즈/위치 보간 (default) |
-| `--ease-emphasized` | `cubic-bezier(0.22, 1, 0.36, 1)` | `ease-emphasized` | NavigationMenu, "spring 느낌" 필요한 큰 전환 |
+| (default) | `linear` | `ease-linear` | Sidebar etc. simple size/position interpolation (default) |
+| `--ease-emphasized` | `cubic-bezier(0.22, 1, 0.36, 1)` | `ease-emphasized` | NavigationMenu, large transitions needing a "spring feel" |
 
-Easing 기본값(`linear`)은 토큰화하지 않는다 — Tailwind 의 `ease-linear` 가 사실상 default. 정합이 필요한 한 곳(emphasized)만 토큰 신설.
+The easing default (`linear`) is not tokenized — Tailwind's `ease-linear` is effectively the default. Only the one place that needs alignment (emphasized) gets a new token.
 
 ---
 
-## 3. Tailwind v4 통합 방식
+## 3. Tailwind v4 integration
 
-- **Duration**: Tailwind 네이티브 `duration-100/200/300` 가 우리 카논 값(`--duration-fast/base/slow`)과 그대로 동치. 추가 등록 불필요 — 코드에서는 `duration-300` 형태를 직접 쓴다. `--duration-*` CSS 변수는 룰 문서 + 커스텀 CSS 작성 시 참조용.
-- **Easing**: `globals.css` 의 `@theme inline` 에 `--ease-emphasized: var(--ease-emphasized);` 한 줄로 `ease-emphasized` Tailwind 유틸리티 키를 활성화. 값 자체는 `tokens.generated.css` 의 `:root` 에 단일 정의.
+- **Duration**: Tailwind's native `duration-100/200/300` are directly equivalent to our canonical values (`--duration-fast/base/slow`). No extra registration needed — in code you write `duration-300` directly. The `--duration-*` CSS vars are for reference in rule docs + when writing custom CSS.
+- **Easing**: a single line in `globals.css`'s `@theme inline` — `--ease-emphasized: var(--ease-emphasized);` — activates the `ease-emphasized` Tailwind utility key. The value itself is defined once in the `:root` of `tokens.generated.css`.
 
 ```css
 /* globals.css @theme inline */
@@ -39,10 +39,10 @@ Easing 기본값(`linear`)은 토큰화하지 않는다 — Tailwind 의 `ease-l
 
 ---
 
-## 4. `prefers-reduced-motion` 정책
+## 4. `prefers-reduced-motion` policy
 
-> ⚠️ **현재 글로벌 핸들러 없음 — 후속 작업 검토 항목.**
-> 정책 합의: 사용자가 OS 에서 Reduce motion 을 활성화하면 모든 transition 을 `0ms` 로 단축한다. 구현 시 `globals.css` 에 글로벌 룰을 추가:
+> ⚠️ **No global handler currently — a follow-up item under review.**
+> Agreed policy: when the user enables Reduce motion in the OS, shorten all transitions to `0ms`. When implementing, add a global rule to `globals.css`:
 >
 > ```css
 > @media (prefers-reduced-motion: reduce) {
@@ -53,30 +53,30 @@ Easing 기본값(`linear`)은 토큰화하지 않는다 — Tailwind 의 `ease-l
 > }
 > ```
 >
-> 본 P3-8 스코프 밖. 도입 전까지 카탈로그 데모도 reduce motion 을 무시하는 상태임을 명시.
+> Out of scope for this P3-8. Until introduced, note that the catalog demos also ignore reduce motion.
 
 ---
 
-## 5. 사용 가이드
+## 5. Usage guide
 
 - **popup** (Tooltip / Popover / Dropdown / Select / Dialog) → `duration-100`
 - **drawer / sidebar / accordion** → `duration-200`
-- **nav / hero** 큰 전환 → `duration-300 ease-emphasized`
+- **nav / hero** large transitions → `duration-300 ease-emphasized`
 
 ---
 
 ## 6. Anti-patterns
 
-- ❌ 리터럴 ms — `duration-[180ms]` 같은 임의값. 3 단계 어휘로 흡수.
-- ❌ 5 개 이상 duration 사용 — 스케일 외 확장. 새 값이 정말 필요하면 spec 합의 후 토큰 추가.
-- ❌ 불일치 페어링 — `duration-100`(fast) + `ease-emphasized`. emphasized 는 큰 전환(slow)과 매칭.
-- ❌ `prefers-reduced-motion` 무시한 항시 애니메이션 (정책 도입 후).
-- ❌ 200ms 와 150ms 혼용 — 한 곳에 150 이 남아있다면 그건 정리 대상(`--duration-base` 로 흡수).
+- ❌ Literal ms — arbitrary values like `duration-[180ms]`. Absorb into the 3-tier vocabulary.
+- ❌ Using 5 or more durations — expanding beyond the scale. If a new value is truly needed, add a token after a spec agreement.
+- ❌ Mismatched pairing — `duration-100` (fast) + `ease-emphasized`. Emphasized matches large transitions (slow).
+- ❌ Always-on animation that ignores `prefers-reduced-motion` (after the policy is introduced).
+- ❌ Mixing 200ms and 150ms — if 150 remains in one place, that's cleanup material (absorb into `--duration-base`).
 
 ---
 
 ## 7. Cross-refs
 
-- Sync 정책: [`figma-token-sync.md`](./figma-token-sync.md) — motion = 코드 truth (one-way).
+- Sync policy: [`figma-token-sync.md`](./figma-token-sync.md) — motion = code is truth (one-way).
 - Spec: `docs/superpowers/specs/2026-06-02-p3-8-token-gaps-design.md`
-- 카탈로그: `/design-system/foundations/motion` (duration 3 박스 토글 + easing 곡선 + 라이브 데모).
+- Catalog: `/design-system/foundations/motion` (duration 3-box toggle + easing curve + live demo).

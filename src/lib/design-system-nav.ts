@@ -158,6 +158,6 @@ export const ROADMAP: RoadmapItem[] = [
   { id: "P2-5", label: "Typography role → class mapping", priority: "P2", status: "✅ Done" },
   { id: "P2-6", label: "a11y / interaction baseline", priority: "P2", status: "✅ Done" },
   { id: "P3-7", label: "design-system/README.md index + page template", priority: "P3", status: "⏳ Pending" },
-  { id: "P3-8", label: "Token gaps (z-index, motion, focus-ring)", priority: "P3", status: "✅ Done", note: "코드 토큰 + 9건 outlier 정리 + 3 룰 + 3 카탈로그. Figma 라이브러리 작업은 designer handoff 로 분리." },
+  { id: "P3-8", label: "Token gaps (z-index, motion, focus-ring)", priority: "P3", status: "✅ Done", note: "Code tokens + 9 outliers cleaned up + 3 rules + 3 catalog pages. Figma library work split out as a designer handoff." },
   { id: "P3-9", label: "Small inconsistencies (users.md raw RGB, etc.)", priority: "P3", status: "✅ Done" },
 ];
