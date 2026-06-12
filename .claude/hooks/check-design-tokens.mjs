@@ -48,5 +48,6 @@ if (findings.length) {
     `⚠️ check-design-tokens (비차단): ${fp}\n${findings.join("\n")}\n` +
       `  → 시맨틱 Tailwind 클래스 사용 (CLAUDE.md 원칙 3 / rules/color.md).`
   );
+  process.exit(1); // non-blocking warning — exit 1 surfaces stderr in transcript (PostToolUse: tool already ran, nothing blocked)
 }
-process.exit(0); // warn-only
+process.exit(0); // clean: no findings

@@ -48,5 +48,6 @@ if (missing.length) {
       missing.map((x) => `  - ${x}`).join("\n") +
       `\n  → 재사용 primitive 면 추가 (rules/component-artifacts.md 승격 절차). 1회성이면 무시.`
   );
+  process.exit(1); // non-blocking warning — exit 1 surfaces stderr in transcript
 }
-process.exit(0); // warn-only
+process.exit(0); // clean: no missing artifacts
