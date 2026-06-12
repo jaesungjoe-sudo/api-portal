@@ -62,6 +62,11 @@ export const DESIGN_SYSTEM_NAV: DesignSystemNavItem[] = [
         doc: "design-system/components/dropdown-menu.md",
       },
       {
+        label: "Skeleton",
+        href: "/design-system/primitives/skeleton",
+        doc: "design-system/components/skeleton.md",
+      },
+      {
         label: "Sonner (Toast)",
         href: "/design-system/primitives/sonner",
         doc: "design-system/components/sonner.md",
