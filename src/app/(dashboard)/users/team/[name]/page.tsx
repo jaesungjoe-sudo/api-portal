@@ -12,7 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/api-portal/SearchInput";
 import {
   Table,
   TableBody,
@@ -30,7 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Search } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { EditTeamDialog } from "@/components/api-portal/EditTeamDialog";
 import { INITIAL_USERS, findTeam, updateTeam, type Team, type User } from "@/lib/mock-team-data";
 
@@ -156,10 +156,7 @@ export default function TeamDetailPage({
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
-        <div className="relative w-60">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-8 h-8 text-sm" placeholder="Search User" />
-        </div>
+        <SearchInput placeholder="Search User" />
         <Button
           onClick={() =>
             toast.info(`Invite User to ${team.name} — Phase1 design pending`)

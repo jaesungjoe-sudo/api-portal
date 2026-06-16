@@ -13,7 +13,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/api-portal/SearchInput";
 import {
   Table,
   TableBody,
@@ -54,7 +54,7 @@ import {
   type Team,
   type User,
 } from "@/lib/mock-team-data";
-import { Info, MoreHorizontal, Search, User as UserIcon, UserCheck } from "lucide-react";
+import { Info, MoreHorizontal, User as UserIcon, UserCheck } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -337,13 +337,7 @@ function UsersPageContent() {
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
-        <div className="relative w-60">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="pl-8 h-8 text-sm"
-            placeholder={activeTab === "team" ? "Search Team" : "Search User"}
-          />
-        </div>
+        <SearchInput placeholder={activeTab === "team" ? "Search Team" : "Search User"} />
         {activeTab === "user" && (
           <Button onClick={() => setOpen(true)}>
             Invite User
