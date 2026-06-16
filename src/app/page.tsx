@@ -5,6 +5,8 @@ import { UjetLogo } from "@/components/api-portal/UjetLogo";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HomeMetricsChart } from "@/components/api-portal/HomeMetricsChart";
+import { LandingHero } from "@/components/landing/LandingHero";
+import { FooterCta } from "@/components/landing/FooterCta";
 
 const STEP_ITEMS = [
   { icon: Phone, label: "Step 1. Get Phone Number", sub: "Obtain a contact number" },
@@ -20,7 +22,7 @@ export default function HomePage() {
       <div className="flex min-h-screen w-full flex-col overflow-x-clip">
         <TopNav />
         <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col gap-32 px-6 py-20">
-          <Hero />
+          <LandingHero />
           <TutorialSection />
           <CodeSection />
           <MetricsSection />
@@ -30,49 +32,6 @@ export default function HomePage() {
         </main>
       </div>
     </SidebarProvider>
-  );
-}
-
-function Hero() {
-  return (
-    <section className="flex flex-col items-center text-center">
-      <HeroDecoration />
-      <h1 className="mt-10 max-w-[760px] text-5xl font-semibold leading-tight tracking-tight text-foreground md:text-6xl">
-        The standard for Communication API.
-      </h1>
-      <p className="mt-6 max-w-[480px] text-base text-muted-foreground">
-        UJET provides the most sophisticated and fastest API infrastructure built for developers.
-      </p>
-      <div className="mt-8 flex items-center gap-2">
-        <Link href="/api-keys">
-          <Button>Get Started</Button>
-        </Link>
-        <Link href="/documentation">
-          <Button variant="outline">Documentation</Button>
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-function HeroDecoration() {
-  return (
-    <div className="relative left-1/2 -ml-[50vw] flex h-[400px] w-screen items-center justify-center overflow-hidden">
-      <iframe
-        src="https://my.spline.design/untitled-bbvShhrc2qncvg3WcMUJ8eAL/"
-        className="block h-full w-full border-0 motion-reduce:hidden"
-        loading="lazy"
-        title="UJET API Portal hero 3D scene"
-        allow="autoplay; fullscreen; xr-spatial-tracking"
-      />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/hero-isometric.png"
-        alt=""
-        aria-hidden
-        className="hidden h-[257px] w-[261px] object-contain motion-reduce:block"
-      />
-    </div>
   );
 }
 
@@ -222,32 +181,9 @@ function DocumentationSection() {
   );
 }
 
-function FooterCta() {
-  return (
-    <section className="flex flex-col items-center text-center">
-      <h2 className="max-w-[680px] text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-        Ready to build the
-        <br />
-        future of communication?
-      </h2>
-      <p className="mt-6 text-base text-muted-foreground">
-        Start your first integration in less than 5 minutes
-      </p>
-      <div className="mt-8 flex items-center gap-2">
-        <Link href="/api-keys">
-          <Button>Get Started</Button>
-        </Link>
-        <Link href="/documentation">
-          <Button variant="outline">Documentation</Button>
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 function BottomSection() {
   return (
-    <section className="flex flex-col gap-6 border-t border-border pt-10">
+    <section className="-mt-32 flex flex-col gap-6 pt-10">
       <div className="flex items-center justify-between">
         <UjetLogo />
         <div className="flex items-center gap-2">
