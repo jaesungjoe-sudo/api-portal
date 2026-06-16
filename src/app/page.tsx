@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HomeMetricsChart } from "@/components/api-portal/HomeMetricsChart";
 import { LandingHero } from "@/components/landing/LandingHero";
+import { FooterCta } from "@/components/landing/FooterCta";
 
 const STEP_ITEMS = [
   { icon: Phone, label: "Step 1. Get Phone Number", sub: "Obtain a contact number" },
@@ -175,29 +176,6 @@ function DocumentationSection() {
             <span className="text-base font-medium text-foreground">{l.label}</span>
           </Link>
         ))}
-      </div>
-    </section>
-  );
-}
-
-function FooterCta() {
-  return (
-    <section className="flex flex-col items-center text-center">
-      <h2 className="max-w-[680px] text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-        Ready to build the
-        <br />
-        future of communication?
-      </h2>
-      <p className="mt-6 text-base text-muted-foreground">
-        Start your first integration in less than 5 minutes
-      </p>
-      <div className="mt-8 flex items-center gap-2">
-        <Link href="/api-keys">
-          <Button>Get Started</Button>
-        </Link>
-        <Link href="/documentation">
-          <Button variant="outline">Documentation</Button>
-        </Link>
       </div>
     </section>
   );

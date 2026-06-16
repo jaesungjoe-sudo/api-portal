@@ -32,9 +32,11 @@ const GRAIN: Record<OrbVariant, { baseFrequency: number; octaves: number; slope:
 export interface OrbProps {
   variant?: OrbVariant;
   className?: string;
+  /** Override the variant's grain strength (feFuncA slope). Lower = more restrained. */
+  grainSlope?: number;
 }
 
-export function Orb({ variant = "planet", className }: OrbProps) {
+export function Orb({ variant = "planet", className, grainSlope }: OrbProps) {
   // strip ":" so the value is a valid SVG id / url() reference
   const uid = useId().replace(/:/g, "");
   const gradId = `orb-grad-${uid}`;
@@ -61,7 +63,7 @@ export function Orb({ variant = "planet", className }: OrbProps) {
           <feTurbulence type="fractalNoise" baseFrequency={n.baseFrequency} numOctaves={n.octaves} stitchTiles="stitch" result="n" />
           <feColorMatrix in="n" type="saturate" values="0" result="m" />
           <feComponentTransfer in="m" result="g">
-            <feFuncA type="linear" slope={n.slope} />
+            <feFuncA type="linear" slope={grainSlope ?? n.slope} />
           </feComponentTransfer>
           <feBlend in="g" in2="SourceGraphic" mode="overlay" result="b" />
           <feComposite in="b" in2="SourceGraphic" operator="in" />
