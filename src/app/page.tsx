@@ -1,20 +1,12 @@
 import Link from "next/link";
-import { Phone, UserPlus, Layers, Link2, PhoneCall, Play } from "lucide-react";
+import type { HttpMethod } from "@/lib/mock-analytics-data";
+import { MethodBadge } from "@/components/api-portal/MethodBadge";
 import { TopNav } from "@/components/api-portal/TopNav";
 import { UjetLogo } from "@/components/api-portal/UjetLogo";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { HomeMetricsChart } from "@/components/api-portal/HomeMetricsChart";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { FooterCta } from "@/components/landing/FooterCta";
-
-const STEP_ITEMS = [
-  { icon: Phone, label: "Step 1. Get Phone Number", sub: "Obtain a contact number" },
-  { icon: UserPlus, label: "Step 2. Create Agent", sub: "Add your first AI agent" },
-  { icon: Layers, label: "Step 3. Create Queue", sub: "Set up call routing" },
-  { icon: Link2, label: "Step 4. Assign Agent to Queue", sub: "Connect agent with queue" },
-  { icon: PhoneCall, label: "Step 5. Make a Test Call", sub: "Test your contact center" },
-];
 
 export default function HomePage() {
   return (
@@ -23,10 +15,8 @@ export default function HomePage() {
         <TopNav />
         <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col gap-32 px-6 py-20">
           <LandingHero />
-          <TutorialSection />
-          <CodeSection />
-          <MetricsSection />
-          <DocumentationSection />
+          <WhatCanYouBuild />
+          <PopularApiEndpoints />
           <FooterCta />
           <BottomSection />
         </main>
@@ -35,146 +25,82 @@ export default function HomePage() {
   );
 }
 
-function TutorialSection() {
+const GUIDES = [
+  {
+    title: "Authentication & API credentials",
+    desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings.",
+  },
+  {
+    title: "Webhooks: setup & signature verification",
+    desc: "Subscribe to call, chat, and agent events. Verify payloads with HMAC signatures.",
+  },
+  {
+    title: "Web SDK: embedding voice & chat",
+    desc: "Initialize UJET in your web app with companyId, tenant, and JWT authentication.",
+  },
+];
+
+const ENDPOINTS: { method: HttpMethod; path: string; desc: string }[] = [
+  { method: "GET", path: "/api/v1/agent_activity_logs", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
+  { method: "POST", path: "/apps/api/v1/campaigns/{id}/contacts", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
+  { method: "GET", path: "/api/v1/calls", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
+  { method: "GET", path: "/api/v1/calls", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
+  { method: "POST", path: "/apps/api/v1/campaigns/{id}/contacts", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
+];
+
+function WhatCanYouBuild() {
   return (
-    <section className="grid grid-cols-1 items-start gap-16 md:grid-cols-2">
-      <div className="flex flex-col gap-10">
-        <h2
-          className="bg-clip-text text-[44px] font-semibold leading-tight tracking-tight text-transparent"
-          style={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(251,251,251,0.35) 128.87%), linear-gradient(90deg, rgb(10,10,10) 0%, rgb(10,10,10) 100%)",
-          }}
-        >
-          Build your Contact Center in 5 minutes
+    <section className="flex flex-col gap-12">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+          What can you build?
         </h2>
-        <Link href="/documentation/tutorials" className="w-fit">
-          <Button>View Tutorials</Button>
-        </Link>
+        <p className="max-w-2xl text-lg text-muted-foreground">
+          From a single API call to a fully agentic contact center. Pick where you&apos;re starting.
+        </p>
       </div>
-      <div className="flex flex-col gap-8 rounded-lg border border-border bg-background p-6">
-        <h3 className="text-[22px] font-semibold leading-[30px] text-foreground">
-          Build Your First AI Contact Center in Minutes
+
+      <div className="flex flex-col gap-6">
+        <h3 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          Popular guides
         </h3>
-        <div className="flex w-full flex-col gap-3">
-          {STEP_ITEMS.map((step, i) => (
-            <StepRow
-              key={step.label}
-              Icon={step.icon}
-              label={step.label}
-              sub={step.sub}
-              highlighted={i === 0}
-            />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {GUIDES.map((g) => (
+            <div
+              key={g.title}
+              className="flex flex-col gap-3 rounded-lg border border-border bg-card p-6"
+            >
+              <h4 className="text-lg font-medium text-foreground">{g.title}</h4>
+              <p className="text-sm text-muted-foreground">{g.desc}</p>
+            </div>
           ))}
         </div>
+        <Link href="/documentation/tutorials" className="w-fit">
+          <Button variant="outline">View Tutorials</Button>
+        </Link>
       </div>
     </section>
   );
 }
 
-function StepRow({
-  Icon,
-  label,
-  sub,
-  highlighted,
-}: {
-  Icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  sub: string;
-  highlighted?: boolean;
-}) {
+function PopularApiEndpoints() {
   return (
-    <div
-      className={`flex items-center gap-4 rounded-lg border border-info-border p-4 shadow-sm ${
-        highlighted ? "bg-info-subtle" : "bg-background"
-      }`}
-    >
-      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-border bg-background">
-        <Icon className="h-5 w-5 text-foreground" />
-      </span>
-      <div className="flex flex-col gap-1">
-        <span className="text-base font-medium text-foreground">{label}</span>
-        <span className="text-sm text-muted-foreground">{sub}</span>
-      </div>
-    </div>
-  );
-}
-
-function CodeSection() {
-  return (
-    <section className="flex flex-col items-center text-center">
-      <h2 className="text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-        First-class
-        <br />
-        developer experience
+    <section className="flex flex-col items-center gap-10 text-center">
+      <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+        Popular API Endpoints
       </h2>
-      <p className="mt-6 max-w-[640px] text-base text-muted-foreground">
-        We are a team of engineers who love building tools for other engineers. Our goal is to
-        create the AI Contact Center platform we&apos;ve always wished we had — one that just
-        works.
-      </p>
-      <div className="mt-12 w-full overflow-hidden rounded-md border border-border bg-card text-left">
-        <div className="flex h-12 items-center border-b border-border px-4">
-          <span className="rounded-md border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground">
-            script.js
-          </span>
-        </div>
-        <div className="px-4 py-8">
-          <pre className="m-0 font-mono text-sm text-foreground">
-            <code>console.log(&apos;Hello, world!&apos;);</code>
-          </pre>
-        </div>
-        <div className="flex h-12 items-center justify-between border-t border-border px-4">
-          <span className="text-xs text-muted-foreground">Line 1, Column 1</span>
-          <Button size="xs">
-            Execute
-            <Play />
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function MetricsSection() {
-  return (
-    <section className="flex flex-col items-center text-center">
-      <h2 className="text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-        Real-time Metrics
-      </h2>
-      <p className="mt-6 max-w-[680px] text-base text-muted-foreground">
-        Usage tracking based on monetization models. Precision settlement systems for scalable
-        enterprise billing.
-      </p>
-      <HomeMetricsChart />
-    </section>
-  );
-}
-
-function DocumentationSection() {
-  const links = [
-    { label: "Documentation", href: "/documentation" },
-    { label: "API Reference", href: "/api-reference/create-call" },
-    { label: "Dashboard", href: "/analytics" },
-  ];
-  return (
-    <section className="flex flex-col items-center text-center">
-      <h2 className="text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-        Documentation
-      </h2>
-      <p className="mt-6 max-w-[680px] text-base text-muted-foreground">
-        Meet the next generation of documentation. AI-native and built for developers and teams.
-      </p>
-      <div className="mt-12 grid w-full grid-cols-1 gap-6 md:grid-cols-3">
-        {links.map((l) => (
-          <Link
-            key={l.label}
-            href={l.href}
-            className="group flex flex-col gap-4 rounded-3xl bg-muted/40 p-6 transition-colors hover:bg-muted"
+      <div className="grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
+        {ENDPOINTS.map((e, i) => (
+          <div
+            key={`${e.method}-${e.path}-${i}`}
+            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5"
           >
-            <div className="h-[280px] rounded-2xl bg-muted/60" aria-hidden />
-            <span className="text-base font-medium text-foreground">{l.label}</span>
-          </Link>
+            <div className="flex items-center gap-2">
+              <MethodBadge method={e.method} />
+              <code className="truncate font-mono text-sm text-foreground">{e.path}</code>
+            </div>
+            <p className="text-sm text-muted-foreground">{e.desc}</p>
+          </div>
         ))}
       </div>
     </section>
