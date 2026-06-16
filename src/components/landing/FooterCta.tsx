@@ -44,7 +44,7 @@ export function FooterCta() {
         className="pointer-events-none absolute bottom-0 left-0 -z-10 aspect-square"
         style={{ width: "clamp(150px, 19vw, 340px)", transform: "translate(-44%, 46%)" }}
       >
-        <Orb variant="deep" grainSlope={1.25} />
+        <Orb variant="deep" sizes="(max-width: 1824px) 19vw, 340px" />
       </div>
 
       {/* bottom-right "planet / navy" */}
@@ -53,7 +53,7 @@ export function FooterCta() {
         className="pointer-events-none absolute right-0 bottom-0 -z-10 aspect-square"
         style={{ width: "clamp(190px, 24vw, 440px)", transform: "translate(44%, 46%)" }}
       >
-        <Orb variant="planet" />
+        <Orb variant="planet" sizes="(max-width: 1824px) 24vw, 440px" />
       </div>
 
       <div

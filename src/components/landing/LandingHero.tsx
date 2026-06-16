@@ -27,7 +27,7 @@ export function LandingHero() {
         className="pointer-events-none absolute top-0 left-0 -z-10 aspect-square"
         style={{ width: "clamp(230px, 34vw, 620px)", transform: "translate(-40%, -44%)" }}
       >
-        <Orb variant="planet" />
+        <Orb variant="planet" priority sizes="(max-width: 1824px) 34vw, 620px" />
       </div>
 
       {/* bottom-right "deep" — smaller (80%) */}
@@ -36,7 +36,7 @@ export function LandingHero() {
         className="pointer-events-none absolute right-0 bottom-0 -z-10 aspect-square"
         style={{ width: "clamp(160px, 23vw, 420px)", transform: "translate(42%, 46%)" }}
       >
-        <Orb variant="deep" />
+        <Orb variant="deep" sizes="(max-width: 1824px) 23vw, 420px" />
       </div>
 
       <div
