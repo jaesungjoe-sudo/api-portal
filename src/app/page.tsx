@@ -183,7 +183,7 @@ function DocumentationSection() {
 
 function BottomSection() {
   return (
-    <section className="flex flex-col gap-6 border-t border-border pt-10">
+    <section className="-mt-32 flex flex-col gap-6 pt-10">
       <div className="flex items-center justify-between">
         <UjetLogo />
         <div className="flex items-center gap-2">
