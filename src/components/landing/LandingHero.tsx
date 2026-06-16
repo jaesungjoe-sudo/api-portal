@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
  */
 export function LandingHero() {
   return (
-    <section className="relative isolate overflow-hidden bg-background">
+    <section className="relative left-1/2 -mt-20 w-screen -translate-x-1/2 isolate overflow-hidden bg-background">
       <HeroBackground className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 py-32 text-center">
