@@ -3,7 +3,6 @@ import type { HttpMethod } from "@/lib/mock-analytics-data";
 import { MethodBadge } from "@/components/api-portal/MethodBadge";
 import { TopNav } from "@/components/api-portal/TopNav";
 import { UjetLogo } from "@/components/api-portal/UjetLogo";
-import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { FooterCta } from "@/components/landing/FooterCta";
@@ -75,9 +74,6 @@ function WhatCanYouBuild() {
             </div>
           ))}
         </div>
-        <Link href="/documentation/tutorials" className="w-fit">
-          <Button variant="outline">View Tutorials</Button>
-        </Link>
       </div>
     </section>
   );
