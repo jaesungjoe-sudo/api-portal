@@ -62,6 +62,11 @@ export const DESIGN_SYSTEM_NAV: DesignSystemNavItem[] = [
         doc: "design-system/components/dropdown-menu.md",
       },
       {
+        label: "Search",
+        href: "/design-system/primitives/search",
+        doc: "design-system/components/search.md",
+      },
+      {
         label: "Skeleton",
         href: "/design-system/primitives/skeleton",
         doc: "design-system/components/skeleton.md",
