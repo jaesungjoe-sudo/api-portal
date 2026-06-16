@@ -1,38 +1,30 @@
 import Link from "next/link";
 
-import { Orb } from "@/components/landing/Orb";
+import { HeroBackground } from "@/components/landing/HeroBackground";
 import { Button } from "@/components/ui/button";
 
 /**
- * LandingHero — white base with two responsive grainy orbs bleeding off the
- * corners (top-left "planet", bottom-right "deep / slightly rougher").
+ * LandingHero — white hero matching Figma node 1719:8471. A single responsive
+ * <HeroBackground> SVG (orbs + orbital lines + grain) sits full-bleed behind the
+ * content (absolute inset-0, -z-10, pointer-events-none, aria-hidden); the orbs
+ * bleed into the corners and leave the center white for the headline.
  *
- * Orbs are code-native SVG: sized in vw via clamp() and anchored by % offsets,
- * so they scale fluidly with the viewport (no PNG). Decorative: aria-hidden +
- * pointer-events-none, behind the content (-z-10). The clamp()/% values are
- * intentional responsive positioning (the one place arbitrary values are used).
- *
+ * Heading is gradient-filled text (background-clip:text), matching Figma exactly.
  * Do NOT change the headline / subhead / button copy.
  */
 export function LandingHero() {
   return (
     <section className="relative isolate overflow-hidden bg-background">
-      {/* responsive corner orbs (decorative) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-[14%] -left-[7%] -z-10 aspect-square w-[clamp(220px,30vw,480px)]"
-      >
-        <Orb variant="planet" />
-      </div>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-[6%] -bottom-[16%] -z-10 aspect-square w-[clamp(180px,24vw,400px)]"
-      >
-        <Orb variant="deep" />
-      </div>
+      <HeroBackground className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 py-32 text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight text-balance text-foreground leading-none md:text-6xl">
+        <h1
+          className="bg-clip-text text-5xl leading-tight font-bold tracking-tight text-balance text-transparent md:text-6xl lg:text-7xl"
+          style={{
+            backgroundImage:
+              "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(251,251,251,0.35) 128.87%), linear-gradient(90deg, #0A0A0A 0%, #0A0A0A 100%)",
+          }}
+        >
           Build your contact center with code.
         </h1>
         <p className="mx-auto mt-5 max-w-md text-lg text-muted-foreground">
