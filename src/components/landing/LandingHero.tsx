@@ -18,8 +18,19 @@ import { Button } from "@/components/ui/button";
 export function LandingHero() {
   return (
     <section className="relative left-1/2 -mt-20 w-screen -translate-x-1/2 isolate overflow-hidden bg-background">
-      {/* orbital lines (behind orbs + content) */}
-      <OrbitalLines className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
+      {/* orbital lines (behind orbs + content). Toggled at the 1512 breakpoint
+          (zero-JS) instead of a client resize hook:
+          - >=1512: defaults (slice / COVER on the 1440×760 Figma frame) —
+            identical to today, Figma-exact.
+          - <1512: a padded viewBox + meet (CONTAIN) so the whole ellipse always
+            stays in frame. slice can't work here — as text wraps the hero box
+            grows taller and COVER would crop the sides (a Y anchor can't help). */}
+      <OrbitalLines
+        viewBox="-40 -40 1520 840"
+        preserveAspectRatio="xMidYMid meet"
+        className="pointer-events-none absolute inset-0 -z-10 h-full w-full min-[1512px]:hidden"
+      />
+      <OrbitalLines className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full min-[1512px]:block" />
 
       {/* top-left "planet" — larger, shows a bit more than a quarter */}
       <div
