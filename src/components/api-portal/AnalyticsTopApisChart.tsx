@@ -1,31 +1,46 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { METHOD_BG_CLASS } from "@/lib/method-colors";
 import type { AnalyticsPeriod, TopApi } from "@/lib/mock-analytics-data";
 
 const PERIOD_LABEL: Record<AnalyticsPeriod, string> = {
-  "6m": "Last 6 months",
-  "30d": "Last 30 days",
   "7d": "Last 7 days",
+  "30d": "Last 30 days",
+  "6m": "Last 6 months",
 };
+
+const PREVIEW_COUNT = 5;
 
 export function AnalyticsTopApisChart({
   data,
   period,
+  variant = "preview",
 }: {
   data: TopApi[];
   period: AnalyticsPeriod;
+  variant?: "preview" | "full";
 }) {
+  const rows = variant === "preview" ? data.slice(0, PREVIEW_COUNT) : data;
   const max = Math.max(...data.map((d) => d.count));
 
   return (
-    <div className="flex flex-1 flex-col gap-6 rounded-xl border border-border bg-card px-6 py-6 shadow-sm">
+    <div className="flex flex-col gap-6 rounded-xl border border-border bg-card px-6 py-6 shadow-sm">
       <div className="flex flex-col gap-1.5">
-        <h3 className="text-base font-semibold text-foreground">Top 5 APIs</h3>
+        <h3 className="text-base font-semibold text-foreground">Top APIs</h3>
         <p className="text-sm text-muted-foreground">{PERIOD_LABEL[period]}</p>
       </div>
-      <div className="flex flex-col gap-2">
-        {data.map((row) => (
+      <div
+        className={
+          variant === "full"
+            ? "flex max-h-[420px] flex-col gap-2 overflow-y-auto"
+            : "flex flex-col gap-2"
+        }
+      >
+        {rows.map((row) => (
           <div key={row.endpoint + row.method} className="flex items-center gap-3">
-            <span className="w-[120px] shrink-0 truncate text-xs text-foreground sm:w-[200px]">{row.endpoint}</span>
+            <span className="w-[120px] shrink-0 truncate text-xs text-foreground sm:w-[200px]">
+              {row.endpoint}
+            </span>
             <span className="w-10 shrink-0 text-xs text-muted-foreground">{row.count}</span>
             <span className="w-14 shrink-0 text-xs text-muted-foreground">{row.method}</span>
             <div className="flex h-7 flex-1 items-center">
@@ -37,6 +52,13 @@ export function AnalyticsTopApisChart({
           </div>
         ))}
       </div>
+      {variant === "preview" && data.length > PREVIEW_COUNT && (
+        <div className="flex justify-center">
+          <Link href="/analytics/top-apis">
+            <Button variant="ghost">See all</Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

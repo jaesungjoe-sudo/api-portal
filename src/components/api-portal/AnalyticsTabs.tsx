@@ -4,9 +4,9 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { AnalyticsPeriod } from "@/lib/mock-analytics-data";
 
 const TABS: { value: AnalyticsPeriod; label: string; shortLabel: string }[] = [
-  { value: "6m", label: "Last 6 months", shortLabel: "6m" },
-  { value: "30d", label: "Last 30 days", shortLabel: "30d" },
   { value: "7d", label: "Last 7 days", shortLabel: "7d" },
+  { value: "30d", label: "Last 30 days", shortLabel: "30d" },
+  { value: "6m", label: "Last 6 months", shortLabel: "6m" },
 ];
 
 export function AnalyticsTabs({

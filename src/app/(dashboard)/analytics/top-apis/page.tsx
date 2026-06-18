@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { AnalyticsView } from "@/components/api-portal/AnalyticsView";
 
-export default function AnalyticsPage() {
+export default function AnalyticsTopApisPage() {
   return (
     <div className="flex flex-col gap-10">
       <Breadcrumb>
@@ -22,12 +22,16 @@ export default function AnalyticsPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Analytics</BreadcrumbPage>
+            <BreadcrumbLink href="/analytics">Analytics</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Top APIs</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
-      <AnalyticsView />
+      <AnalyticsView topApisVariant="full" />
     </div>
   );
 }
