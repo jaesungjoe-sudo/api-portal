@@ -14,8 +14,12 @@ export default function HomePage() {
         <TopNav />
         <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col gap-32 px-6 py-20">
           <LandingHero />
-          <WhatCanYouBuild />
-          <PopularApiEndpoints />
+          <div className="flex flex-col gap-24">
+            <Welcome />
+            <MakeFirstRequest />
+            <WhereToGoNext />
+            <PopularApiEndpoints />
+          </div>
           <FooterCta />
           <BottomSection />
         </main>
@@ -24,20 +28,138 @@ export default function HomePage() {
   );
 }
 
-const GUIDES = [
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-center text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+      {children}
+    </h2>
+  );
+}
+
+function Welcome() {
+  return (
+    <section className="flex flex-col items-center gap-6 text-center">
+      <SectionHeading>Welcome to the UJET Developers</SectionHeading>
+      <p className="max-w-3xl text-lg text-muted-foreground">
+        The Public API gives your applications programmatic access over HTTPS to your UJET
+        contact-center configuration — starting with managing your teams — so you can build,
+        automate, and integrate it with your own systems. This portal is where you create and
+        manage the API keys your integration authenticates with, and where you&apos;ll find the API
+        reference and companion guides for the available Public API endpoints.
+      </p>
+    </section>
+  );
+}
+
+const STEPS: { n: number; label: React.ReactNode }[] = [
   {
-    title: "Authentication & API credentials",
-    desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings.",
+    n: 1,
+    label: (
+      <>
+        <span className="font-medium">Create an API key</span> in the portal.
+      </>
+    ),
   },
   {
-    title: "Webhooks: setup & signature verification",
-    desc: "Subscribe to call, chat, and agent events. Verify payloads with HMAC signatures.",
+    n: 2,
+    label: (
+      <>
+        <Link href="/documentation" className="font-medium underline underline-offset-2">
+          Exchange your API key for a Bearer token
+        </Link>
+        .
+      </>
+    ),
   },
   {
-    title: "Web SDK: embedding voice & chat",
-    desc: "Initialize UJET in your web app with companyId, tenant, and JWT authentication.",
+    n: 3,
+    label: (
+      <>
+        <Link
+          href="/api-reference/introduction"
+          className="font-medium underline underline-offset-2"
+        >
+          Make your first Public API call
+        </Link>{" "}
+        using that token.
+      </>
+    ),
   },
 ];
+
+function MakeFirstRequest() {
+  return (
+    <section className="flex flex-col gap-12">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <SectionHeading>Make your first authenticated request</SectionHeading>
+        <p className="max-w-2xl text-lg text-muted-foreground">
+          Three steps take you from creating an API key to your first successful response. The{" "}
+          <Link href="/documentation" className="underline underline-offset-2">
+            Getting Started with the Public API
+          </Link>{" "}
+          guide owns the full walkthrough — here&apos;s the shape of it:
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {STEPS.map((step) => (
+          <div
+            key={step.n}
+            className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5"
+          >
+            <span className="flex size-9 items-center justify-center rounded-full bg-info-subtle text-sm font-medium text-info">
+              {step.n}
+            </span>
+            <p className="text-lg leading-7 text-foreground">{step.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+const NEXT_LINKS: { title: string; desc: string; href: string }[] = [
+  {
+    title: "Getting Started with the Public API",
+    desc: "Create your first API key, exchange it for a Bearer token, and make a working call. The full walkthrough for the steps above.",
+    href: "/documentation",
+  },
+  {
+    title: "Teams",
+    desc: "An oriented map of the Teams resource — what it is, how its endpoints fit together, and the how-tos — that links into the reference rather than repeating it.",
+    href: "/documentation",
+  },
+  {
+    title: "API Reference",
+    desc: "The exact contract for every endpoint: paths, methods, parameters, request and response schemas, and status codes.",
+    href: "/api-reference/introduction",
+  },
+  {
+    title: "Best practices",
+    desc: "Cross-cutting behavior to design for: rate limits, error handling and retries, and handling API response changes.",
+    href: "/documentation",
+  },
+];
+
+function WhereToGoNext() {
+  return (
+    <section className="flex flex-col gap-12">
+      <SectionHeading>Where to go next</SectionHeading>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {NEXT_LINKS.map((link) => (
+          <Link
+            key={link.title}
+            href={link.href}
+            className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-5 transition-colors hover:bg-muted/50"
+          >
+            <h3 className="text-lg font-medium text-foreground">{link.title}</h3>
+            <p className="text-sm text-muted-foreground">{link.desc}</p>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 const ENDPOINTS: { method: HttpMethod; path: string; desc: string }[] = [
   { method: "GET", path: "/api/v1/agent_activity_logs", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
@@ -47,49 +169,15 @@ const ENDPOINTS: { method: HttpMethod; path: string; desc: string }[] = [
   { method: "POST", path: "/apps/api/v1/campaigns/{id}/contacts", desc: "Set up Basic Auth with subdomain + token, manage keys in Developer Settings." },
 ];
 
-function WhatCanYouBuild() {
-  return (
-    <section className="flex flex-col gap-12">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
-          What can you build?
-        </h2>
-        <p className="max-w-2xl text-lg text-muted-foreground">
-          From a single API call to a fully agentic contact center. Pick where you&apos;re starting.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-6">
-        <h3 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-          Popular guides
-        </h3>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {GUIDES.map((g) => (
-            <div
-              key={g.title}
-              className="flex flex-col gap-3 rounded-lg border border-border bg-card p-6"
-            >
-              <h4 className="text-lg font-medium text-foreground">{g.title}</h4>
-              <p className="text-sm text-muted-foreground">{g.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function PopularApiEndpoints() {
   return (
     <section className="flex flex-col items-center gap-10 text-center">
-      <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
-        Popular API Endpoints
-      </h2>
+      <SectionHeading>Popular API Endpoints</SectionHeading>
       <div className="grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
         {ENDPOINTS.map((e, i) => (
           <div
             key={`${e.method}-${e.path}-${i}`}
-            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5"
+            className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5"
           >
             <div className="flex items-center gap-2">
               <MethodBadge method={e.method} />
