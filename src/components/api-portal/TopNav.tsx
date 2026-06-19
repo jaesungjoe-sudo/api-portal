@@ -13,7 +13,7 @@ type NavKey = "documentation" | "api-reference" | "dashboard";
 
 const NAV_LINKS: { key: NavKey; label: string; href: string }[] = [
   { key: "documentation", label: "Documentation", href: "/documentation" },
-  { key: "api-reference", label: "API Reference", href: "/api-reference/create-call" },
+  { key: "api-reference", label: "API Reference", href: "/api-reference/introduction" },
 ];
 
 function detectActive(pathname: string): NavKey | null {

@@ -11,6 +11,16 @@ export type ApiRefGroup = {
   items: ApiRefEndpoint[];
 };
 
+export type ApiRefLink = {
+  label: string;
+  href: string;
+};
+
+/** Top-level leaf links rendered above the resource groups. */
+export const API_REFERENCE_LINKS: ApiRefLink[] = [
+  { label: "Introduction", href: "/api-reference/introduction" },
+];
+
 export const API_REFERENCE_NAV: ApiRefGroup[] = [
   {
     label: "Calls",

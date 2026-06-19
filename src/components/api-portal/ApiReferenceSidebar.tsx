@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
-import { API_REFERENCE_NAV, type ApiRefGroup } from "@/lib/api-reference-nav";
+import { API_REFERENCE_LINKS, API_REFERENCE_NAV, type ApiRefGroup } from "@/lib/api-reference-nav";
 import { MethodBadge } from "@/components/api-portal/MethodBadge";
 
 function GroupItem({
@@ -88,6 +88,22 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       <nav className="flex flex-col">
+        {API_REFERENCE_LINKS.map((link) => {
+          const active = pathname === link.href;
+          return (
+            <div key={link.href} className="px-2 py-1">
+              <Link
+                href={link.href}
+                onClick={onNavigate}
+                className={`flex h-9 items-center rounded-sm px-2 text-sm font-medium text-sidebar-foreground transition-colors ${
+                  active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
+                }`}
+              >
+                {link.label}
+              </Link>
+            </div>
+          );
+        })}
         {API_REFERENCE_NAV.map((group) => (
           <GroupItem
             key={group.label}
