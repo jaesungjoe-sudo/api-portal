@@ -97,7 +97,7 @@ export default function TableListPagePage() {
             <AnatomyRow label="<h1> Title (+ optional subtitle)" note="text-3xl font-semibold. Subtitle is text-sm text-muted-foreground." />
             <AnatomyRow label="<Tabs> (optional)" note="Only when a page hosts multiple lists. /users uses User / Team / Pending Approvals. URL ?tab= sync." />
             <AnatomyRow label="Toolbar — flex items-center justify-between" note="Search (w-60 h-8 + Search icon) on the left, primary CTA (default size) on the right." />
-            <AnatomyRow label="<div className=&quot;rounded-md border overflow-x-auto&quot;>" note="Table wrapper — bordered card frame with horizontal scroll on mobile." />
+            <AnatomyRow label="<div className=&quot;rounded-md border&quot;>" note="Table wrapper — bordered card frame. The Table primitive's own container handles horizontal scroll." />
             <AnatomyRow label="<Table>" note="First column pl-5 (20px), last column w-14 (action ⋯). SortableHead on sortable columns." />
             <AnatomyRow label="<TablePagination>" note="Required even at 1 page. PAGE_SIZE = 10 standard." />
           </div>
@@ -116,8 +116,8 @@ export default function TableListPagePage() {
             note="20px left padding on the first TableHead AND TableCell. Aligns with page wrapper."
           />
           <DecisionCard
-            title="Action column w-14, no header label"
-            note="56px square for ⋯ DropdownMenu. Header cell empty — label lives on aria-label of the trigger."
+            title="Action column — two cases"
+            note="⋯ menu (Edit/Delete): w-14, empty header — label lives on the trigger's aria-label. Button group (e.g. Reject + Approve on Pending Approvals): min-w-[180px], an 'Action' header label is allowed."
           />
           <DecisionCard
             title="Search w-60 h-8 + leading icon"
@@ -254,7 +254,7 @@ function LiveTable() {
         </div>
 
         {/* Table */}
-        <div className="rounded-md border border-border bg-background overflow-x-auto">
+        <div className="rounded-md border border-border bg-background">
           <Table>
             <TableHeader>
               <TableRow>

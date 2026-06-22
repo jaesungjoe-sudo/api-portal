@@ -179,7 +179,7 @@ export default function ApiKeysPage() {
       </div>
 
       {/* Table — 컬럼 순서: Name | Owner | Key | Status | Expires | Last used | Created | Action */}
-      <div className="rounded-md border border-border overflow-x-auto">
+      <div className="rounded-md border border-border">
         <Table>
           <TableHeader>
             <TableRow>

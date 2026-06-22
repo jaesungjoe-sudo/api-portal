@@ -1,6 +1,19 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-22 (랜딩/Analytics 개편 + Getting Started·API Ref Introduction 페이지 + Figma 컴포넌트 감사·정합. 전부 push 완료, working tree clean)
+최종 업데이트: 2026-06-22 (테이블 규칙 정합 — 문서 ↔ 코드 드리프트 정리. 랜딩/Analytics 개편 + Getting Started·API Ref Introduction 페이지 + Figma 컴포넌트 감사·정합)
+
+## 테이블 규칙 정합 (2026-06-22, 미커밋)
+
+> `table.md` 스펙이 최신 패턴/코드와 어긋난 부분 + 페이지 간 드리프트 정리. tsc + build 통과.
+
+- **코드(B)**:
+  - wrapper 중첩 `overflow-x-auto` 제거 — primitive `table-container` 가 스크롤 담당. api-keys / users(User·Pending) / team 상세 + 카탈로그 데모 wrapper 모두 `rounded-md border border-border` 로 통일.
+  - 팀 상세(`team/[name]`) 빈 상태 → plain-text 안티패턴을 `<EmptyState variant="no-data" icon={<Users/>} ...>` 로 정합. **`colSpan={7}` → `6` 버그 수정**(실제 컬럼 6개), `py-12` → `py-16`. (아이콘은 Figma 확정 시 교체 TODO)
+- **문서(A)**:
+  - `components/table.md`: Base wrapper overflow 제거 + primitive 컨테이너 설명 / 컬럼 표에서 죽은 Checkbox 행 삭제 / action 컬럼 `Popover` → **`DropdownMenu`** 정정 + ⋯메뉴·버튼그룹 2-케이스 / 빈 상태 plain-text → `<EmptyState>` cross-ref.
+  - `patterns/table-list-page.md`: §6 wrapper overflow 제거 + action 컬럼 2-케이스(⋯ `w-14` / 버튼그룹 `min-w-[180px]` 라벨 허용), §10 안티패턴을 "⋯메뉴 한정"으로 범위 좁힘.
+  - 카탈로그 `table-list-page/page.tsx`: AnatomyRow 문자열(overflow 제거) + Decision 카드를 action 컬럼 2-케이스(⋯메뉴 / 버튼그룹)로 보강.
+- **범위 밖(미처리)**: api-keys 빈 상태 분기 누락(드리프트 아님), User탭↔팀상세 Status/Role 컬럼 순서 차이(Figma truth 확인 필요).
 
 ## 🔜 다음 할 일 (새 세션은 여기부터)
 

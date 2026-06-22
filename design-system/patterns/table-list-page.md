@@ -127,7 +127,7 @@ Used only when multiple lists are grouped on one page, like `/users`. shadcn `<T
 ## 6. Table wrapper
 
 ```tsx
-<div className="rounded-md border border-border overflow-x-auto">
+<div className="rounded-md border border-border">
   <Table>
     <TableHeader>...</TableHeader>
     <TableBody>...</TableBody>
@@ -136,7 +136,7 @@ Used only when multiple lists are grouped on one page, like `/users`. shadcn `<T
 ```
 
 - Outer: `rounded-md border border-border` — card-like appearance
-- Scroll: `overflow-x-auto` — horizontal scroll on mobile. The outer wrapper handles clipping.
+- Scroll: handled by the `Table` primitive's own `table-container` (`overflow-x-auto`). **Don't add `overflow-x-auto` on this wrapper** — it would nest scroll containers. See `components/table.md` "Base wrapper".
 
 ### TableHeader rules
 
@@ -154,7 +154,9 @@ Used only when multiple lists are grouped on one page, like `/users`. shadcn `<T
 ```
 
 - First column: `pl-5` (20px left padding) — CLAUDE.md "unify first-column left padding `pl-5`" rule
-- Last column: `w-14` (56px) — slot for the row's right-end ⋯ DropdownMenu. Header is an empty cell with no label.
+- Action column — **two cases**:
+  - **⋯ menu** (Edit / Delete / Revoke): `<TableHead className="w-14" />` — empty header, no label. The label is provided by the trigger's `aria-label`.
+  - **button group** (e.g. Reject + Approve on the Pending Approvals tab): `<TableHead className="min-w-[180px]">Action</TableHead>` — a header label is allowed.
 - Sortable column: `<SortableHead col="key" {...sp}>` — `sortable-head.tsx`
 - Column width: `min-w-[Npx]` (natural width + minimum guaranteed) or `w-[Npx]` (fixed).
 
@@ -262,7 +264,7 @@ The surface × state matrix in `rules/states.md` — Loading: row skeleton, Erro
 |---|---|
 | Page wrapper `gap-*` other than `gap-10` | Violates the header-area consistency rule. Breaks consistency across the 4 pages. |
 | Missing first-column `pl-5` | Violates the CLAUDE.md "unify first-column left padding pl-5" rule. |
-| Putting a label text ("Action") in the header of the action column (`w-14`) | Matches Figma — the header is an empty cell. The label is sufficiently provided by the ⋯ `aria-label`. |
+| Putting a label text ("Action") on a **⋯ menu** action column (`w-14`) | The ⋯ menu header is an empty cell; the label is provided by the trigger `aria-label`. (A **button-group** action column like Reject + Approve may carry an "Action" label — see §6.) |
 | Search placeholder is plain text `"Search"` | Missing the Entity name. Use the `"Search {Entity}"` form. |
 | Primary CTA using an arbitrary size like `size="sm"` | Violates the 1:1 Figma Button rule. Toolbar CTA is default size (`h-9`). |
 | Plain text like `<p>No data</p>` for empty data | Anti-pattern in `states.md` §4 / `empty-state.md`. Use `<EmptyState>`. |

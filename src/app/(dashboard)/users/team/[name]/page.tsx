@@ -30,7 +30,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Users } from "lucide-react";
+import { EmptyState } from "@/components/api-portal/EmptyState";
 import { EditTeamDialog } from "@/components/api-portal/EditTeamDialog";
 import { INITIAL_USERS, findTeam, updateTeam, type Team, type User } from "@/lib/mock-team-data";
 
@@ -167,7 +168,7 @@ export default function TeamDetailPage({
       </div>
 
       {/* Members Table */}
-      <div className="rounded-md border border-border overflow-x-auto">
+      <div className="rounded-md border border-border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -192,8 +193,15 @@ export default function TeamDetailPage({
           <TableBody>
             {paged.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-sm text-muted-foreground py-12">
-                  No list
+                {/* colSpan = 6 (Name/Email/Status/Role/Updated/Action) */}
+                <TableCell colSpan={6} className="py-16">
+                  <EmptyState
+                    variant="no-data"
+                    // TODO: Figma 디자인 확정 시 인스펙트 결과 아이콘으로 교체 (icons.md 워크플로우)
+                    icon={<Users />}
+                    title="No members"
+                    description="Members added to this team will appear here."
+                  />
                 </TableCell>
               </TableRow>
             ) : (

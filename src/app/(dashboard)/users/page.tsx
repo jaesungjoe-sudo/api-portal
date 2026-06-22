@@ -353,7 +353,7 @@ function UsersPageContent() {
       {/* Table */}
       {activeTab === "user" ? (
         <>
-          <div className="rounded-md border border-border overflow-x-auto">
+          <div className="rounded-md border border-border">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -421,7 +421,7 @@ function UsersPageContent() {
         </div>
       ) : (
         <>
-          <div className="rounded-md border border-border overflow-x-auto">
+          <div className="rounded-md border border-border">
             <Table>
               <TableHeader>
                 <TableRow>

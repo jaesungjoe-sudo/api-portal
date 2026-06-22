@@ -17,21 +17,25 @@ import {
 Tables must be placed inside the wrapper below:
 
 ```tsx
-<div className="rounded-md border border-border overflow-x-auto">
+<div className="rounded-md border border-border">
   <Table>
     …
   </Table>
 </div>
 ```
 
+The wrapper provides only the card frame (`rounded-md border`). **Don't add `overflow-x-auto`** — the `Table` primitive already wraps `<table>` in its own `<div data-slot="table-container" className="relative w-full overflow-x-auto">`, which handles horizontal scroll on mobile. A second `overflow-x-auto` on the wrapper only nests scroll containers.
+
 ## Standard column structure
 
 | Column type | width | Note |
 |---|---|---|
-| Checkbox (selection) | `w-10 pl-3` | Same for header/body |
-| Body column | `min-w-[Npx]` | Name 160, Email 220, Team 130, Role 100, Status 110, Updated 140, etc. |
-| Actions (menu) | `w-14` | MoreHorizontal → Popover |
-| Actions (button group) | `min-w-[180px]` | Reject + Approve, etc. |
+| First (Name, etc.) | `min-w-[160px] pl-5` | `pl-5` (20px) left padding — CLAUDE.md first-column rule |
+| Body column | `min-w-[Npx]` | Email 220, Team 130, Role 100, Status 110, Updated 140, etc. |
+| Actions — ⋯ menu | `w-14` | `MoreHorizontal` → **DropdownMenu** (not Popover). Header is an empty cell, no label. |
+| Actions — button group | `min-w-[180px]` | Reject + Approve, etc. Header **may** carry an "Action" label. |
+
+> No selection-checkbox column — removed from all tables (2026-05-08). Don't reintroduce one without a Figma spec.
 
 ## SortableHead pattern
 
@@ -77,7 +81,7 @@ Example: a header that needs an explanation, like the Updated column
 | Normal text | `text-sm text-foreground` |
 | Secondary text (dates, etc.) | `text-sm text-muted-foreground` |
 | Badge cell | as-is `<TableCell><StatusBadge … /></TableCell>` |
-| Empty state (no data) | `<TableCell colSpan={N} className="text-center text-sm text-muted-foreground py-8">` |
+| Empty state (no data) | `<TableCell colSpan={N} className="py-16"><EmptyState … /></TableCell>` — see `rules/states.md` §4 / `components/empty-state.md`. **No plain-text fallback.** |
 
 ## Pagination layout
 
