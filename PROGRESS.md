@@ -1,20 +1,48 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-02 (P3-8 완료 — Maturity Roadmap 8/9 (89%). 남은 항목: P3-7 인덱스/템플릿, P2-4 잔여 9 컴포넌트)
+최종 업데이트: 2026-06-22 (랜딩/Analytics 개편 + Getting Started·API Ref Introduction 페이지 + Figma 컴포넌트 감사·정합. 전부 push 완료, working tree clean)
+
+## 🔜 다음 할 일 (새 세션은 여기부터)
+
+> 우선순위 순. git 은 `main` ↔ `origin/main` 동기화 + working tree clean 상태에서 시작.
+
+1. **개발팀 핸드오프 착수 (E0)** — `design-system/handoff-backlog.md` 의 계획을 Jira Epic/Story 로 발행. 첫 경로: E0-1(`design-system/` + `ui/*.tsx` 읽기전용 레퍼런스를 staging repo 에 추가) → E0-2(staging `CLAUDE.md` 거버넌스 1단락) → E1(토큰 인프라). "계획 확정, 발행 대기" 상태. **현재 가장 레버리지 큰 작업.**
+2. **Ask AI 아이콘 코드 정합 확인** — Figma 는 `hugeicons/ai-magic` → lucide `Sparkles` 로 스왑 완료(3 인스턴스). 코드 쪽도 `Sparkles` 인지 확인/교체. (사용자가 직접 변경한다고 함 — 확인만)
+3. **Buttons 컴포넌트 set 위생 (Figma 라이브러리)** — `Buttons` set 에 `Type=Size-small/default/large` 라는 잘못된 variant 가 Type 슬롯에 등록돼 있음. 인스턴스는 이미 정정했으나 set 자체 정리는 디자이너 핸드오프 필요.
+4. **Figma 페이지 감사 계속** — 지금까지 Landing(`2121:60848`) / User list(`1175:19038` 전수) / Getting Started 감사+정합 완료. 나머지 화면(Profile / Key-API / Analytics / Home / Webhook) 동일 방식(서브에이전트 + figma_execute 실측) 으로 감사 가능.
+5. **Phase1 잔여 페이지/기능** — Webhooks 페이지(디자인 대기), API Reference Get Call / Update Call 본문(현재 placeholder), 검색 입력 실제 필터(Users/API Keys/Team), Invite User to Team.
 
 ## 현재 마일스톤
 
-Phase1 디자인 구현 — **User & Team, API Keys, Documentation(Quick Start + Inbound Calls), Analytics, API Reference(Create Call)** 주요 플로우 완료. 라이브러리 통일 (Phase 1+2+3) 완료 — 페이지 전반 raw `<button>` 제거 (의도적 1건: `sortable-head.tsx`).
+Phase1 디자인 구현 — **랜딩, User & Team, API Keys, Documentation(Getting Started + Inbound Calls), Analytics, API Reference(Introduction + Create Call)** 주요 플로우 완료. Design system maturity 로드맵 9/9 (P1·P2·P3 완료). 이제 초점은 **개발팀 staging repo 와의 디자인 시스템 통합(handoff-backlog E0~E4)** + **Figma↔코드 정합 감사**.
 
-**Design system maturity 분석 (2026-05-29 착수)** — `rules/`(primitive 룰) + `components/`(컴포넌트 spec) + `pages/`(페이지 스펙) 3 레이어에 더해 누락된 **`patterns/`(조합 패턴) 레이어** 신설 시작. 9개 항목으로 정리 (P1 3개 / P2 3개 / P3 3개), 본 섹션 하단 참조.
+---
 
-다음 우선순위:
-- **P1 전체 완료** ✅ — patterns 5/5 (form-dialog / confirm-dialog / table-list-page / docs-page-shell / clickable-card-with-menu) + States 룰 + Responsive 룰. 다음: P2 영역 — 컴포넌트 커버리지 / 타이포 역할표 / a11y 베이스라인.
-- **P1-3 반응형/브레이크포인트 문서**
-- 미완 페이지: **Webhooks** (디자인 대기)
-- API Reference 나머지: Get Call / Update Call 본문 (현재 method 배지만 적용, 본문 placeholder)
-- Documentation 추가 콘텐츠 (Tutorials, Outbound Calls, Call Recording 등 — 현재 blank)
-- 보조 기능: 검색 필터 동작, 팀 Delete 다이얼로그, Invite User to Team
+## 최근 작업 (2026-06-16 ~ 06-22)
+
+### 코드 (push 완료)
+- **랜딩 페이지 재구축** — hero/footer(상하단 이미지) + 중간 콘텐츠 4섹션(Welcome / Make first request(번호 step 카드) / Where to go next / Popular API Endpoints). Figma `2121:60848` 정합. (`page.tsx`, commit `52855a1` 외)
+- **Analytics 대시보드 개편** (`58650df`) — `AnalyticsView` 공용 컴포넌트 추출(preview/full), CallVolume 에 error-rate Line 오버레이(ComposedChart + dual hidden Y축), `AnalyticsStatusCodeDistribution` 패널 신규(health chips + segmented bar), Top APIs preview 5 + "See all" → `/analytics/top-apis` 전용 페이지, 기본 period 6m→7d, SummaryCard trend chip → info 툴팁.
+- **Getting Started 문서** (`f2bbb67`) — `/documentation` 루트 콘텐츠를 Quick Start → Getting Started with the Public API 로 교체(Figma `2126:62474`). `DOCS_NAV` 를 단일 항목으로 축소. 인라인 코드칩은 `bg-muted` 토큰. (기존 하위 docs 라우트는 살아있으나 nav 에서만 제외)
+- **API Reference Introduction** (`24f3635`) — `/api-reference/introduction` 페이지 + `ApiReferenceSidebar` 상단 Introduction 링크(`API_REFERENCE_LINKS`) + TopNav "API Reference" href 를 create-call → introduction 변경.
+- **인프라** — `chore(tooling)` playwright + 스크린샷 스크립트(`scripts/shoot-*.mjs`), `docs` handoff-backlog.md.
+
+### Figma 직접 수정 (디자인 파일 `F2lkYCId2xMqcd9RuXL20B` — git 무관, 감사 후 정합)
+- Getting Started 코드칩 3개(`2126:63101/63192/63195`): secondary/destructive/rounded-xs → **muted/foreground/radius-sm** 변수 바인딩.
+- Ask AI 아이콘 3개(`1512:10661`, `2126:62704`, `1630:27835`): `hugeicons/ai-magic` → **lucide `Sparkles`** 스왑.
+- 랜딩 Step Number 원 3개(`2124:2/4/6` + 숫자 텍스트): raw hex(#e9f5ff/#0a78c2) → **`info-subtle`/`info`** 변수 바인딩.
+- 랜딩 보조 버튼 2개(`2121:60858`, `2121:60920`): 깨진 `Type=Size-default` → **`outline`** + 라벨 "Documentation" 복구.
+- 감사 결과 정상(오탐): per-column sort/info 아이콘(lucide 인스턴스 rename), Buttons/Badge variant(라이브러리 valid), Dropdown_menu, Checkbox, Analytics chip(차트 범례), 카드 stroke(이미 `border` 바인딩됨).
+
+### 감사 방법론 (재사용)
+Figma 컴포넌트 규칙 감사는 **서브에이전트 + figma-console `figma_execute` 실측**(type/componentProperties/mainComponent/fills 변수명)으로 진행 — 이름만으로 위반 단정 금지(오탐 다수). get_metadata 거대 출력은 jq 로 노드 ID 추출만. 단독 노드 스크린샷이 1×1 로 깨지면 상위 프레임 캡처 또는 get_design_context SVG 에셋 사용.
+
+---
+
+## 환경 메모
+
+- dev 서버: `npm run dev` (Basic Auth, `.env.local` 자격증명). production 노출은 `src/proxy.ts`.
+- 스크린샷 검증: `node --env-file=.env.local scripts/shoot-*.mjs` — **반드시 프로젝트 디렉토리 안에서 실행**(/tmp 실행 시 playwright module not found).
 
 ---
 
