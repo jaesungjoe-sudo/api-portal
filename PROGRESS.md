@@ -1,8 +1,31 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-23 (handoff-backlog → Jira 티켓 드래프트 19건 작성. E2-5 템플릿 기준 E0~E4 전 Epic 발행 대기 드래프트화)
+최종 업데이트: 2026-06-23 (Figma Best Practices 페이지 작성 + text-2xs 토큰 + 표/코드블록 정합 — 3 commit push 완료. Jira 티켓 드래프트 20건 준비[미추적].)
 
-## Jira 핸드오프 티켓 드래프트 (2026-06-23, 미커밋)
+## 오늘 세션 (2026-06-23) 요약
+
+> git: `main` = `origin/main` 동기화 완료. working tree 에 남은 건 **`design-system/tickets/` (Jira 드래프트, 미추적) 뿐.**
+
+### push 완료 (origin/main)
+- **`02c433c` feat(tokens): `text-2xs`(10px/line-height 12px)** — `misc.json#fontSize` → `sync-tokens.ts` → `tokens.generated.css @theme inline`(`--text-2xs` + `--text-2xs--line-height`) → Tailwind `text-2xs` 유틸. Figma `Text-2xs` 스타일 정합. radius scale 과 동일 메커니즘(globals.css 변경 없음). 빌드 검증: `.text-2xs{font-size:10px;line-height:var(--tw-leading,12px)}`. 문서 동반: `figma-token-sync.md`(sync 방향 표 font-size 행) / `typography.md`(§2.4 micro) / `CLAUDE.md`.
+- **`8268e99` fix(table)** — 리스트 페이지 빈 상태 `<EmptyState>` 분기(api-keys colSpan8 / users User탭 colSpan7) + 팀상세 `Status/Role`→`Role/Status` 정합 (아래 E2-5 갭 해소분) + PROGRESS.
+- **`3b35906` docs(design-system)** — `components/table.md` 세로 sizing 규칙(헤더 h-10·셀 p-2 align-middle + HUG 붕괴 복구 레시피) + `components/code-block.md` 신규(본문 p-4=16px breathing).
+
+### Figma 디자인 파일 직접 작성 (`F2lkYCId2xMqcd9RuXL20B` — git 무관)
+- **Best Practices 페이지 작성** (`2215:9167`) — Notion "Best Practices" 콘텐츠로 본문 전체 재작성. 기존엔 제목만 BP, 본문은 Getting Started 잔재(13섹션) + 가짜 data-table → 전부 제거 후 재구성: Intro + ① Rate limits + ② Error handling(상태코드 7행 표) + ③ Handling API response changes + ④ Pagination, 코드블록 2개, TOC 4항목, footer Getting Started/API Reference. 기존 doc 컴포넌트 클론·재텍스트(`code-as-spec`). Working draft 콜아웃은 내부 메모라 제외.
+- **인라인 코드칩** — BP 본문 25곳 코드 용어(`x-ratelimit-*`/상태코드/`POST`/`GET …`/`message` 등) → Source Code Pro + foreground (Figma `code` 컴포넌트 스타일). ※ 텍스트 노드는 배경 pill 불가 → mono+색이 표준.
+- **표 헤더/행 높이 정합** — BP 표 헤더 40px 고정 + 데이터 행 `minHeight 49` + 세로 중앙정렬 (내가 HUG 로 만들며 헤더 붕괴했던 것 복구).
+- **코드블록 본문 여백 16/16 sweep** — BP 2개 + Documentation 4 + API Reference 3 = **전 페이지 9개**. (표는 BP 외 원본 정상이라 미수정 / 대시보드 data-table 범위 밖.)
+- (디자이너 작업 확인분) `Text-2xs` 텍스트 스타일 전 weight + `tw/font/size/2xs` 변수.
+
+### 메모리 추가 (~/.claude/.../memory)
+- `reference-figma-screenshot-lag` — `use_figma` 편집 후 `get_screenshot` 캐시 지연 → 라이브 메타데이터로 검증.
+- `reference-figma-table-fixed-height-hug` — 고정높이 표/코드블록 컴포넌트를 HUG 전환 시 헤더·본문 붕괴 → fixed/minHeight + 중앙정렬 / 본문 16px 복구.
+
+### 도구 메모
+- figma-console(Desktop Bridge) MCP 가 세션 중 끊김 → claude.ai `use_figma` 경로로 작업(쓰기 전 `figma-use` 스킬 필수). 스샷은 전체 프레임 캡처가 작은 노드보다 갱신 빠름.
+
+## Jira 핸드오프 티켓 드래프트 (2026-06-23, tickets/ 미추적 유지)
 
 > `handoff-backlog.md`(E0~E4 플랜) → `design-system/tickets/` 에 §4 템플릿 기준 Jira 발행용 드래프트화. E2-5(Table, 06-22 작성)를 골드 스탠다드로 나머지 19건 작성. Epic 단위 병렬 서브에이전트로 진행, 각 티켓 레퍼런스·AC 는 실제 spec/`.tsx` 파일에 grounded (경로·룰 검증).
 
@@ -14,7 +37,7 @@
   3. `.github/pull_request_template.md` 양쪽 repo 모두 부재 → E4-1 은 "신규 생성(순수 추가)".
 - **다음**: 사용자 검토 → Jira 발행 (Atlassian MCP 로 Epic/Story 생성, 또는 수동). 발행 순서는 backlog §5 (E0 → E1 → E3-1 → E2-1 …).
 
-## 테이블 E2-5 가이드 정합 감사 + 갭 해소 (2026-06-23, 미커밋)
+## 테이블 E2-5 가이드 정합 감사 + 갭 해소 (2026-06-23, commit 8268e99 push 완료)
 
 > 로컬 리스트 페이지 테이블이 E2-5(Table 시스템) AC 대로 적용됐는지 전수 감사 후 발견 갭 2건 정합. tsc + build 통과.
 
@@ -38,13 +61,18 @@
 
 ## 🔜 다음 할 일 (새 세션은 여기부터)
 
-> 우선순위 순. git 은 `main` ↔ `origin/main` 동기화 + working tree clean 상태에서 시작.
+> 우선순위 순. git 은 `main` = `origin/main` 동기화, working tree 는 `design-system/tickets/`(미추적)만 남은 상태에서 시작.
 
-1. **개발팀 핸드오프 착수 (E0)** — `design-system/handoff-backlog.md` 의 계획을 Jira Epic/Story 로 발행. 첫 경로: E0-1(`design-system/` + `ui/*.tsx` 읽기전용 레퍼런스를 staging repo 에 추가) → E0-2(staging `CLAUDE.md` 거버넌스 1단락) → E1(토큰 인프라). "계획 확정, 발행 대기" 상태. **현재 가장 레버리지 큰 작업.**
-2. **Ask AI 아이콘 코드 정합 확인** — Figma 는 `hugeicons/ai-magic` → lucide `Sparkles` 로 스왑 완료(3 인스턴스). 코드 쪽도 `Sparkles` 인지 확인/교체. (사용자가 직접 변경한다고 함 — 확인만)
-3. **Buttons 컴포넌트 set 위생 (Figma 라이브러리)** — `Buttons` set 에 `Type=Size-small/default/large` 라는 잘못된 variant 가 Type 슬롯에 등록돼 있음. 인스턴스는 이미 정정했으나 set 자체 정리는 디자이너 핸드오프 필요.
-4. **Figma 페이지 감사 계속** — 지금까지 Landing(`2121:60848`) / User list(`1175:19038` 전수) / Getting Started 감사+정합 완료. 나머지 화면(Profile / Key-API / Analytics / Home / Webhook) 동일 방식(서브에이전트 + figma_execute 실측) 으로 감사 가능.
-5. **Phase1 잔여 페이지/기능** — Webhooks 페이지(디자인 대기), API Reference Get Call / Update Call 본문(현재 placeholder), 검색 입력 실제 필터(Users/API Keys/Team), Invite User to Team.
+1. **Jira 티켓 발행 (E0~E4)** — `design-system/tickets/` 에 드래프트 **20건 준비 완료**(E2-5 기존 + 신규 19). 검토 후 Atlassian MCP 로 Epic/Story 발행. 발행 순서: `handoff-backlog.md §5` (E0 → E1 → E3-1 → E2-1 …). 발행 시 각 티켓의 `<발행 시 채움>`(Figma 노드 링크·Before/After 스샷·견적) 채우기. **현재 가장 레버리지 큰 작업.** (tickets/ 는 아직 git 미추적 — 발행/확정 후 커밋 여부 결정.)
+2. **`text-2xs` 실제 적용** — 토큰 추가됨(02c433c). 사용처 적용 검토: API method 배지(`MethodBadge`) 등 미세 라벨에 `text-2xs font-medium`/`font-semibold` (DS: method 배지 weight 는 Medium/Semi Bold). 적용 시 `typography.md §2.4` 를 정식 role 로 승격.
+3. **Ask AI 아이콘 코드 정합 확인** — Figma `hugeicons/ai-magic` → lucide `Sparkles` 스왑 완료(3 인스턴스). 코드 쪽 `Sparkles` 인지 확인. (사용자 직접 변경 예정 — 확인만)
+4. **Buttons 컴포넌트 set 위생 (Figma 라이브러리)** — `Buttons` set 의 `Type=Size-*` 잘못된 variant 정리(디자이너 핸드오프).
+5. **Figma 페이지 감사 계속** — 완료: Landing / User list(`1175:19038`) / Getting Started / **Best Practices(작성)**. 남은 화면: Profile / Analytics / Home / Webhook (서브에이전트 + 실측 방식).
+6. **Phase1 잔여 페이지/기능** — Webhooks(디자인 대기), API Reference Get/Update Call 본문(placeholder), 검색 입력 실제 필터, Invite User to Team.
+7. **(선택) backlog drift 정정** — `tokens.json` 약칭(실제 colors.json+misc.json) / 헤더 68→69px 문서 / `.github/pull_request_template.md` 부재. (티켓 작성 중 발견, 위 "Jira 드래프트" 항목 참조)
+
+### Best Practices 후속 (참고)
+- 코드베이스엔 아직 Best Practices **라우트 없음** — Figma 작성만 완료. 필요 시 `(docs)` 그룹에 페이지 구현(콘텐츠는 Figma/Notion 기준).
 
 ## 현재 마일스톤
 
