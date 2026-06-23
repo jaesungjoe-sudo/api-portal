@@ -83,6 +83,21 @@ Example: a header that needs an explanation, like the Updated column
 | Badge cell | as-is `<TableCell><StatusBadge … /></TableCell>` |
 | Empty state (no data) | `<TableCell colSpan={N} className="py-16"><EmptyState … /></TableCell>` — see `rules/states.md` §4 / `components/empty-state.md`. **No plain-text fallback.** |
 
+## Vertical sizing (header & rows)
+
+`Table` primitive(`src/components/ui/table.tsx`)의 세로 규칙 — Figma 정합 기준이기도 하다:
+
+| 요소 | 코드 | 값 / 동작 |
+|---|---|---|
+| 헤더 셀 `TableHead` | `h-10` + `align-middle` | **40px 고정** 높이, 내용 세로 중앙 |
+| 바디 셀 `TableCell` | `p-2` + `align-middle` | 8px 패딩, 내용 세로 중앙. 행 높이는 내용에 맞춰 hug(여러 줄이면 확장) |
+| 행 구분 | `[&_tr]:border-b` | 행마다 하단 보더 |
+
+- 헤더는 **항상 40px**(`h-10`) — 한 줄 라벨. 데이터 셀은 `align-middle`로 세로 중앙정렬, 셀 내용이 여러 줄이면 행이 자동으로 커진다(클립 금지).
+- 셀 패딩(`p-2`)을 0으로 만들거나 헤더 높이를 내용에 붙이지 말 것 — 정보가 위아래로 붙어 가독성이 떨어진다.
+
+> **Figma 작성 주의 (code-as-spec):** 라이브러리 `Data table`/`Table` 컴포넌트를 재사용할 때, 헤더 셀의 세로 padding이 0인 채로 행을 `HUG`(`counterAxisSizingMode='AUTO'` + 셀 `layoutSizingVertical='HUG'`)로 바꾸면 **헤더가 텍스트 높이(~20px)로 붕괴**한다(원본이 고정높이에 의존하기 때문). 복구 레시피 — 헤더 행: `counterAxisSizingMode='FIXED'` + 높이 40 + `counterAxisAlignItems='CENTER'`; 데이터 행: `AUTO` + `minHeight` + `CENTER`; 셀 `layoutSizingVertical='FILL'`. 상세: 메모리 `reference-figma-table-fixed-height-hug`.
+
 ## Pagination layout
 
 The shared `TablePagination` component has the `grid grid-cols-3` wrapper and ellipsis logic built in. Place it in a single row below the table:
