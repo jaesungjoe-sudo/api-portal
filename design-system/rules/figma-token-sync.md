@@ -51,7 +51,7 @@ Each arrow **passes after human review**. Not an unattended cron.
 - `destructive-foreground` — not in Figma but kept for shadcn compatibility. Excluded from sync.
 - `overlay` — treats Figma `background-color` as a reference but we rename it. Keeps alpha 0.3.
 - `palette` section — Tailwind default palette. Assumed 1:1 with Figma `tw/colors`. If it changes, discuss separately.
-- `misc.json` — currently not a sync target except radius.base.
+- `misc.json` — manually mirrored from Figma (radius scale, **fontSize**); not auto-read by this COLOR sync workflow. See the "Token sync directions" table below.
 
 ---
 
@@ -215,6 +215,7 @@ The Figma library ↔ code sync method differs per token group. Agreed in P3-8:
 |---|---|---|
 | colors | Figma → code (bidirectional) | `colors.json` is the mirror. Figma `tw/colors` + mode collection is the source. |
 | radius | Figma → code (bidirectional) | `misc.json#radius`. Figma `radius-*` variables (aligned 2026-05-08). |
+| font-size | Figma → code (manual mirror) | `misc.json#fontSize`. Figma `tw/font` size variables + `Text-*` styles. Emitted into `@theme inline` as `--text-{name}` (+`--text-{name}--line-height`) → Tailwind `text-{name}` 유틸. `text-2xs` (10px / 12px) added 2026-06-23. 나머지 사이즈는 Tailwind 기본값(미동기화). |
 | shadow | code is truth (alignment planned) | Currently defined directly in `globals.css`'s `@theme inline`. Effect styles exist in the Figma library but the sync workflow is undefined. |
 | ring-width | Figma → code (bidirectional, designer work pending) | `misc.json#ring.width = 3px`. A `ring/width` Number variable to be newly created in the Figma library (P3-8 designer handoff). |
 | motion | code is truth (one-way) | `misc.json#motion`. The Figma library only has a spec page (for designer reference). |

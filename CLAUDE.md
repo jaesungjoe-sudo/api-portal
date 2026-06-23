@@ -115,7 +115,9 @@ Figma 파일:
 코드: font-mono  (Geist Mono)
 ```
 
-크기/굵기는 Tailwind 스케일만 사용 (`text-xs`/`text-sm`/`text-base`/`text-lg`/`text-xl`/`text-2xl`/`text-3xl`, `font-medium`/`font-semibold`).
+크기/굵기는 Tailwind 스케일만 사용 (`text-2xs`(10px, synced)/`text-xs`/`text-sm`/`text-base`/`text-lg`/`text-xl`/`text-2xl`/`text-3xl`, `font-medium`/`font-semibold`).
+
+> `text-2xs`(10px/line-height 12px)는 Figma `Text-2xs` 스타일 동기화분 — `misc.json#fontSize` → `sync-tokens` → `tokens.generated.css`(`@theme inline`)로 Tailwind 유틸 생성. 미세 라벨(예: method 배지)용. 기타 사이즈는 Tailwind 기본값.
 
 ### 스페이싱
 

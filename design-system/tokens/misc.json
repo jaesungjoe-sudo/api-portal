@@ -14,6 +14,9 @@
       "full": 9999
     }
   },
+  "fontSize": {
+    "2xs": { "size": "10px", "lineHeight": "12px" }
+  },
   "zIndex": {
     "base": 0,
     "sticky": 10,

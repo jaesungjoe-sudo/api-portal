@@ -25,6 +25,8 @@ type MiscJson = {
     /** Tailwind radius scale — Figma 라이브러리 truth와 동기화 */
     scale?: Record<string, number | string>;
   };
+  /** Font size scale — Figma 라이브러리 Text styles truth와 동기화 (Tailwind v4 text-* 유틸 생성) */
+  fontSize?: Record<string, { size: string; lineHeight?: string }>;
   zIndex?: Record<string, number>;
   motion?: {
     duration?: Record<string, string>;
@@ -202,6 +204,15 @@ function generateCss(colors: ColorsJson, misc: MiscJson): string {
     for (const [name, value] of Object.entries(misc.radius.scale)) {
       const px = typeof value === "number" ? `${value}px` : value;
       lines.push(`  --radius-${name}: ${px};`);
+    }
+  }
+  // Font size scale — Figma 라이브러리 Text styles 동기화 (Tailwind v4 text-* 유틸)
+  if (misc.fontSize) {
+    lines.push("");
+    lines.push("  /* Font size scale — synced from design-system/tokens/misc.json (Figma 라이브러리 Text styles) */");
+    for (const [name, val] of Object.entries(misc.fontSize)) {
+      lines.push(`  --text-${name}: ${val.size};`);
+      if (val.lineHeight) lines.push(`  --text-${name}--line-height: ${val.lineHeight};`);
     }
   }
   lines.push("}");

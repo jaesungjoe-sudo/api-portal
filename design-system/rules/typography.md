@@ -59,6 +59,10 @@ If a primitive's typography *happens to match* some role in this table, it's val
 | `code-block` | `font-mono text-xs` or `text-sm` + `bg-muted/30 p-4 rounded-md` | Code snippet block |
 | `link` | `text-info hover:underline` | cross-ref / external link |
 
+### 2.4 Micro size — `text-2xs` (10px)
+
+The smallest **synced** font-size token: `text-2xs` = 10px / line-height 12px (below `caption`'s `text-xs`/12px). Synced from the Figma `Text-2xs` styles via `misc.json#fontSize` → `tokens.generated.css` (`@theme inline`) → Tailwind `text-2xs` utility. Intended for dense micro-labels (e.g., API method badges); weight per DS consistency — **`font-medium` or `font-semibold`** (not Regular). Not yet a formal role — promote to a named role once usage accumulates (§7).
+
 ---
 
 ## 3. Two variants of the same role — page-title / section-title
