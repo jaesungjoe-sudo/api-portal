@@ -34,7 +34,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { KeyRound, MoreHorizontal } from "lucide-react";
+import { EmptyState } from "@/components/api-portal/EmptyState";
 import {
   INITIAL_API_KEYS,
   computeExpiry,
@@ -202,7 +203,21 @@ export default function ApiKeysPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paged.map((k) => (
+            {paged.length === 0 ? (
+              <TableRow>
+                {/* colSpan = 8 (Name/Owner/Key/Status/Expires/Last used/Created/Action) */}
+                <TableCell colSpan={8} className="py-16">
+                  <EmptyState
+                    variant="no-data"
+                    // TODO: Figma 디자인 확정 시 인스펙트 결과 아이콘으로 교체 (icons.md 워크플로우)
+                    icon={<KeyRound />}
+                    title="No API keys"
+                    description="API keys you create will appear here."
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              paged.map((k) => (
               <TableRow key={k.id}>
                 <TableCell className="pl-5 text-sm font-medium text-foreground">{k.name}</TableCell>
                 <TableCell className="text-sm text-foreground">{k.owner}</TableCell>
@@ -246,7 +261,8 @@ export default function ApiKeysPage() {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

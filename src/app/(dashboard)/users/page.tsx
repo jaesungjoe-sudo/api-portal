@@ -54,7 +54,7 @@ import {
   type Team,
   type User,
 } from "@/lib/mock-team-data";
-import { Info, MoreHorizontal, User as UserIcon, UserCheck } from "lucide-react";
+import { Info, MoreHorizontal, User as UserIcon, UserCheck, Users } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -389,7 +389,21 @@ function UsersPageContent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paged.map((user, i) => (
+                {paged.length === 0 ? (
+                  <TableRow>
+                    {/* colSpan = 7 (Name/Email/Team/Role/Status/Updated/Action) */}
+                    <TableCell colSpan={7} className="py-16">
+                      <EmptyState
+                        variant="no-data"
+                        // TODO: Figma 디자인 확정 시 인스펙트 결과 아이콘으로 교체 (icons.md 워크플로우)
+                        icon={<Users />}
+                        title="No users"
+                        description="Users in your organization will appear here."
+                      />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  paged.map((user, i) => (
                   <TableRow key={i}>
                     <TableCell className="pl-5 text-sm font-medium text-foreground">{user.name}</TableCell>
                     <TableCell className="text-sm text-foreground">{user.email}</TableCell>
@@ -401,7 +415,8 @@ function UsersPageContent() {
                       <ActionMenu user={user} onEdit={setEditUser} onDeactivate={setDeactivateTarget} onResend={handleResendInvite} />
                     </TableCell>
                   </TableRow>
-                ))}
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>

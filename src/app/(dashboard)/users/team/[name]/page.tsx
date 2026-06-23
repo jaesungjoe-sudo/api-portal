@@ -178,11 +178,11 @@ export default function TeamDetailPage({
               <TableHead className="min-w-[220px]">
                 <SortableHead col="email" {...sp}>Email</SortableHead>
               </TableHead>
-              <TableHead className="min-w-[110px]">
-                <SortableHead col="status" {...sp}>Status</SortableHead>
-              </TableHead>
               <TableHead className="min-w-[100px]">
                 <SortableHead col="role" {...sp}>Role</SortableHead>
+              </TableHead>
+              <TableHead className="min-w-[110px]">
+                <SortableHead col="status" {...sp}>Status</SortableHead>
               </TableHead>
               <TableHead className="min-w-[140px]">
                 <SortableHead col="updatedAtMs" {...sp}>Updated</SortableHead>
@@ -193,7 +193,7 @@ export default function TeamDetailPage({
           <TableBody>
             {paged.length === 0 ? (
               <TableRow>
-                {/* colSpan = 6 (Name/Email/Status/Role/Updated/Action) */}
+                {/* colSpan = 6 (Name/Email/Role/Status/Updated/Action) */}
                 <TableCell colSpan={6} className="py-16">
                   <EmptyState
                     variant="no-data"
@@ -209,8 +209,8 @@ export default function TeamDetailPage({
                 <TableRow key={i}>
                   <TableCell className="pl-5 text-sm font-medium text-foreground">{user.name}</TableCell>
                   <TableCell className="text-sm text-foreground">{user.email}</TableCell>
-                  <TableCell><StatusBadge status={user.status} /></TableCell>
                   <TableCell className="text-sm text-foreground">{user.role}</TableCell>
+                  <TableCell><StatusBadge status={user.status} /></TableCell>
                   <TableCell className="text-sm text-muted-foreground">{user.updatedAt}</TableCell>
                   <TableCell />
                 </TableRow>

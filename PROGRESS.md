@@ -1,6 +1,27 @@
 # API Portal Design - 진행 상황
 
-최종 업데이트: 2026-06-22 (테이블 규칙 정합 — 문서 ↔ 코드 드리프트 정리. 랜딩/Analytics 개편 + Getting Started·API Ref Introduction 페이지 + Figma 컴포넌트 감사·정합)
+최종 업데이트: 2026-06-23 (handoff-backlog → Jira 티켓 드래프트 19건 작성. E2-5 템플릿 기준 E0~E4 전 Epic 발행 대기 드래프트화)
+
+## Jira 핸드오프 티켓 드래프트 (2026-06-23, 미커밋)
+
+> `handoff-backlog.md`(E0~E4 플랜) → `design-system/tickets/` 에 §4 템플릿 기준 Jira 발행용 드래프트화. E2-5(Table, 06-22 작성)를 골드 스탠다드로 나머지 19건 작성. Epic 단위 병렬 서브에이전트로 진행, 각 티켓 레퍼런스·AC 는 실제 spec/`.tsx` 파일에 grounded (경로·룰 검증).
+
+- **생성 (19건)**: E0-1(핸드오프 번들) / E0-2(거버넌스) / E1-1(토큰 소스+sync) / E1-2(globals 충돌 조정) / E2-1(Button) / E2-2(Input+Label) / E2-3(Badge 시스템) / E2-4(Dialog 시스템) / E2-6(Select/DropdownMenu) / E2-7(Sidebar/Sheet) / E3-1(API Ref Introduction) / E3-2(Create Call) / E3-3(API Keys) / E3-4(Users&Teams) / E3-5(Analytics) / E3-6(Docs 셸) / E3-sweep / E4-1(PR 템플릿) / E4-2(토큰 diff). (E2-5 Table 기존)
+- **공통 형식**: 종류/주체/의존/우선순위 → 맥락 → 범위(+범위 밖) → 레퍼런스 표 → 작업 → AC 체크리스트 → 견적. Figma 노드 링크·Before/After 스샷·견적은 `<발행 시 채움>` 으로 비워둠 (발행 시 디자이너 기입).
+- **작성 중 발견한 실제 drift 3건** (티켓에 반영, 별도 정정 검토 필요):
+  1. backlog §3 의 `tokens.json` 약칭 부정확 — 실제 토큰 소스는 `design-system/tokens/colors.json` + `misc.json` (단일 `tokens.json` 없음).
+  2. GNB 헤더 높이 — PROGRESS/CLAUDE 문서는 68px 이나 실제 코드는 `h-[69px]`/`top-[69px]` (`TopNav.tsx`/`AppSidebar.tsx`). E2-7 은 69px 기준.
+  3. `.github/pull_request_template.md` 양쪽 repo 모두 부재 → E4-1 은 "신규 생성(순수 추가)".
+- **다음**: 사용자 검토 → Jira 발행 (Atlassian MCP 로 Epic/Story 생성, 또는 수동). 발행 순서는 backlog §5 (E0 → E1 → E3-1 → E2-1 …).
+
+## 테이블 E2-5 가이드 정합 감사 + 갭 해소 (2026-06-23, 미커밋)
+
+> 로컬 리스트 페이지 테이블이 E2-5(Table 시스템) AC 대로 적용됐는지 전수 감사 후 발견 갭 2건 정합. tsc + build 통과.
+
+- **감사 결과**: api-keys / users(User·Pending) / team 상세 4영역 — wrapper·첫컬럼 pl-5·액션컬럼 2케이스·SortableHead·TablePagination(PAGE_SIZE=10)·체크박스 없음·토큰만 **모두 부합**. 갭은 빈 상태 분기 2곳 + 컬럼 순서 1건뿐.
+- **해소 ①** — **빈 상태 분기 추가**: `api-keys`(colSpan=8, `KeyRound` 아이콘) + `users` User탭(colSpan=7, `Users` 아이콘) 에 `paged.length === 0 → <EmptyState variant="no-data" py-16>` 분기 신설. 기존엔 `paged.map` 만 있어 0건 시 빈 `<tbody>`. 이제 4영역 전부 EmptyState 정합 (아이콘은 Figma 확정 시 교체 TODO — Pending/Team 패턴과 동일).
+- **해소 ②** — **컬럼 순서 통일**: 팀 상세 `Status/Role` → `Role/Status` 로 스왑(헤더+본문+colSpan 주석). User탭(Figma 전수 감사분 `1175:19038`)을 정본으로 맞춤. 이제 User탭·팀상세 공통 `…Role / Status…`. (팀 상세 Figma 가 별도로 다르면 재확인 필요.)
+- **Pending 탭 정렬 없음**은 의도된 차이(버튼그룹 액션) — AC 위반 아님, 유지.
 
 ## 테이블 규칙 정합 (2026-06-22, 미커밋)
 
