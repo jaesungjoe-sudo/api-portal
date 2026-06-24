@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Code2 } from "lucide-react";
@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
-import { API_REFERENCE_LINKS, API_REFERENCE_NAV, type ApiRefGroup } from "@/lib/api-reference-nav";
-import { MethodBadge } from "@/components/api-portal/MethodBadge";
+import { API_REFERENCE_LINKS, API_REFERENCE_NAV, METHOD_ABBR, type ApiRefGroup } from "@/lib/api-reference-nav";
+import { Badge } from "@/components/ui/badge";
+import { METHOD_VARIANT } from "@/components/api-portal/MethodBadge";
 
 function GroupItem({
   group,
@@ -24,14 +25,8 @@ function GroupItem({
   pathname: string;
   onNavigate?: () => void;
 }) {
-  const containsActive = group.items.some((sub) => sub.href === pathname);
-  const [open, setOpen] = useState<string[]>(containsActive ? [group.label] : []);
-
-  useEffect(() => {
-    if (containsActive && !open.includes(group.label)) {
-      setOpen((prev) => [...prev, group.label]);
-    }
-  }, [containsActive, group.label, open]);
+  // Figma 정합: 그룹은 기본 펼침(전 엔드포인트 노출). 접이식은 유지.
+  const [open, setOpen] = useState<string[]>([group.label]);
 
   return (
     <Accordion value={open} onValueChange={(v) => setOpen(v as string[])}>
@@ -54,8 +49,13 @@ function GroupItem({
                     active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
                   }`}
                 >
-                  <span className="flex w-14 shrink-0 justify-start">
-                    <MethodBadge method={sub.method} />
+                  <span className="flex w-12 shrink-0 justify-start">
+                    <Badge
+                      variant={METHOD_VARIANT[sub.method]}
+                      className="px-1.5 py-0 text-2xs font-medium leading-none"
+                    >
+                      {METHOD_ABBR[sub.method]}
+                    </Badge>
                   </span>
                   <span>{sub.label}</span>
                 </Link>
@@ -125,7 +125,7 @@ export function ApiReferenceSidebar() {
       <Sheet open={openMobile} onOpenChange={setOpenMobile}>
         <SheetContent
           side="left"
-          className="w-[255px] border-r border-sidebar-border bg-background p-0"
+          className="w-[272px] border-r border-sidebar-border bg-background p-0"
         >
           <SheetHeader className="sr-only">
             <SheetTitle>API Reference navigation</SheetTitle>
@@ -137,7 +137,7 @@ export function ApiReferenceSidebar() {
   }
 
   return (
-    <aside className="sticky top-[69px] hidden h-[calc(100vh-69px)] w-[255px] shrink-0 overflow-y-auto border-r border-sidebar-border bg-background md:block">
+    <aside className="sticky top-[69px] hidden h-[calc(100vh-69px)] w-[272px] shrink-0 overflow-y-auto border-r border-sidebar-border bg-background md:block">
       <SidebarBody />
     </aside>
   );
