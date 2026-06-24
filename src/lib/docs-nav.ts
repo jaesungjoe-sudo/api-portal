@@ -7,6 +7,8 @@ export type DocsNavItem = DocsNavLeaf | DocsNavGroup;
 
 export const DOCS_NAV: DocsNavItem[] = [
   { label: "Getting Started", href: "/documentation" },
+  { label: "Best Practices", href: "/documentation/best-practices" },
+  { label: "Teams", href: "/documentation/teams" },
 ];
 
 export function isDocsNavGroup(item: DocsNavItem): item is DocsNavGroup {
