@@ -67,4 +67,4 @@ The Request payload, Response JSON, Body Parameters, and Polling Example code ar
 
 ## Sidebar
 
-`ApiReferenceSidebar` — Calls / Queues / Agents groups. Only Calls is expanded. Method badge + label left-aligned (w-14 fixed-width container).
+`ApiReferenceSidebar` (272px) — Introduction(leaf) + 리소스 그룹 **Auth / Teams / Team Members / Team Settings / Users** (그룹 기본 펼침). 항목별 method 태그 + 라벨, 2단계 항목 `pl-4` 인덴트. 태그 = method 컬러(`METHOD_VARIANT`) + `text-2xs`(10px) + `DEL` 약어 + `w-12` 컨테이너. 상세: `components/badge.md` → "MethodBadge — color, sidebar tag, abbreviation".

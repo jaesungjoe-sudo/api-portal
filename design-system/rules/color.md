@@ -50,8 +50,8 @@ Chart-only (line/bar/pie). Single tokens separate from semantics:
 |------|------|
 | `bg-success-chart` / `text-success-chart` | GET / green series |
 | `bg-info-chart` / `text-info-chart` | POST / blue series |
-| `bg-highlight-chart` / `text-highlight-chart` | PATCH / purple series |
-| `bg-warning-chart` / `text-warning-chart` | PUT / yellow series |
+| `bg-highlight-chart` / `text-highlight-chart` | (미사용 — PATCH 는 `warning-chart` 로 이동, 2026-06-24) |
+| `bg-warning-chart` / `text-warning-chart` | PATCH / PUT / yellow series |
 | `bg-destructive-chart` / `text-destructive-chart` | DELETE / red series |
 
 ### Brand (UJET brand color)

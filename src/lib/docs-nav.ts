@@ -8,7 +8,16 @@ export type DocsNavItem = DocsNavLeaf | DocsNavGroup;
 export const DOCS_NAV: DocsNavItem[] = [
   { label: "Getting Started", href: "/documentation" },
   { label: "Best Practices", href: "/documentation/best-practices" },
-  { label: "Teams", href: "/documentation/teams" },
+  {
+    label: "Overview",
+    items: [
+      // Teams 만 구현됨. 나머지는 Figma 정합용 pre-wire (페이지 추가 시 라우트 생성).
+      { label: "Teams", href: "/documentation/teams" },
+      { label: "Team Members", href: "/documentation/team-members" },
+      { label: "Team Settings", href: "/documentation/team-settings" },
+      { label: "Users", href: "/documentation/users" },
+    ],
+  },
 ];
 
 export function isDocsNavGroup(item: DocsNavItem): item is DocsNavGroup {

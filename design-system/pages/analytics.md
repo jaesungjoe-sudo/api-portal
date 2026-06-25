@@ -64,7 +64,7 @@ Phase 1: only 6m has mock data; the rest return the same data (placeholder).
 |---|---|---|---|---|
 | 1 | `/users/{id}/profile` | 142 | GET | `success-chart` |
 | 2 | `/orders/{id}/items` | 98 | POST | `info-chart` |
-| 3 | `/organizations/{orgId}/members` | 92 | PATCH | `highlight-chart` |
+| 3 | `/organizations/{orgId}/members` | 92 | PATCH | `warning-chart` |
 | 4 | `/projects/{id}/settings` | 75 | GET | `success-chart` |
 | 5 | `/workspaces/{id}/invitations` | 42 | DELETE | `destructive-chart` |
 
@@ -76,9 +76,11 @@ Layout: 3-column Y-axis (endpoint / count / method labels) + bar area (normalize
 |---|---|---|
 | GET | 35% | `success-chart` |
 | POST | 25% | `info-chart` |
-| PATCH | 20% | `highlight-chart` |
+| PATCH | 20% | `warning-chart` |
 | DELETE | 15% | `destructive-chart` |
 | PUT | 5% | `warning-chart` |
+
+> PATCH 는 `warning-chart` 로 통일(2026-06-24, method 색 전체 정합) — PUT 과 같은 `warning-chart` 를 공유. `highlight-chart` 토큰은 정의는 남아있으나 method 색으로는 미사용.
 
 - Container width fixed at 420px
 - Pie 192×192, innerRadius 0 (not a full donut)

@@ -45,7 +45,7 @@ function GroupItem({
                   key={sub.href}
                   href={sub.href}
                   onClick={onNavigate}
-                  className={`flex h-9 items-center gap-2 rounded-sm px-2 text-sm text-sidebar-foreground transition-colors ${
+                  className={`flex h-9 items-center gap-2 rounded-sm pl-4 pr-2 text-sm text-sidebar-foreground transition-colors ${
                     active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent"
                   }`}
                 >
